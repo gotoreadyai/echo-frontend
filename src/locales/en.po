@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2024-05-13 17:01+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/components/pureBaldr/navigation/LinkTab.tsx:35
+#~ msgid "{label}"
+#~ msgstr ""
+
+#: src/components/MainInfoDesktop.tsx:17
+#: src/components/MainInfoMoble.tsx:24
+#~ msgid "Adaptatywna platforma edukacyjna wspierająca nauczanie hybrydowe."
+#~ msgstr ""
+
+#: src/routes/crud/actions/ActionsPage.tsx:74
+#: src/routes/crud/courses/CoursesPage.tsx:73
+#: src/routes/crud/documents/DocumentsPage.tsx:75
+#: src/routes/crud/pools/PoolsPage.tsx:72
+#: src/routes/crud/subjects/SubjectsPage.tsx:84
+#: src/routes/crud/tags/TagsPage.tsx:72
+#: src/routes/crud/units/UnitsPage.tsx:72
+#: src/routes/crud/wiki/WikiPage.tsx:75
+msgid "Add new"
+msgstr ""
+
+#: src/routes/crud/documents/DocumentsSubHeader.tsx:40
+#: src/routes/crud/wiki/WikiSubHeader.tsx:40
+msgid "AI"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:171
+msgid "AI Actions"
+msgstr ""
+
+#: src/routes/crud/documents/DocumentsAiCall.tsx:96
+msgid "AI Calling script"
+msgstr ""
+
+#: src/routes/crud/subjects/SubjectsSubHeader.tsx:31
+msgid "AI DOC"
+msgstr ""
+
+#: src/components/MainInfoDesktop.tsx:17
+#: src/components/MainInfoMoble.tsx:24
+msgid "An adaptive learning platform to support hybrid learning."
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:72
+msgid "Case studies"
+msgstr ""
+
+#: src/routes/crud/wiki/WikiList.tsx:54
+msgid "Code"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsList.tsx:57
+#: src/routes/crud/documents/DocumentsList.tsx:57
+#: src/routes/crud/pools/PoolsList.tsx:57
+#: src/routes/crud/subjects/SubjectsList.tsx:52
+#: src/routes/crud/units/UnitsList.tsx:49
+msgid "Course"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:89
+#~ msgid "Courses"
+#~ msgstr ""
+
+#: src/components/backoffice/contextBar/MediaManager.tsx:10
+msgid "Disableed in DEMO"
+msgstr ""
+
+#: src/components/AppMenu.tsx:11
+#~ msgid "Dla rodziców"
+#~ msgstr ""
+
+#: src/components/AppMenu.tsx:14
+#~ msgid "Dla szkół"
+#~ msgstr ""
+
+#: src/routes/crud/actions/ActionsSubHeader.tsx:24
+#: src/routes/crud/courses/CoursesSubHeader.tsx:25
+#: src/routes/crud/documents/DocumentsSubHeader.tsx:34
+#: src/routes/crud/pools/PoolsSubHeader.tsx:24
+#: src/routes/crud/subjects/SubjectsSubHeader.tsx:25
+#: src/routes/crud/tags/TagsSubHeader.tsx:25
+#: src/routes/crud/units/UnitsSubHeader.tsx:25
+#: src/routes/crud/wiki/WikiSubHeader.tsx:34
+msgid "Edit"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:131
+msgid "Exams"
+msgstr ""
+
+#: src/components/AppMenu.tsx:14
+msgid "For schools"
+msgstr ""
+
+#: src/components/AppMenu.tsx:11
+msgid "For the parents"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsPage.tsx:78
+#: src/routes/crud/courses/CoursesPage.tsx:76
+#: src/routes/crud/documents/DocumentsPage.tsx:79
+#: src/routes/crud/pools/PoolsPage.tsx:78
+#: src/routes/crud/subjects/SubjectsPage.tsx:79
+#: src/routes/crud/tags/TagsPage.tsx:78
+#: src/routes/crud/units/UnitsPage.tsx:76
+#: src/routes/crud/wiki/WikiPage.tsx:79
+#~ msgid "Generate new"
+#~ msgstr ""
+
+#: src/routes/crud/actions/ActionsPage.tsx:51
+#: src/routes/crud/courses/CoursesPage.tsx:50
+#: src/routes/crud/documents/DocumentsPage.tsx:52
+#: src/routes/crud/pools/PoolsPage.tsx:49
+#: src/routes/crud/subjects/SubjectsPage.tsx:61
+#: src/routes/crud/tags/TagsPage.tsx:49
+#: src/routes/crud/units/UnitsPage.tsx:49
+#: src/routes/crud/wiki/WikiPage.tsx:52
+msgid "Loading..."
+msgstr ""
+
+#: src/components/backoffice/contextBar/Notifications.tsx:32
+msgid "LOGOUT"
+msgstr ""
+
+#: src/components/backoffice/contextBar/MediaManager.tsx:9
+#: src/components/backoffice/LeftMenu.tsx:120
+msgid "Media"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:155
+msgid "Messages"
+msgstr ""
+
+#: src/components/backoffice/contextBar/StructureManager.tsx:63
+#: src/routes/crud/wiki/WikiList.tsx:57
+msgid "Module"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:96
+#: src/routes/crud/courses/CoursesList.tsx:50
+msgid "Modules"
+msgstr ""
+
+#: src/routes/crud/courses/CoursesList.tsx:72
+#: src/routes/crud/pools/PoolsList.tsx:72
+#: src/routes/crud/tags/TagsList.tsx:72
+#: src/routes/crud/units/UnitsList.tsx:73
+#~ msgid "Name"
+#~ msgstr ""
+
+#: src/components/AppMenu.tsx:8
+#~ msgid "Nasza misja"
+#~ msgstr ""
+
+#: src/components/backoffice/contextBar/TagsManager.tsx:114
+msgid "No pinned any tags"
+msgstr ""
+
+#: src/components/backoffice/contextBar/Notifications.tsx:19
+msgid "Notifications"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsList.tsx:54
+#: src/routes/crud/documents/DocumentsList.tsx:54
+#: src/routes/crud/pools/PoolsList.tsx:54
+msgid "Objective"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:147
+msgid "Opinions"
+msgstr ""
+
+#: src/components/AppMenu.tsx:8
+msgid "Our mission"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:80
+msgid "Pools"
+msgstr ""
+
+#: src/routes/crud/documents/DocumentsSubHeader.tsx:36
+#~ msgid "Pools call"
+#~ msgstr ""
+
+#: src/routes/crud/documents/DocumentsSubHeader.tsx:42
+#~ msgid "Pools up"
+#~ msgstr ""
+
+#: src/routes/crud/subjects/SubjectsAiCall.tsx:111
+#: src/routes/crud/wiki/WikiAiCall.tsx:78
+msgid "Prepare properties"
+msgstr ""
+
+#: src/routes/crud/documents/DocumentsSubHeader.tsx:28
+#: src/routes/crud/wiki/WikiSubHeader.tsx:28
+msgid "Preview"
+msgstr ""
+
+#: src/routes/crud/tags/TagsList.tsx:51
+msgid "Related tags"
+msgstr ""
+
+#: src/components/ExtendForm/ObjectiveSwith.tsx:56
+msgid "School primary objective code"
+msgstr ""
+
+#: src/components/backoffice/contextBar/LangSelector.tsx:16
+#: src/components/ExtendForm/DocumentField.tsx:18
+#: src/components/ExtendForm/LanguageSwith.tsx:13
+msgid "Select language"
+msgstr ""
+
+#: src/components/ExtendForm/LanguageLevelSwith.tsx:13
+msgid "Select language level"
+msgstr ""
+
+#: src/components/backoffice/contextBar/ObjectivesSelector.tsx:123
+msgid "Select main subject"
+msgstr ""
+
+#: src/components/backoffice/contextBar/ObjectivesSelector.tsx:62
+msgid "Select school level"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:139
+#~ msgid "Settings"
+#~ msgstr ""
+
+#: src/components/backoffice/contextBar/StructureManager.tsx:57
+msgid "Structure"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsList.tsx:63
+#: src/routes/crud/pools/PoolsList.tsx:63
+msgid "Subject"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:112
+msgid "Subjects"
+msgstr ""
+
+#: src/components/AppMenu.tsx:17
+msgid "System"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:88
+#: src/routes/crud/actions/ActionsList.tsx:66
+#: src/routes/crud/documents/DocumentsList.tsx:61
+#: src/routes/crud/pools/PoolsList.tsx:66
+#: src/routes/crud/wiki/WikiList.tsx:64
+msgid "Tags"
+msgstr ""
+
+#: src/components/backoffice/contextBar/TagsManager.tsx:96
+msgid "Tags manager"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsList.tsx:51
+#: src/routes/crud/courses/CoursesList.tsx:46
+#: src/routes/crud/documents/DocumentsList.tsx:51
+#: src/routes/crud/pools/PoolsList.tsx:51
+#: src/routes/crud/subjects/SubjectsList.tsx:46
+#: src/routes/crud/tags/TagsList.tsx:47
+#: src/routes/crud/units/UnitsList.tsx:46
+#: src/routes/crud/wiki/WikiList.tsx:51
+msgid "Title"
+msgstr ""
+
+#: src/components/MainInfoMoble.tsx:14
+msgid "Try for free!!!!"
+msgstr ""
+
+#: src/components/backoffice/contextBar/Notifications.tsx:21
+msgid "Turnoff in demo"
+msgstr ""
+
+#: src/routes/crud/actions/ActionsList.tsx:60
+#: src/routes/crud/pools/PoolsList.tsx:60
+#: src/routes/crud/wiki/WikiList.tsx:60
+msgid "Unit"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:104
+#: src/routes/crud/subjects/SubjectsList.tsx:49
+msgid "Units"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:139
+msgid "Users"
+msgstr ""
+
+#: src/components/backoffice/LeftMenu.tsx:163
+msgid "Wiki"
+msgstr ""
+
+#: src/components/MainInfoDesktop.tsx:28
+msgid "Wypróbuj za darmo!!!"
+msgstr ""

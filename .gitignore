@@ -1,0 +1,6 @@
+node_modules
+analyze
+.next
+.env.prod
+.env.local
+models_EXPORT
