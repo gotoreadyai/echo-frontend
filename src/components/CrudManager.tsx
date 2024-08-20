@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchItems,
@@ -16,9 +16,11 @@ import {
 } from "./CrudManager/Types";
 import { RenderFormFields } from "./CrudManager/RenderFormFields";
 import { RenderTableRows } from "./CrudManager/RenderTableRows";
+import { FormModal } from "./CrudManager/FormModal";
 
 export const CrudManager: React.FC = () => {
-  const { model } = useParams<CrudManagerParams>();
+  const navigate = useNavigate();
+  const { model, action } = useParams<CrudManagerParams>();
   const queryClient = useQueryClient();
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
 
@@ -52,12 +54,23 @@ export const CrudManager: React.FC = () => {
     onSuccess: handleMutationSuccess,
   });
 
+  const handleSelect = (item: Record<string, any>) => {
+    setSelectedItem(item);
+    navigate(`/pl/${model}/create`);
+  };
+
   const handleSave = () => {
     if (selectedItem?.id) {
       updateMutation.mutate({ id: selectedItem.id, item: selectedItem });
     } else {
       createMutation.mutate(selectedItem!);
     }
+    navigate(`/pl/${model}`);
+  };
+
+  const handleClose = () => {
+    setSelectedItem(null);
+    navigate(`/pl/${model}`);
   };
 
   const renderTableHeaders = () => {
@@ -81,41 +94,49 @@ export const CrudManager: React.FC = () => {
     );
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">{model}</h1>
+    <>
+      <div className="flex gap-md items-center mb-4">
+        <h1 className="text-2xl font-bold uppercase">{model}</h1>
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate(`/pl/${model}/create`)}
+        >
+          Create New Item
+        </button>
+      </div>
       <div className="mb-4">
         <table className="table table-zebra w-full border-collapse">
           <thead>
             <tr>{renderTableHeaders()}</tr>
           </thead>
           <tbody>
-            {model && data && <RenderTableRows
-              config={config}
-              setSelectedItem={setSelectedItem}
-              model={model}
-              data={data}
-              deleteMutation={deleteMutation}
-            />}
+            {model && data && (
+              <RenderTableRows
+                config={config}
+                handleSelect={handleSelect}
+                model={model}
+                data={data}
+                deleteMutation={deleteMutation}
+              />
+            )}
           </tbody>
         </table>
       </div>
-      <div className="mb-4">
-        <RenderFormFields
-          config={config}
-          selectedItem={selectedItem}
-          setSelectedItem={setSelectedItem}
-        />
-
-        <button className="btn btn-success mt-2" onClick={handleSave}>
-          Save
-        </button>
-        <button
-          className="btn btn-secondary mt-2 ml-2"
-          onClick={() => setSelectedItem(null)}
-        >
-          Cancel
-        </button>
-      </div>
-    </div>
+      {action === "create" && (
+        <FormModal handleClose={handleClose}>
+          <RenderFormFields
+            config={config}
+            selectedItem={selectedItem}
+            setSelectedItem={setSelectedItem}
+          />
+          <button className="btn btn-success mt-2" onClick={handleSave}>
+            Save
+          </button>
+          <button className="btn btn-secondary mt-2 ml-2" onClick={handleClose}>
+            Cancel
+          </button>
+        </FormModal>
+      )}
+    </>
   );
 };

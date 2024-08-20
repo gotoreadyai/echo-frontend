@@ -13,6 +13,7 @@ export type ConfigType = {
 
 export type CrudManagerParams = {
   model: string;
+  action: string;
 };
 
 export type MutationSuccessHandler = () => void;

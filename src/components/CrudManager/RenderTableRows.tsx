@@ -2,7 +2,7 @@ import { ConfigType, FieldConfig } from "./Types";
 
 interface RenderTableRowsProps {
   config: Record<string, FieldConfig>;
-  setSelectedItem: (item: Record<string, any>) => void;
+  handleSelect: (item: Record<string, any>) => void;
   model: string;
   data: Record<string, any> | null;
   deleteMutation: any;
@@ -10,7 +10,7 @@ interface RenderTableRowsProps {
 
 export const RenderTableRows = ({
   config,
-  setSelectedItem,
+  handleSelect,
   model,
   data,
   deleteMutation,
@@ -31,7 +31,7 @@ export const RenderTableRows = ({
       <td className="gap-1 flex">
         <button
           className="btn btn-info btn-xs"
-          onClick={() => setSelectedItem(item)}
+          onClick={() => handleSelect(item)}
         >
           Edit
         </button>
