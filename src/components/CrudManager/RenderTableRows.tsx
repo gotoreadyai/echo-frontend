@@ -48,7 +48,7 @@ export const RenderTableRows = ({
             </td>
           );
         })}
-        <td key={`last`} className="gap-1 flex">
+        <td key={`last`} className="gap-1 flex w-full  justify-end">
           <button
             className="btn btn-info btn-xs"
             onClick={() => handleSelect(item)}
@@ -58,7 +58,7 @@ export const RenderTableRows = ({
           {listRelations?.[model] &&
             listRelations[model].map((el: any) => (
               <button
-                key={el}
+                key={`${el}:${model}`}
                 onClick={() => {
                   handleRelation({
                     ...item,
@@ -68,7 +68,7 @@ export const RenderTableRows = ({
                 }}
                 className="btn btn-outline btn-xs"
               >
-                add: {el}
+                add: {el}:{model}
               </button>
             ))}
           <button

@@ -16,11 +16,12 @@ export type CrudManagerParams = {
   workspace: string;
   model: string;
   action: string;
+  related: string;
+  id: string;
 };
 
 export type MutationSuccessHandler = () => void;
 export type SelectedItem = Record<string, any> | null;
-
 
 export const getInputType = (type: string) => {
   switch (type) {

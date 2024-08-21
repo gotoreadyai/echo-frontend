@@ -7,7 +7,13 @@ interface TextInputProps {
   isRequired: boolean;
 }
 
-export const TextInput = ({ id, label, value, onChange, isRequired }: TextInputProps) => (
+export const TextInput = ({
+  id,
+  label,
+  value,
+  onChange,
+  isRequired,
+}: TextInputProps) => (
   <div className="mb-4">
     <label htmlFor={id} className="block text-gray-700 text-sm font-bold mb-2">
       {label} {isRequired && <span className="text-red-500">*</span>}
@@ -33,7 +39,13 @@ interface TextareaProps {
   isRequired: boolean;
 }
 
-export const Textarea = ({ id, label, value, onChange, isRequired }: TextareaProps) => (
+export const Textarea = ({
+  id,
+  label,
+  value,
+  onChange,
+  isRequired,
+}: TextareaProps) => (
   <div className="mb-4">
     <label htmlFor={id} className="block text-gray-700 text-sm font-bold mb-2">
       {label} {isRequired && <span className="text-red-500">*</span>}
@@ -91,7 +103,13 @@ export const SelectInput = ({
   </div>
 );
 
-export const RelationInput = ({ id, label, value, onChange, isRequired }: TextInputProps) => (
+export const RelationInput = ({
+  id,
+  label,
+  value,
+  onChange,
+  isRequired,
+}: TextInputProps) => (
   <div className="mb-4">
     <label htmlFor={id} className="block text-gray-700 text-sm font-bold mb-2">
       {label} {isRequired && <span className="text-red-500">*</span>}

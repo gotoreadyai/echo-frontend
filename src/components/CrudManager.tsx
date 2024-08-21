@@ -1,35 +1,26 @@
+// components/CrudManager/CrudManager.tsx
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  fetchItems,
-  createItem,
-  updateItem,
-  deleteItem,
-} from "../services/genericService";
+import { useParams, useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { fetchItems } from "../services/genericService";
 import { ModelData, ModelSingular } from "../../models_EXPORT/models";
-import {
-  ConfigType,
-  CrudManagerParams,
-  MutationSuccessHandler,
-  SelectedItem,
-} from "./CrudManager/Types";
+import { CrudManagerParams, SelectedItem } from "./CrudManager/Types";
 import { RenderFormFields } from "./CrudManager/RenderFormFields";
 import { RenderTableRows } from "./CrudManager/RenderTableRows";
 import { FormModal } from "./CrudManager/FormModal";
-import { listRelations } from "./CrudManager/RELATIONS";
+import { useNavAction } from "./useNavAction";
+import { useCrudMutations } from "./CrudManager/useCrudMutations";
+import { RenderTableHeaders } from "./CrudManager/RenderTableHeaders";
 
 export const CrudManager: React.FC = () => {
-  const navigate = useNavigate();
-  const { workspace, model, action } = useParams<CrudManagerParams>();
+  const { model, action, related, id } = useParams<CrudManagerParams>();
+  const config = model ? ModelData[model] : null;
   const location = useLocation();
-  const queryClient = useQueryClient();
+  const { navAction } = useNavAction();
   const [selectedItem, setSelectedItem] = useState<SelectedItem>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Pobieramy bieżące query params z location
-  const currentQueryParams = new URLSearchParams(location.search);
-  const basepath = `/${workspace}/pl/${model}`;
+  useEffect(() => setErrorMessage(null), [location.pathname]);
 
   const { data, isLoading, error } = useQuery({
     queryKey: [model],
@@ -37,84 +28,41 @@ export const CrudManager: React.FC = () => {
     enabled: !!model,
   });
 
-  const config: ConfigType | null = model ? ModelData[model] : null;
-
-  const handleMutationSuccess: MutationSuccessHandler = () => {
-    queryClient.invalidateQueries({ queryKey: [model] });
-    setSelectedItem(null);
-    setErrorMessage(null); // Clear any previous error message
-  };
-
-  const handleMutationError = (error: any) => {
-    setErrorMessage(`An error occurred: ${error.message}`);
-  };
-
-  const createMutation = useMutation({
-    mutationFn: (newItem: Record<string, any>) =>
-      createItem(model || "", newItem),
-    onSuccess: handleMutationSuccess,
-    onError: handleMutationError,
+  const { createMutation, updateMutation, deleteMutation } = useCrudMutations({
+    model,
+    setSelectedItem,
+    setErrorMessage,
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, item }: { id: string; item: Record<string, any> }) =>
-      updateItem(model || "", id, item),
-    onSuccess: handleMutationSuccess,
-    onError: handleMutationError,
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteItem(model || "", id),
-    onSuccess: handleMutationSuccess,
-    onError: handleMutationError,
-  });
-
-  const handleSelect = (item: Record<string, any>) => {
-    setSelectedItem(item);
-    navigate(`${basepath}/create?id=${item.id}`);
+  const handleSelect = (item: Record<string, any> = {}) => {
+    /* create new with relation - fix hardcoded ID */
+    setSelectedItem(
+      item[`${related}Id`] ? item : { ...item, [`${related}Id`]: id }
+    );
+    navAction("", "create");
   };
 
   const handleRelation = (item: Record<string, any>) => {
     setSelectedItem(null);
-    navigate(`/${workspace}/pl/${item._relatedFrom}/list/${ModelSingular[item._relatedTo]}/${item.id}`);
-  };  
+    navAction(
+      item._relatedFrom,
+      "list",
+      ModelSingular[item._relatedTo],
+      item.id
+    );
+  };
 
   const handleSave = () => {
-    if (selectedItem?.id) {
-      updateMutation.mutate({ id: selectedItem.id, item: selectedItem });
-    } else {
-      createMutation.mutate(selectedItem!);
-    }
-    navigate(`${basepath}`);
+    selectedItem?.id
+      ? updateMutation.mutate({ id: selectedItem.id, item: selectedItem })
+      : createMutation.mutate(selectedItem!);
+    navAction("", "list");
   };
 
   const handleClose = () => {
     setSelectedItem(null);
-    navigate(`${basepath}`);
+    navAction("", "list");
   };
-
-  const renderTableHeaders = () => {
-    if (!config) return null;
-
-    return (
-      <>
-        {Object.keys(config).map((key) => (
-          <th
-            key={key}
-            className={`${(key === "title" || key === "content") && "w-1/4"}`}
-          >
-            {key}
-          </th>
-        ))}
-        <th>Actions</th>
-      </>
-    );
-  };
-
-  // Clear error message on route change
-  useEffect(() => {
-    setErrorMessage(null);
-  }, [location.pathname]);
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading {model}</div>;
@@ -127,22 +75,26 @@ export const CrudManager: React.FC = () => {
     <>
       <div className="flex gap-md items-center mb-4">
         <h1 className="text-2xl font-bold uppercase">{model}</h1>
-        <button
-          className="btn btn-primary"
-          onClick={() => navigate(`${basepath}/create?${currentQueryParams.toString()}`)}
-        >
+        <button className="btn btn-primary" onClick={() => handleSelect()}>
           Create New Item
         </button>
       </div>
 
       {errorMessage && (
-        <div className="alert alert-error mb-4">{errorMessage}</div>
+        <div
+          onClick={() => setErrorMessage(null)}
+          className="alert alert-error mb-4 cursor-pointer"
+        >
+          {errorMessage}
+        </div>
       )}
 
       <div className="mb-4">
-        <table className="table table-zebra w-full border-collapse">
+        <table width={"100%"} className="table table-zebra w-full border-collapse ">
           <thead>
-            <tr>{renderTableHeaders()}</tr>
+            <tr>
+              <RenderTableHeaders config={config} />
+            </tr>
           </thead>
           <tbody>
             {model && data && (
