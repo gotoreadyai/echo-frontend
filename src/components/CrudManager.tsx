@@ -24,7 +24,7 @@ export const CrudManager: React.FC = () => {
 
   const { data, isLoading, error } = useQuery({
     queryKey: [model],
-    queryFn: () => fetchItems(model || ""),
+    queryFn: () => fetchItems(model || "",related,id),
     enabled: !!model,
   });
 

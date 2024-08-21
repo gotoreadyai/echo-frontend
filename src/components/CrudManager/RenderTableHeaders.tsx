@@ -9,14 +9,15 @@ export const RenderTableHeaders = ({ config }: Record<string, FieldConfig>) => {
         <th
           key={key}
           className={`
-            ${(index === 0 || key === "title" || key === "content") ? "text-left" : "text-center"}
-            ${(key === "title" || key === "content") && "w-1/4"}
+            ${(index === 0 || key === "title" || key === "content" || key === "name") ? "text-left" : "text-center"}
+            ${(key === "title" ) && ""}
+            ${(key === "content" ) && ""}
           `}
         >
           {key}
         </th>
       ))}
-      <th className="text-right">Actions</th>
+      <th className="text-right w-1/4">Actions</th>
     </>
   );
 };

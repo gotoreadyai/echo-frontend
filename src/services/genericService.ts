@@ -2,8 +2,8 @@ import { ModelSingular } from "../../models_EXPORT/models";
 
 const enpoint = `http://localhost:3004`;
 
-export const fetchItems = async (resourceName: string) => {
-  const response = await fetch(`${enpoint}/${resourceName}`);
+export const fetchItems = async (resourceName: string, related?: string, id?: string) => {
+  const response = await fetch(related ? `${enpoint}/${resourceName}/${related}/${id}` : `${enpoint}/${resourceName}`);
   if (!response.ok) {
     throw new Error(`Failed to fetch ${resourceName}`);
   }
