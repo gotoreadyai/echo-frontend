@@ -1,4 +1,4 @@
-import { ModelSingular } from "../../models_EXPORT/Models";
+import { ModelSingular } from "../../models_EXPORT/models";
 
 const enpoint = `http://localhost:3004`;
 

@@ -5,6 +5,7 @@ export type FieldConfig = {
   references?: { model: string; key: string };
   onDelete?: string;
   onUpdate?: string;
+  label?: string;
 };
 
 export type ConfigType = {
@@ -12,9 +13,26 @@ export type ConfigType = {
 };
 
 export type CrudManagerParams = {
+  workspace: string;
   model: string;
   action: string;
 };
 
 export type MutationSuccessHandler = () => void;
 export type SelectedItem = Record<string, any> | null;
+
+
+export const getInputType = (type: string) => {
+  switch (type) {
+    case "TEXT":
+      return "textarea";
+    case "STRING":
+      return "text";
+    case "UUID":
+      return "text"; // Consider "hidden" if UUID should not be visible
+    case "DATE":
+      return "date";
+    default:
+      return "text";
+  }
+};

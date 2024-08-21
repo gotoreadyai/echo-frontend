@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import DaisyDrawer from "./components/DaisyDrawer";
 import { ReactQueryProvider } from "./QueryClientProvider";
-import { ModelSingular } from "../models_EXPORT/Models";
+import { ModelSingular } from "../models_EXPORT/models";
 import { CrudManager } from "./components/CrudManager";
 import { SetStateAction, useEffect, useState } from "react";
 import ThemeSelector from "./components/ThemeSelector"; // Import the ThemeSelector component
@@ -105,11 +105,15 @@ function App() {
                   }
                 />
                 <Route
-                  path="start/:workspace/:lang/:model"
+                  path=":workspace/:lang/:model"
                   element={<CrudManager />}
                 />
                 <Route
-                  path="start/:workspace/:lang/:model/:action"
+                  path=":workspace/:lang/:model/:action/"
+                  element={<CrudManager />}
+                />
+                <Route
+                  path=":workspace/:lang/:model/:action/:related/:id"
                   element={<CrudManager />}
                 />
               </Routes>
@@ -122,6 +126,7 @@ function App() {
           </DaisyDrawer>
         </Router>
       </ReactQueryProvider>
+      SyntaxError: Unexpected token 'n', "null" is not valid JSON - wywaliło serwer
     </div>
   );
 }

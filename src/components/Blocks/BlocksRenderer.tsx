@@ -1,9 +1,10 @@
-import { Block } from "../ContentRenderer";
+
 import { HeadingBlock } from "./HeadingBlock";
 import { ImageBlock } from "./ImageBlock";
 import { ListBlock } from "./ListBlock";
 import { QuoteBlock } from "./QuoteBlock";
 import { TextBlock } from "./TextBlock";
+import { Block } from "./Types";
 
 export const BlocksRenderer: React.FC<{ block: Block }> = ({ block }) => {
     const renderBlock = (block: Block) => {

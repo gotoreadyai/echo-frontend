@@ -1,0 +1,1 @@
+var r={nanoid:(r=21)=>{let t="",a=r;for(;a--;)t+="useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict"[64*Math.random()|0];return t},customAlphabet:(r,t=21)=>(a=t)=>{let n="",e=a;for(;e--;)n+=r[Math.random()*r.length|0];return n}};export{r as n};
