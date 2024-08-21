@@ -17,10 +17,7 @@
     "@tanstack/react-query": "^5.36.0",
     "framer-motion": "^7.6.7",
     "katex": "^0.16.10",
-    "pluralize": "^8.0.0",
     "react": "^18.2.0",
-    "react-beautiful-dnd": "^13.1.1",
-    "react-dnd": "^16.0.1",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-json-editor-ajrm": "^2.5.14",
@@ -36,7 +33,6 @@
   "devDependencies": {
     "@lingui/cli": "^4.10.1",
     "@lingui/vite-plugin": "^4.10.1",
-    "@types/pluralize": "^0.0.33",
     "@types/react": "^18.2.66",
     "@types/react-beautiful-dnd": "^13.1.8",
     "@types/react-dom": "^18.2.22",
