@@ -1,11 +1,15 @@
-// List Block Component
-export const ListBlock: React.FC<{ items: string[]; ordered?: boolean }> = ({
+
+export type ListBlockT = {
+  items: string[];
+  ordered?: boolean;
+}
+export const ListBlock: React.FC<ListBlockT> = ({
   items,
   ordered = false,
 }) => {
   const Tag = ordered ? "ol" : "ul";
   return (
-    <Tag className="list-disc list-inside my-4">
+    <Tag className="list-disc list-inside container mx-auto">
       {items.map((item, index) => (
         <li key={index}>{item}</li>
       ))}

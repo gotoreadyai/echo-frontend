@@ -17,8 +17,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({
     "aqua",
     "retro",
     "cyberpunk",
-  ]; // Array of themes
-
+  ];
   return (
     <div className="join join-horizontal mx-md">
       {themes.map((themeName) => (

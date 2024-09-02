@@ -1,1 +1,0 @@
-var e={exports:{}},r=String,t=function(){return{isColorSupported:!1,reset:r,bold:r,dim:r,italic:r,underline:r,inverse:r,hidden:r,strikethrough:r,black:r,red:r,green:r,yellow:r,blue:r,magenta:r,cyan:r,white:r,gray:r,bgBlack:r,bgRed:r,bgGreen:r,bgYellow:r,bgBlue:r,bgMagenta:r,bgCyan:r,bgWhite:r}};e.exports=t(),e.exports.createColors=t;var o=e.exports;export{o as p};

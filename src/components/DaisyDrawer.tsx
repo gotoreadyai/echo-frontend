@@ -1,11 +1,11 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { FiMenu } from "react-icons/fi";
 import { Logo } from "./Logo";
 
 interface FormProps {
   children: JSX.Element;
-  items: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  items: JSX.Element;
 }
 
 const DaisyDrawer: React.FC<FormProps> = ({ children, items }) => {
@@ -33,13 +33,7 @@ const DaisyDrawer: React.FC<FormProps> = ({ children, items }) => {
           <div className="px-6 py-2 bg-base-300">
             <Logo />
           </div>
-          <ul className="p-4 bg-base-200 capitalize">
-            {items.map((item, index) => (
-              <li key={index}>
-                <Link to={`dashboard/pl/${item}`}>{item}</Link>
-              </li>
-            ))}
-          </ul>
+          {items}
           <div className="flex-1 bg-base-200"></div>
         </div>
       </div>

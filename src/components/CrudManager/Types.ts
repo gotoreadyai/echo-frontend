@@ -21,7 +21,7 @@ export type CrudManagerParams = {
 };
 
 export type MutationSuccessHandler = () => void;
-export type SelectedItem = Record<string, any> | null;
+export type SelectedItem = Record<string, unknown> | null;
 
 export const getInputType = (type: string) => {
   switch (type) {

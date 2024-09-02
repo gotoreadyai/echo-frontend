@@ -1,5 +1,6 @@
 import { Logo } from "../Logo";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const FormModal = ({ children, handleClose }: any) => (
   <dialog open className="modal modal-top">
     <div

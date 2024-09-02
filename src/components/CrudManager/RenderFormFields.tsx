@@ -1,93 +1,117 @@
-import { TextInput, Textarea, RelationInput } from "./FormComponents";
-import { FieldConfig, getInputType } from "./Types";
+import { BlocksRenderer } from "../Blocks/BlocksRenderer";
+import { Block } from "../Blocks/Types";
+import { FieldConfig } from "./Types";
 
-interface RenderFormFieldsProps {
+interface RenderFormFieldsProps<T> {
   config: Record<string, FieldConfig>;
-  selectedItem: Record<string, any> | null;
-  setSelectedItem: (item: Record<string, any>) => void;
+  selectedItem: T | null;
+  setSelectedItem: (item: T | null) => void;
   relatedOptions?: Record<string, { value: string; label: string }[]>;
 }
 
-export const RenderFormFields = ({
+export const RenderFormFields = <
+  T extends Record<string, string | number | boolean | null>
+>({
   config,
   selectedItem,
   setSelectedItem,
-  relatedOptions = {},
-}: RenderFormFieldsProps) => {
+}: RenderFormFieldsProps<T>) => {
   if (!config) return null;
 
-  const handleInputChange = (key: string, value: any) => {
-    setSelectedItem((prevSelectedItem: Record<string, any> | null) => ({
-      ...(prevSelectedItem ?? {}),
-      [key]: value,
-    }));
+  const handleInputChange = (key: keyof T, value: T[keyof T]) => {
+    if (selectedItem) {
+      setSelectedItem({
+        ...selectedItem,
+        [key]: value,
+      });
+    }
   };
 
-  const renderField = (
-    key: string,
+  const createBlockData = (
+    key: keyof T,
     fieldConfig: FieldConfig,
-    value: any,
-    relatedOptions: Record<string, { value: string; label: string }[]>
+    value: T[keyof T] | undefined
   ) => {
     const { type, allowNull, label, references } = fieldConfig;
-    const inputType = getInputType(type);
     const isRequired = !allowNull;
-    const fieldLabel = label ?? key;
+    const fieldLabel = label ?? (key as string);
+
+    const finalValue = value !== undefined ? value : ("" as T[keyof T]); // Zapewnienie wartości domyślnej
 
     if (references) {
-      return (
-        // <SelectInput
-        //   key={key}
-        //   id={key}
-        //   label={fieldLabel}
-        //   value={value || ""}
-        //   onChange={(value) => handleInputChange(key, value)}
-        //   options={relatedOptions[key] || []}
-        //   isRequired={isRequired}
-        // />
-        <RelationInput
-        key={key}
-        id={key}
-        label={fieldLabel}
-        value={value || ""}
-        onChange={(value) => handleInputChange(key, value)}
-        isRequired={isRequired}
-      />
-      );
+      return {
+        id: key as string,
+        type: "formRelationInput",
+        data: {
+          id: key as string,
+          label: fieldLabel,
+          value: finalValue,
+          isRequired,
+          onChange: (newValue: string) =>
+            handleInputChange(key, newValue as T[keyof T]),
+        },
+      };
     }
 
-    if (inputType === "textarea") {
-      return (
-        <Textarea
-          key={key}
-          id={key}
-          label={fieldLabel}
-          value={value || ""}
-          onChange={(value) => handleInputChange(key, value)}
-          isRequired={isRequired}
-        />
-      );
+    if (type === "TEXT") {
+      return {
+        id: key as string,
+        type: "formTextarea",
+        data: {
+          id: key as string,
+          label: fieldLabel,
+          value: finalValue,
+          isRequired,
+          onChange: (newValue: string) =>
+            handleInputChange(key, newValue as T[keyof T]),
+        },
+      };
     }
 
-    return (
-      <TextInput
-        key={key}
-        id={key}
-        label={fieldLabel}
-        value={value || ""}
-        onChange={(value) => handleInputChange(key, value)}
-        isRequired={isRequired}
-      />
-    );
+    if (type === "JSONB") {
+      return {
+        id: key as string,
+        type: "formJSONInput",
+        data: {
+          id: key as string,
+          label: fieldLabel,
+          value: finalValue,
+          isRequired,
+          onChange: (newValue: string) =>
+            handleInputChange(key, newValue as T[keyof T]),
+        },
+      };
+    }
+
+    return {
+      id: key as string,
+      type: "formTextInput",
+      data: {
+        id: key as string,
+        label: fieldLabel,
+        value: finalValue,
+        isRequired,
+        onChange: (newValue: string) =>
+          handleInputChange(key, newValue as T[keyof T]),
+      },
+    };
   };
+
+  const blocks = Object.entries(config)
+    .filter(([key]) => !["id", "createdAt", "updatedAt"].includes(key))
+    .map(([key, fieldConfig]) =>
+      createBlockData(
+        key as keyof T,
+        fieldConfig,
+        selectedItem?.[key as keyof T]
+      )
+    );
 
   return (
     <>
-      {Object.entries(config)
-        .filter(([key]) => !["id", "createdAt", "updatedAt"].includes(key))
-        .map(([key, fieldConfig]) =>
-          renderField(key, fieldConfig, selectedItem?.[key], relatedOptions)
-        )}
+      {blocks.map((value) => (
+        <BlocksRenderer key={value.id} block={value as Block} />
+      ))}
     </>
   );
 };

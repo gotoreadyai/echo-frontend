@@ -3,17 +3,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createItem, updateItem, deleteItem } from "../../services/genericService";
 import { MutationSuccessHandler } from "./Types";
 
-interface UseCrudMutationsProps {
+
+
+interface UseCrudMutationsProps<T> {
   model: string | undefined;
-  setSelectedItem: (item: any) => void;
+  setSelectedItem: (item: T | null) => void;
   setErrorMessage: (message: string | null) => void;
 }
 
-export const useCrudMutations = ({
+export const useCrudMutations = <T extends Record<string, unknown>>({
   model,
   setSelectedItem,
   setErrorMessage,
-}: UseCrudMutationsProps) => {
+}: UseCrudMutationsProps<T>) => {
   const queryClient = useQueryClient();
 
   const handleMutationSuccess: MutationSuccessHandler = () => {
@@ -22,19 +24,22 @@ export const useCrudMutations = ({
     setErrorMessage(null); // Clear any previous error message
   };
 
-  const handleMutationError = (error: any) => {
-    setErrorMessage(`An error occurred: ${error.message}`);
+  const handleMutationError = (error: unknown) => {
+    if (error instanceof Error) {
+      setErrorMessage(`An error occurred: ${error.message}`);
+    } else {
+      setErrorMessage('An unexpected error occurred.');
+    }
   };
 
   const createMutation = useMutation({
-    mutationFn: (newItem: Record<string, any>) =>
-      createItem(model || "", newItem),
+    mutationFn: (newItem: T) => createItem(model || "", newItem),
     onSuccess: handleMutationSuccess,
     onError: handleMutationError,
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, item }: { id: string; item: Record<string, any> }) =>
+    mutationFn: ({ id, item }: { id: string; item: T }) =>
       updateItem(model || "", id, item),
     onSuccess: handleMutationSuccess,
     onError: handleMutationError,

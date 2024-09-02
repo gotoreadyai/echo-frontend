@@ -1,5 +1,9 @@
 
 // Image Block Component
-export const ImageBlock: React.FC<{ src: string; alt: string }> = ({ src, alt }) => (
-  <img src={src} alt={alt} className="my-4 w-full" />
+export type ImageBlockT = {
+  src: string;
+  alt: string;
+}
+export const ImageBlock: React.FC<ImageBlockT> = ({ src, alt }) => (
+  <img src={src} alt={alt} className="container mx-auto w-full" />
 );

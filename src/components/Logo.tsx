@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
-export const Logo = () =>  <img src="/logo.svg" />
+export const Logo = () =>  <Link to="/"><img src="/logo.svg" /></Link>
 

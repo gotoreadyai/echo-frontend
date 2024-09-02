@@ -1,6 +1,30 @@
 <!DOCTYPE html>
 <html lang="pl">
   <head>
+    <script>self["MonacoEnvironment"] = (function (paths) {
+          return {
+            globalAPI: false,
+            getWorkerUrl : function (moduleId, label) {
+              var result =  paths[label];
+              if (/^((http:)|(https:)|(file:)|(\/\/))/.test(result)) {
+                var currentUrl = String(window.location);
+                var currentOrigin = currentUrl.substr(0, currentUrl.length - window.location.hash.length - window.location.search.length - window.location.pathname.length);
+                if (result.substring(0, currentOrigin.length) !== currentOrigin) {
+                  var js = '/*' + label + '*/importScripts("' + result + '");';
+                  var blob = new Blob([js], { type: 'application/javascript' });
+                  return URL.createObjectURL(blob);
+                }
+              }
+              return result;
+            }
+          };
+        })({
+  "typescript": "/monacoeditorwork/ts.worker.bundle.js",
+  "editorWorkerService": "/monacoeditorwork/editor.worker.bundle.js",
+  "tsworker": "/monacoeditorwork/ts.worker.bundle..bundle.js",
+  "javascript": "/monacoeditorwork/ts.worker.bundle.js"
+});</script>
+
     <meta charset="UTF-8" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,28 +39,19 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <title>SMART INTERACTIVE</title>
-    <script type="module" crossorigin src="/assets/index-C8wuEVIg.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/camelcase-css-DK2cFEjy.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-1HmkrDbp.js">
+    <script type="module" crossorigin src="/assets/index-O-IHohkK.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-BZuymhSV.js">
     <link rel="modulepreload" crossorigin href="/assets/scheduler-DhxmCZ7v.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-dom-rf6Ir-x6.js">
-    <link rel="modulepreload" crossorigin href="/assets/@remix-run-BGIWjZ3f.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-router-BZ98txhT.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-router-dom-sXgolB4Q.js">
-    <link rel="modulepreload" crossorigin href="/assets/react-icons-Bf9n_TIE.js">
-    <link rel="modulepreload" crossorigin href="/assets/@tanstack-Bvc_O6Tp.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-dom-BYiVop1z.js">
+    <link rel="modulepreload" crossorigin href="/assets/@tanstack-9uQdZFRu.js">
+    <link rel="modulepreload" crossorigin href="/assets/@remix-run-C6gLdFx_.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-router-CTXi29Ex.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-router-dom-D4tEWo8V.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-icons-BIrHdytZ.js">
     <link rel="modulepreload" crossorigin href="/assets/date-fns-DRFbL8hS.js">
-    <link rel="modulepreload" crossorigin href="/assets/picocolors-NJ40uvHn.js">
-    <link rel="modulepreload" crossorigin href="/assets/nanoid-BtLXeu9i.js">
-    <link rel="modulepreload" crossorigin href="/assets/postcss-CRVEJhQe.js">
-    <link rel="modulepreload" crossorigin href="/assets/postcss-js-2lojRTWs.js">
-    <link rel="modulepreload" crossorigin href="/assets/fastparse-D1qLkcQ1.js">
-    <link rel="modulepreload" crossorigin href="/assets/cssesc-xwk1Qk3S.js">
-    <link rel="modulepreload" crossorigin href="/assets/css-selector-tokenizer-BaFDaa83.js">
-    <link rel="modulepreload" crossorigin href="/assets/culori-Db-KMzJI.js">
-    <link rel="modulepreload" crossorigin href="/assets/daisyui-CcDWnvUM.js">
-    <link rel="modulepreload" crossorigin href="/assets/uuid-aGgpFg1T.js">
-    <link rel="stylesheet" crossorigin href="/assets/index-BqZna5tB.css">
+    <link rel="modulepreload" crossorigin href="/assets/state-local-BC9ybJZH.js">
+    <link rel="modulepreload" crossorigin href="/assets/@monaco-editor-CHrUmUaG.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-B5Q7kQj8.css">
   <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root"></div>

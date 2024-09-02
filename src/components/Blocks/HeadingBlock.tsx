@@ -1,6 +1,9 @@
-
+export type HeadingBlockT = {
+  level: number;
+  content: string;
+}
 // Heading Block Component
-export const HeadingBlock: React.FC<{ level: number; content: string }> = ({ level, content }) => {
+export const HeadingBlock: React.FC<HeadingBlockT> = ({ level, content }) => {
   const Tag = `h${level}` as keyof JSX.IntrinsicElements;
-  return <Tag className="font-bold my-4">{content}</Tag>;
+  return <Tag className="font-bold container mx-auto">{content}</Tag>;
 };
