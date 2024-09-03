@@ -5,11 +5,16 @@ import { RenderFormFields } from "../CrudManager/RenderFormFields";
 import { useCrudMutations } from "../CrudManager/useCrudMutations";
 import { BlockEditorControls } from "../Editor/BlockEditorControls";
 import DaisyDrawer from "../DaisyDrawer";
-import { FiChevronLeft, FiPlus } from "react-icons/fi";
+import { FiChevronLeft } from "react-icons/fi";
 import { useNavAction } from "../useNavAction";
-import { FIELD_CONFIG } from "../Blocks/FIELD_CONFIG";
 
-export const  ContentEditor: React.FC<{
+import { FIELD_CONFIG } from "../Blocks/FIELD_CONFIG";
+import TabSelector from "../TabSelector";
+import BlockButtonGrid from "../Editor/BlockButtonGrid";
+import { CrudManagerParams } from "../CrudManager/Types";
+import { useParams } from "react-router-dom";
+
+export const ContentEditor: React.FC<{
   content: Content;
   setContent: React.Dispatch<React.SetStateAction<Content>>;
 }> = ({ content: initialContent, setContent }) => {
@@ -19,10 +24,12 @@ export const  ContentEditor: React.FC<{
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<Block | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<"content" | "form">("content");
   const { navAction } = useNavAction();
+  const { model, workspace } = useParams<CrudManagerParams>();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { updateMutation } = useCrudMutations<any>({
+  const { updateContentMutation } = useCrudMutations<any>({
     model: "content",
     setSelectedItem: () => {},
     setErrorMessage,
@@ -46,7 +53,7 @@ export const  ContentEditor: React.FC<{
     const newBlock: Block = {
       id: `${Date.now()}`,
       type,
-      data: {}, // Initialize with empty object
+      data: {}, // Initialize with an empty object
     } as Block;
 
     const newBlocks = [...initialContent[selectedTab], newBlock];
@@ -103,30 +110,26 @@ export const  ContentEditor: React.FC<{
   };
 
   const handleSaveContent = () => {
-    console.log(initialContent);
-    updateMutation.mutate({ id: "content_id", item: initialContent });
+    console.log(initialContent[selectedTab], model, workspace);
+    updateContentMutation.mutate({
+      model: "document",
+      slug: model || "",
+      slot: selectedTab,
+      content: initialContent[selectedTab],
+    });
   };
 
-  return (
+  return (  
     <DaisyDrawer
       items={
-        <div className="grid grid-cols-2 gap-md p-md">
-          {Object.keys(FIELD_CONFIG).map((blockType) => (
-            <button
-              key={blockType}
-              onClick={() => addBlock(blockType as BlockType)}
-              className="btn btn-outline font-thin text-xs"
-            >
-              <FiPlus /> {blockType.charAt(0).toUpperCase() + blockType.slice(1)}
-            </button>
-          ))}
-          <button
-            onClick={handleSaveContent}
-            className="btn btn-success col-span-2"
-          >
-            Save Content
-          </button>
-        </div>
+        <>
+          <TabSelector activeTab={activeTab} setActiveTab={setActiveTab} />
+          <BlockButtonGrid
+            activeTab={activeTab}
+            addBlock={addBlock}
+            handleSaveContent={handleSaveContent}
+          />
+        </>
       }
     >
       <>
@@ -134,14 +137,17 @@ export const  ContentEditor: React.FC<{
           <div className="btn" onClick={() => navAction("", "view")}>
             <FiChevronLeft />
           </div>
-          <div className="tabs">
+          <div className="tabs tabs-lifted">
             {Object.keys(initialContent).map((tab) => (
               <a
                 key={tab}
                 className={`tab tab-bordered ${
                   selectedTab === tab ? "tab-active" : ""
                 }`}
-                onClick={() => setSelectedTab(tab)}
+                onClick={() => {
+                  setSelectedTab(tab);
+                  navAction("", "edit-blocks", tab, "0");
+                }}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </a>
@@ -156,12 +162,15 @@ export const  ContentEditor: React.FC<{
           {initialContent[selectedTab].map((block, index) => (
             <div
               key={block.id}
-              className={`mb-4 border p-2 ${
+              className={`mb-4 border p-2 relative ${
                 selectedBlockId === block.id
-                  ? "border-base-content"
-                  : "border-base-content border-dashed border-opacity-30"
+                  ? "border-neutral"
+                  : "border-neutral-content border-dashed border-opacity-30"
               }`}
               onClick={() => setSelectedBlockId(block.id)}
+              onDoubleClick={() =>
+                document.getElementById(`modal-${block.id}`)?.click()
+              } // Open modal on double-click
             >
               {selectedBlockId === block.id && (
                 <BlockEditorControls
@@ -183,11 +192,11 @@ export const  ContentEditor: React.FC<{
                     id={`modal-${block.id}`}
                     className="modal-toggle"
                   />
-                  <div className="modal">
-                    <div className="modal-box">
+                  <div className="modal ">
+                    <div className="modal-box h-full w-92 ">
                       <h3 className="font-bold text-lg">Edit Block</h3>
                       <RenderFormFields
-                        config={FIELD_CONFIG[block.type]} // Pass the appropriate configuration
+                        config={FIELD_CONFIG[block.type].config} // Pass the appropriate configuration
                         selectedItem={selectedItem.data}
                         setSelectedItem={(data) =>
                           updateBlock(block.id, data as Block["data"])

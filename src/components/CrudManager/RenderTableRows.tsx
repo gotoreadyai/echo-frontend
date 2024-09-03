@@ -1,7 +1,7 @@
 import { format, parseISO, isValid } from "date-fns";
 import { ConfigType, FieldConfig } from "./Types";
 import { listActions } from "./ACTIONS";
-import { FiEdit3,  FiList, FiTrash2 } from "react-icons/fi";
+import { FiEdit3, FiList, FiTrash2 } from "react-icons/fi";
 
 interface RenderTableRowsProps {
   config: Record<string, FieldConfig>;
@@ -83,9 +83,9 @@ export const RenderTableRows = ({
           </button>
           {listActions?.[model] &&
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            listActions[model].map((el: any) => (
+            listActions[model].map((el: any, index: number) => (
               <button
-                key={`${el.toString()}:${model}`}
+                key={`${Object.keys(el)[0]}:${Object.values(el)[0]}:${index}`}
                 onClick={() => {
                   const [key, value] = Object.entries(el)[0];
                   console.log(key, value);
@@ -99,9 +99,9 @@ export const RenderTableRows = ({
                 }}
                 className="btn btn-outline btn-xs flex items-center"
               >
-                 {Object.keys(el)[0] === 'relation' && <FiList className="mr-1" /> }
-                 {/* {Object.keys(el)[0] === 'preview' && <FiEye className="mr-1" /> } */}
-                 {el[Object.keys(el)[0]]}
+                {Object.keys(el)[0] === 'relation' && <FiList className="mr-1" />}
+                {/* {Object.keys(el)[0] === 'preview' && <FiEye className="mr-1" />} */}
+                {el[Object.keys(el)[0]]}
               </button>
             ))}
           <button

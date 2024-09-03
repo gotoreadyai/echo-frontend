@@ -23,6 +23,7 @@ export type ThemeStore = {
     tool_calls: any;
     state: "" | "prepare_props" | "waiting" | "response" | "finish";
     propPath: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     bulked:any[]
   };
   structure: {

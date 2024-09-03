@@ -5,9 +5,7 @@ import { CrudManager } from "../CrudManager/CrudManager";
 import DaisyDrawer from "../DaisyDrawer";
 
 
-const MainDashboard: React.FC<Content> = ({ content }) => {
-  console.log(content);
-  
+const MainDashboard: React.FC<Content> = () => {
   return (
     <DaisyDrawer items={<ContextModels/>}>
       <div className="min-h-full flex flex-col gap-md">

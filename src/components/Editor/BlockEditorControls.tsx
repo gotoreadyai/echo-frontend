@@ -18,26 +18,26 @@ export const BlockEditorControls: React.FC<{
   removeBlock,
 }) => {
   return (
-    <div className="flex justify-end mb-2">
+    <div className="flex justify-end mb-2  p-1 absolute w-full -ml-2 -mt-10">
       <button
         onClick={() => moveBlockUp(index)}
-        className="btn btn-secondary mr-2 btn-sm text-xs"
+        className="btn btn-secondary mr-2 btn-xs text-xs"
       >
         Up
       </button>
       <button
         onClick={() => moveBlockDown(index)}
-        className="btn btn-secondary mr-2 btn-sm text-xs"
+        className="btn btn-secondary mr-2 btn-xs text-xs"
       >
         Down
       </button>
       <button
         onClick={() => removeBlock(block.id)}
-        className="btn btn-error mr-2 btn-sm text-xs"
+        className="btn btn-error mr-2 btn-xs text-xs"
       >
         Remove
       </button>
-      <label htmlFor={`modal-${block.id}`} className="btn btn-primary btn-sm text-xs">
+      <label htmlFor={`modal-${block.id}`} className="btn btn-primary btn-xs text-xs">
         Edit
       </label>
     </div>

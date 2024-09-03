@@ -20,6 +20,8 @@ export const ContentLoader: React.FC = () => {
   });
 
   const shouldFetchModelData = workspaceData?.workspace?.content?.withPages;
+  console.log("shouldFetchModelData", shouldFetchModelData);
+  
 
   const {
     data: modelData,

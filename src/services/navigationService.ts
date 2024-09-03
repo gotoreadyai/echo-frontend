@@ -1,10 +1,10 @@
-import {  NavigateFunction, useParams } from "react-router-dom";
+import { NavigateFunction, useParams } from "react-router-dom";
 import { CrudManagerParams } from "../components/CrudManager/Types";
 
-
+// eslint-disable-next-line react-hooks/rules-of-hooks
 const { workspace, model, related, id } = useParams<CrudManagerParams>();
 export const setAction = (
-    navigate:  NavigateFunction,
+  navigate: NavigateFunction,
   myModel: string,
   myAction: "list" | "create" | "edit",
   myRelated?: string,

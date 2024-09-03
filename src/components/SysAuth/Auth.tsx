@@ -3,7 +3,7 @@ import { FiMail, FiKey, FiLogIn, FiDownload } from "react-icons/fi";
 import { signIn, signUp } from "./../../services/authServices";
 import { useContext } from "react";
 
-import { UserContext } from "./../../UserProvider";
+import { UserContext } from "../../UserProvider";
 
 export const Auth = () => {
   const [email, setEmail] = useState("");

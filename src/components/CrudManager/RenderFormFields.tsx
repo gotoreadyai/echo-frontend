@@ -19,6 +19,8 @@ export const RenderFormFields = <
   if (!config) return null;
 
   const handleInputChange = (key: keyof T, value: T[keyof T]) => {
+    console.log(key, value);
+
     if (selectedItem) {
       setSelectedItem({
         ...selectedItem,
@@ -34,18 +36,19 @@ export const RenderFormFields = <
   ) => {
     const { type, allowNull, label, references } = fieldConfig;
     const isRequired = !allowNull;
-    const fieldLabel = label ?? (key as string);
+    const fieldLabel = label ?? String(key);
 
-    const finalValue = value !== undefined ? value : ("" as T[keyof T]); // Zapewnienie wartości domyślnej
+    // Zapewnienie domyślnej wartości dla `value`, jeśli jest `undefined` lub `null`
+    const finalValue = value !== undefined && value !== null ? value : "";
 
     if (references) {
       return {
-        id: key as string,
+        id: String(key),
         type: "formRelationInput",
         data: {
-          id: key as string,
+          id: String(key),
           label: fieldLabel,
-          value: finalValue,
+          value: String(finalValue), // Zakładając, że wartość jest stringiem
           isRequired,
           onChange: (newValue: string) =>
             handleInputChange(key, newValue as T[keyof T]),
@@ -55,12 +58,12 @@ export const RenderFormFields = <
 
     if (type === "TEXT") {
       return {
-        id: key as string,
+        id: String(key),
         type: "formTextarea",
         data: {
-          id: key as string,
+          id: String(key),
           label: fieldLabel,
-          value: finalValue,
+          value: String(finalValue), // Zakładając, że wartość jest stringiem
           isRequired,
           onChange: (newValue: string) =>
             handleInputChange(key, newValue as T[keyof T]),
@@ -70,26 +73,27 @@ export const RenderFormFields = <
 
     if (type === "JSONB") {
       return {
-        id: key as string,
+        id: String(key),
         type: "formJSONInput",
         data: {
-          id: key as string,
+          id: String(key),
           label: fieldLabel,
-          value: finalValue,
+          value: finalValue, // Zakładając, że wartość jest obiektem JSON
           isRequired,
-          onChange: (newValue: string) =>
-            handleInputChange(key, newValue as T[keyof T]),
+          onChange: (newValue: object) =>
+            handleInputChange(key, newValue as unknown as T[keyof T]),
         },
       };
     }
 
+    // Domyślnie używamy inputu tekstowego
     return {
-      id: key as string,
+      id: String(key),
       type: "formTextInput",
       data: {
-        id: key as string,
+        id: String(key),
         label: fieldLabel,
-        value: finalValue,
+        value: String(finalValue), // Konwertujemy na string, jeśli to konieczne
         isRequired,
         onChange: (newValue: string) =>
           handleInputChange(key, newValue as T[keyof T]),
@@ -107,11 +111,12 @@ export const RenderFormFields = <
       )
     );
 
+
   return (
     <>
-      {blocks.map((value) => (
-        <BlocksRenderer key={value.id} block={value as Block} />
-      ))}
+      {blocks.map((block) => {
+        return <BlocksRenderer key={block.id} block={block as Block} />;
+      })}
     </>
   );
 };

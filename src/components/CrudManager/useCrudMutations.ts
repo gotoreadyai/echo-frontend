@@ -1,9 +1,12 @@
 // components/CrudManager/useCrudMutations.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createItem, updateItem, deleteItem } from "../../services/genericService";
+import {
+  createItem,
+  updateItem,
+  deleteItem,
+  updateContentBySlug,
+} from "../../services/genericService";
 import { MutationSuccessHandler } from "./Types";
-
-
 
 interface UseCrudMutationsProps<T> {
   model: string | undefined;
@@ -28,7 +31,7 @@ export const useCrudMutations = <T extends Record<string, unknown>>({
     if (error instanceof Error) {
       setErrorMessage(`An error occurred: ${error.message}`);
     } else {
-      setErrorMessage('An unexpected error occurred.');
+      setErrorMessage("An unexpected error occurred.");
     }
   };
 
@@ -45,11 +48,32 @@ export const useCrudMutations = <T extends Record<string, unknown>>({
     onError: handleMutationError,
   });
 
+  const updateContentMutation = useMutation({
+    mutationFn: ({
+      model,
+      slug,
+      slot,
+      content,
+    }: {
+      model: string;
+      slug: string;
+      slot: string;
+      content: T;
+    }) => updateContentBySlug(model, slug,slot, content),
+    onSuccess: handleMutationSuccess,
+    onError: handleMutationError,
+  });
+
   const deleteMutation = useMutation({
     mutationFn: (id: string) => deleteItem(model || "", id),
     onSuccess: handleMutationSuccess,
     onError: handleMutationError,
   });
 
-  return { createMutation, updateMutation, deleteMutation };
+  return {
+    createMutation,
+    updateMutation,
+    deleteMutation,
+    updateContentMutation,
+  };
 };

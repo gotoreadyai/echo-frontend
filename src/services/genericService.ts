@@ -21,16 +21,14 @@ const getHeadersWithToken = (): HeadersInit => {
     ...(token && { Authorization: `Bearer ${token}` }),
   };
 };
-
 const handleResponse = async (response: Response, errorMessage: string) => {
   if (!response.ok) {
     const errorData = await response.json();
+    console.error(`###:${errorMessage}:`, errorData);
     throw new Error(JSON.stringify(errorData));
   }
-  console.log(errorMessage);
   return response.json();
 };
-
 
 export const fetchItems = async (
   resourceName: string,
@@ -44,7 +42,9 @@ export const fetchItems = async (
   if (limit) queryParams.append("limit", limit.toString());
 
   const endpoint = related
-    ? `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/${related}/${id}?${queryParams}`
+    ? `${
+        import.meta.env.VITE_API_ENDPOINT
+      }/${resourceName}/${related}/${id}?${queryParams}`
     : `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}?${queryParams}`;
 
   const response = await fetch(endpoint);
@@ -53,9 +53,14 @@ export const fetchItems = async (
 };
 
 export const fetchItemBySlug = async (resourceName: string, slug: string) => {
-  const endpoint = `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/slug/${slug}`;
+  const endpoint = `${
+    import.meta.env.VITE_API_ENDPOINT
+  }/${resourceName}/slug/${slug}`;
   const response = await fetch(endpoint);
-  return handleResponse(response, `Failed to fetch document with slug: ${slug}`);
+  return handleResponse(
+    response,
+    `Failed to fetch document with slug: ${slug}`
+  );
 };
 
 export const createItem = async (
@@ -102,7 +107,9 @@ export const updateItemBySlug = async (
 ) => {
   const singular = ModelSingular[resourceName] || "";
 
-  const endpoint = `${import.meta.env.VITE_API_ENDPOINT}/${singular}/slug/${slug}`;
+  const endpoint = `${
+    import.meta.env.VITE_API_ENDPOINT
+  }/${singular}/slug/${slug}`;
 
   const response = await fetch(endpoint, {
     method: "PUT",
@@ -110,7 +117,32 @@ export const updateItemBySlug = async (
     body: JSON.stringify(updatedItem),
   });
 
-  return handleResponse(response, `Failed to update ${resourceName} with slug: ${slug}`);
+  return handleResponse(
+    response,
+    `Failed to update ${resourceName} with slug: ${slug}`
+  );
+};
+
+export const updateContentBySlug = async (
+  resourceName: string,
+  slug: string,
+  slot: string,
+  content: Record<string, unknown>
+) => {
+  const endpoint = `${
+    import.meta.env.VITE_API_ENDPOINT
+  }/${resourceName}/slug/${slug}/content`;
+
+  const response = await fetch(endpoint, {
+    method: "PUT",
+    headers: getHeadersWithToken(),
+    body: JSON.stringify({key: slot, value: content}),
+  });
+
+  return handleResponse(
+    response,
+    `Failed to update ${resourceName} with slug: ${slug}`
+  );
 };
 
 export const deleteItem = async (resourceName: string, id: string) => {

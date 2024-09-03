@@ -64,9 +64,7 @@ export const CrudManager: React.FC = () => {
     }
   };
 
-
   const handleSave = () => {
-    
     selectedItem?.id
       ? updateMutation.mutate({
           id: selectedItem.id as string,
@@ -137,7 +135,7 @@ export const CrudManager: React.FC = () => {
         <button className="join-item btn">100</button>
       </div>
 
-      {action === "create" && (
+      {action === "create" && selectedItem &&(
         <FormModal handleClose={handleClose}>
           <RenderFormFields
             config={config}
