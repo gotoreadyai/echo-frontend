@@ -5,14 +5,32 @@ const getAuthTokenFromCookie = (): string | null => {
   const decodedCookie = decodeURIComponent(document.cookie);
   const cookieArray = decodedCookie.split(";");
 
-  for (let i = 0; i < cookieArray.length; i++) {
-    const cookie = cookieArray[i].trim(); // Use `const` instead of `let`
-    if (cookie.indexOf(name) === 0) {
-      return cookie.substring(name.length, cookie.length);
+  for (const cookie of cookieArray) {
+    const trimmedCookie = cookie.trim();
+    if (trimmedCookie.startsWith(name)) {
+      return trimmedCookie.substring(name.length);
     }
   }
   return null;
 };
+
+const getHeadersWithToken = (): HeadersInit => {
+  const token = getAuthTokenFromCookie();
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
+
+const handleResponse = async (response: Response, errorMessage: string) => {
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(JSON.stringify(errorData));
+  }
+  console.log(errorMessage);
+  return response.json();
+};
+
 
 export const fetchItems = async (
   resourceName: string,
@@ -21,66 +39,41 @@ export const fetchItems = async (
   page?: number,
   limit?: number
 ) => {
-  // Przygotowanie parametrów paginacji
   const queryParams = new URLSearchParams();
   if (page) queryParams.append("page", page.toString());
   if (limit) queryParams.append("limit", limit.toString());
 
   const endpoint = related
-    ? `${
-        import.meta.env.VITE_API_ENDPOINT
-      }/${resourceName}/${related}/${id}?${queryParams}`
+    ? `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/${related}/${id}?${queryParams}`
     : `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}?${queryParams}`;
 
   const response = await fetch(endpoint);
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch ${resourceName}`);
-  }
-
-  const result = await response.json();
-  return result;
+  return handleResponse(response, `Failed to fetch ${resourceName}`);
 };
 
 export const fetchItemBySlug = async (resourceName: string, slug: string) => {
-  const endpoint = `${
-    import.meta.env.VITE_API_ENDPOINT
-  }/${resourceName}/slug/${slug}`;
-
-  console.log(endpoint);
-  
-
+  const endpoint = `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/slug/${slug}`;
   const response = await fetch(endpoint);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch document with slug: ${slug}`);
-  }
-
-  const result = await response.json();
-  return result;
+  return handleResponse(response, `Failed to fetch document with slug: ${slug}`);
 };
 
 export const createItem = async (
   resourceName: string,
   newItem: Record<string, unknown>
 ) => {
-  const singular: string = ModelSingular[resourceName] || "";
-  const token = getAuthTokenFromCookie();
+  const singular = ModelSingular[resourceName] || "";
+
   const response = await fetch(
     `${import.meta.env.VITE_API_ENDPOINT}/${singular}`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: getHeadersWithToken(),
       body: JSON.stringify(newItem),
     }
   );
-  if (!response.ok || singular === "") {
-    throw new Error(`Failed to create ${resourceName}`);
-  }
-  return response.json();
+
+  return handleResponse(response, `Failed to create ${resourceName}`);
 };
 
 export const updateItem = async (
@@ -88,40 +81,48 @@ export const updateItem = async (
   id: string,
   updatedItem: Record<string, unknown>
 ) => {
-  const singular: string = ModelSingular[resourceName] || "";
-  const token = getAuthTokenFromCookie();
+  const singular = ModelSingular[resourceName] || "";
+
   const response = await fetch(
     `${import.meta.env.VITE_API_ENDPOINT}/${singular}/${id}`,
     {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: getHeadersWithToken(),
       body: JSON.stringify(updatedItem),
     }
   );
-  if (!response.ok) {
-    throw new Error(`Failed to update ${resourceName}`);
-  }
-  return response.json();
+
+  return handleResponse(response, `Failed to update ${resourceName}`);
+};
+
+export const updateItemBySlug = async (
+  resourceName: string,
+  slug: string,
+  updatedItem: Record<string, unknown>
+) => {
+  const singular = ModelSingular[resourceName] || "";
+
+  const endpoint = `${import.meta.env.VITE_API_ENDPOINT}/${singular}/slug/${slug}`;
+
+  const response = await fetch(endpoint, {
+    method: "PUT",
+    headers: getHeadersWithToken(),
+    body: JSON.stringify(updatedItem),
+  });
+
+  return handleResponse(response, `Failed to update ${resourceName} with slug: ${slug}`);
 };
 
 export const deleteItem = async (resourceName: string, id: string) => {
-  const singular: string = ModelSingular[resourceName] || "";
-  const token = getAuthTokenFromCookie();
+  const singular = ModelSingular[resourceName] || "";
+
   const response = await fetch(
     `${import.meta.env.VITE_API_ENDPOINT}/${singular}/${id}`,
     {
       method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: getHeadersWithToken(),
     }
   );
-  if (!response.ok || singular === "") {
-    throw new Error(`Failed to delete ${resourceName}`);
-  }
-  return response.json();
+
+  return handleResponse(response, `Failed to delete ${resourceName}`);
 };

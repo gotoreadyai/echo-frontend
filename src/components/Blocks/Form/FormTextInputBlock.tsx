@@ -1,6 +1,6 @@
 import React from "react";
 
-interface FormRelationInputBlockProps {
+interface FormTextInputBlockProps {
   id: string;
   label: string;
   value: string;
@@ -8,14 +8,14 @@ interface FormRelationInputBlockProps {
   isRequired: boolean;
 }
 
-const FormRelationInputBlock: React.FC<FormRelationInputBlockProps> = ({
+const FormTextInputBlock: React.FC<FormTextInputBlockProps> = ({
   id,
   label,
   value,
   onChange,
   isRequired,
 }) => (
-  <div className="mb-4">
+  <div className="mb-4 container mx-auto">
     <label htmlFor={id} className="block text-gray-700 text-sm font-bold mb-2">
       {label} {isRequired && <span className="text-red-500">*</span>}
     </label>
@@ -32,4 +32,4 @@ const FormRelationInputBlock: React.FC<FormRelationInputBlockProps> = ({
   </div>
 );
 
-export default FormRelationInputBlock;
+export default FormTextInputBlock;

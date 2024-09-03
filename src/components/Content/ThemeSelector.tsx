@@ -17,9 +17,11 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({
     "aqua",
     "retro",
     "cyberpunk",
+    "pastel",
+    "nord"
   ];
   return (
-    <div className="join join-horizontal mx-md">
+    <div className="join join-vertical mx-md w-full">
       {themes.map((themeName) => (
         <input
           key={themeName}

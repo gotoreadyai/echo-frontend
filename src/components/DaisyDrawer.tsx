@@ -12,6 +12,8 @@ const DaisyDrawer: React.FC<FormProps> = ({ children, items }) => {
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
+
+      {/* <!-- MAIN CONTENT DRAWER --> */}
       <div className="drawer-content p-md">
         <label
           htmlFor="my-drawer-2"
@@ -19,9 +21,10 @@ const DaisyDrawer: React.FC<FormProps> = ({ children, items }) => {
         >
           <FiMenu />
         </label>
-
         {children}
       </div>
+
+      {/* <!-- SIDE DRAWER --> */}
       <div className="drawer-side shadow-xl">
         <label
           htmlFor="my-drawer-2"

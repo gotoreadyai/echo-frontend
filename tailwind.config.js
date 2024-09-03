@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "selector",
@@ -6,20 +7,20 @@ export default {
     extend: {
       padding: {
         md: "1rem",
-        sm: "0.5rem",
+        sm: "0.6rem",
       },
       margin: {
         md: "1rem",
-        sm: "0.5rem",
+        sm: "0.6rem",
       },
       gap: {
         md: "1rem",
-        sm: "0.5rem",
+        sm: "0.6rem",
       },
     },
   },
   daisyui: {
-    themes: ["light", "dark", "cupcake", "aqua", "retro", "cyberpunk"],
+    themes: ["light", "dark", "cupcake", "aqua", "retro", "cyberpunk","pastel","nord"],
   },
   plugins: [
     // eslint-disable-next-line no-undef

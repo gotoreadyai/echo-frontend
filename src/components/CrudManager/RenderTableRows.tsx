@@ -1,7 +1,7 @@
 import { format, parseISO, isValid } from "date-fns";
 import { ConfigType, FieldConfig } from "./Types";
-import { listRelations } from "./RELATIONS";
-import { FiEdit3, FiList, FiTrash2 } from "react-icons/fi";
+import { listActions } from "./ACTIONS";
+import { FiEdit3,  FiList, FiTrash2 } from "react-icons/fi";
 
 interface RenderTableRowsProps {
   config: Record<string, FieldConfig>;
@@ -39,6 +39,7 @@ export const RenderTableRows = ({
     const date = parseISO(dateString);
     return isValid(date) ? format(date, "yyyy-MM-dd / HH:mm") : dateString;
   };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getCellValue = (item: Record<string, any>, key: string) => {
     const value = item[key];
@@ -67,48 +68,56 @@ export const RenderTableRows = ({
       <tr key={item.id || Math.random()}>
         {Object.keys(config as ConfigType).map((key) => (
           <td
-            className="whitespace-nowrap text-ellipsis max-w-px overflow-hidden"
+            className="whitespace-nowrap text-ellipsis max-w-px overflow-hidden text-left p-2"
             key={key}
           >
             {getCellValue(item, key)}
           </td>
         ))}
-        <td key={`last`} className="gap-1 flex w-full justify-end">
+        <td key={`last`} className="flex justify-end space-x-2 p-2">
           <button
-            className="btn btn-info btn-xs"
+            className="btn btn-info btn-xs flex items-center"
             onClick={() => handleSelect(item)}
           >
-           <FiEdit3 /> Edit
+            <FiEdit3 className="mr-1" /> Edit
           </button>
-          {listRelations?.[model] &&
+          {listActions?.[model] &&
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            listRelations[model].map((el: any) => (
+            listActions[model].map((el: any) => (
               <button
-                key={`${el}:${model}`}
+                key={`${el.toString()}:${model}`}
                 onClick={() => {
-                  handleRelation({
-                    ...item,
-                    _relatedFrom: el,
-                    _relatedTo: model,
-                  });
+                  const [key, value] = Object.entries(el)[0];
+                  console.log(key, value);
+                  if (key === 'relation') {
+                    handleRelation({
+                      ...item,
+                      _relatedFrom: value,
+                      _relatedTo: model,
+                    });
+                  }
                 }}
-                className="btn btn-outline btn-xs"
+                className="btn btn-outline btn-xs flex items-center"
               >
-               <FiList /> {el}
+                 {Object.keys(el)[0] === 'relation' && <FiList className="mr-1" /> }
+                 {/* {Object.keys(el)[0] === 'preview' && <FiEye className="mr-1" /> } */}
+                 {el[Object.keys(el)[0]]}
               </button>
             ))}
           <button
-            className="btn btn-error btn-xs"
+            className="btn btn-error btn-xs flex items-center"
             onClick={() => handleDelete(item.id)}
           >
-            <FiTrash2 /> Delete
+            <FiTrash2 className="mr-1" /> Delete
           </button>
         </td>
       </tr>
     ))
   ) : (
-    <tr className="p-md text-base-content bg-base-200 flex-1">
-      <td colSpan={Object.keys(config).length + 1}>no items</td>
+    <tr className="p-md text-base-content bg-base-200">
+      <td colSpan={Object.keys(config).length + 1} className="text-center p-2">
+        No items
+      </td>
     </tr>
   );
 };

@@ -1,16 +1,17 @@
-
 import { CrudManager } from "../CrudManager/CrudManager";
-import FormJSONInputBlock from "./FormJSONInputBlock";
-import FormRelationInputBlock from "./FormRelationInputBlock";
-import FormSelectInputBlock from "./FormSelectInputBlock";
-import FormTextareaBlock from "./FormTextareaInputBlock";
-import FormTextInputBlock from "./FormTextInputBlock";
-import { HeadingBlock, HeadingBlockT } from "./HeadingBlock";
-import { ImageBlock, ImageBlockT } from "./ImageBlock";
-import { ListBlock, ListBlockT } from "./ListBlock";
-import { QuoteBlock, QuoteBlockT } from "./QuoteBlock";
-import { TextBlock, TextBlockT } from "./TextBlock";
+import FormJSONInputBlock from "./Form/FormJSONInputBlock";
+import FormRelationInputBlock from "./Form/FormRelationInputBlock";
+import FormSelectInputBlock from "./Form/FormSelectInputBlock";
+import FormTextareaBlock from "./Form/FormTextareaInputBlock";
+import FormTextInputBlock from "./Form/FormTextInputBlock";
+import { HeadingBlock, HeadingBlockT } from "./Content/HeadingBlock";
+import { ImageBlock, ImageBlockT } from "./Content/ImageBlock";
+import { ListBlock, ListBlockT } from "./Content/ListBlock";
+import { QuoteBlock, QuoteBlockT } from "./Content/QuoteBlock";
+import { TextBlock, TextBlockT } from "./Content/TextBlock";
 import { Block } from "./Types";
+import { LinkBlock, LinkBlockT } from "./Content/LinkBlock";
+import { FormButtonBlock, FormButtonBlockT } from "./Form/FormButtonBlock";
 
 export const BlocksRenderer: React.FC<{ block: Block }> = ({ block }) => {
   const renderBlock = (block: Block) => {
@@ -47,7 +48,9 @@ export const BlocksRenderer: React.FC<{ block: Block }> = ({ block }) => {
             label={(block.data as { label: string }).label}
             value={(block.data as { value: object }).value}
             isRequired={(block.data as { isRequired: boolean }).isRequired}
-            onChange={(block.data as { onChange: (value: object) => void }).onChange}
+            onChange={
+              (block.data as { onChange: (value: object) => void }).onChange
+            }
           />
         );
       case "formSelectInput":
@@ -109,6 +112,21 @@ export const BlocksRenderer: React.FC<{ block: Block }> = ({ block }) => {
           <ListBlock
             items={(block.data as ListBlockT).items}
             ordered={(block.data as ListBlockT).ordered}
+          />
+        );
+      case "link": // Dodanie obsługi bloku Link
+        return (
+          <LinkBlock
+            to={(block.data as LinkBlockT).to}
+            text={(block.data as LinkBlockT).text}
+            target={(block.data as LinkBlockT).target}
+          />
+        );
+      case "formButton": // Dodanie obsługi bloku Button
+        return (
+          <FormButtonBlock
+            title={(block.data as FormButtonBlockT).title}
+            onClick={(block.data as FormButtonBlockT).onClick}
           />
         );
 

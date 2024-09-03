@@ -7,7 +7,7 @@ export const useNavAction = () => {
 
   const navAction = (
     myModel: string,
-    myAction: 'list' | 'create' | 'edit' | 'edit-blocks',
+    myAction: 'view' | 'list' | 'create' | 'edit' | 'edit-blocks',
     myRelated?: string,
     myId?: string
   ): void => {
