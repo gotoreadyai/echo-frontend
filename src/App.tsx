@@ -1,21 +1,38 @@
-import { ReactQueryProvider } from "./QueryClientProvider";
-import { UserProvider } from "./UserProvider";
-import ContentRoute from "./components/Content/ContentRoute";
-import { ThemeProvider } from "./ThemeProvider";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-function App() {
+import { ThemeProvider } from "./providers/ThemeProvider";
+
+import { ReactQueryProvider } from "./providers/QueryClientProvider";
+import { UserProvider } from "./providers/UserProvider";
+import LayoutRenderer from "./components/LayoutRenderer";
+const App: React.FC = () => {
   return (
     <ThemeProvider>
-      <div className="transition-colors flex flex-col min-h-screen">
+      <UserProvider>
         <ReactQueryProvider>
-          <UserProvider>
-            <ContentRoute />
-          </UserProvider>
+          <Router>
+            <Routes>
+              {/* Przekierowanie do edycji jako domyślna trasa */}
+              <Route
+                path="/"
+                element={<Navigate to="/dashboard/documents/edit-document/" replace />}
+              />
+              <Route path="/:workspace/:slug" element={<LayoutRenderer />} />
+              <Route
+                path="/:workspace/:slug/:action"
+                element={<LayoutRenderer />}
+              />
+            </Routes>
+          </Router>
         </ReactQueryProvider>
-        <div className="flex-1"></div>
-      </div>
+      </UserProvider>
     </ThemeProvider>
   );
-}
+};
 
 export default App;

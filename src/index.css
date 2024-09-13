@@ -18,4 +18,16 @@
     font-family: "Pixel";
     src: local("Pixel"), url("/pixel.ttf") format("truetype");
   }
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter_18pt-Regular.woff2") format("woff2");
+    font-weight: 400;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: "Inter";
+    src: url("/fonts/Inter_18pt-ExtraBold.woff2") format("woff2");
+    font-weight: 900;
+    font-style: extrabold;
+  }
 }

@@ -1,0 +1,1 @@
+import{j as s}from"./react-ByP4G4OI.js";import"./ajv-Dq24E4CF.js";import"./fast-deep-equal-BfsdOM8n.js";import"./json-schema-traverse-CSPPDTu_.js";import"./fast-uri-DB0GTO5Q.js";const a=({text:a,className:e})=>s.jsx("h1",{className:`${e||""}`,children:a||"Default Header"});export{a as Header,a as default};

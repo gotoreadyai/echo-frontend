@@ -1,0 +1,1 @@
+import{l as r}from"./validate.io-array-K7AlgBFX.js";import{l as a}from"./validate.io-integer-Dqa_6kz1.js";var t=r,i=a;var e=function(r){var a;if(!t(r))return!1;if(!(a=r.length))return!1;for(var e=0;e<a;e++)if(!i(r[e]))return!1;return!0};export{e as l};
