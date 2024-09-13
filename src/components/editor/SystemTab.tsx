@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { FiHome, FiPackage, FiSun, FiUser } from "react-icons/fi";
+import { FiCheck, FiHome, FiPackage, FiSun, FiUser } from "react-icons/fi";
 import { useTheme } from "../../providers/ThemeProvider";
 import ThemeSelector from "../daisy/ThemeSelector";
 import PreviewSwitch from "./PreviewSwitch";
@@ -46,8 +46,16 @@ const SystemTab = () => {
 
       {/* Conditionally render the message from globalStore */}
       {mainMessage.message && (
-        <div className={`text-${mainMessage.type} grid px-md items-center justify-center`}>
-          {mainMessage.message}
+        <div
+          className={`${
+            mainMessage.type === "success"
+              ? "text-success bg-success"
+              : mainMessage.type === "error"
+              ? "text-error bg-error"
+              : "text-content"
+          } flex px-sm items-center justify-center gap-xs bg-opacity-5`}
+        >
+         <FiCheck /> {mainMessage.message}
         </div>
       )}
 
