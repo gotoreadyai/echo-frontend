@@ -1,0 +1,1 @@
+import{j as a}from"./react-oZDKVO_S.js";import"./ajv-Dq24E4CF.js";import"./fast-deep-equal-BfsdOM8n.js";import"./json-schema-traverse-CSPPDTu_.js";import"./fast-uri-DB0GTO5Q.js";const t=({text:t,className:s})=>a.jsx("p",{className:`${s} container mx-auto`||"",children:t||"Default paragraph text."});export{t as Paragraph,t as default};

@@ -1,1 +1,0 @@
-import{j as r}from"./react-ByP4G4OI.js";import"./ajv-Dq24E4CF.js";import"./fast-deep-equal-BfsdOM8n.js";import"./json-schema-traverse-CSPPDTu_.js";import"./fast-uri-DB0GTO5Q.js";const e=e=>r.jsxs("div",{children:[r.jsx("header",{children:e.header}),r.jsx("br",{}),r.jsx("section",{children:e.primaryContent}),r.jsx("footer",{children:e.footer})]});export{e as default};

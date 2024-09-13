@@ -1,0 +1,1 @@
+import{j as s}from"./react-oZDKVO_S.js";import"./ajv-Dq24E4CF.js";import"./fast-deep-equal-BfsdOM8n.js";import"./json-schema-traverse-CSPPDTu_.js";import"./fast-uri-DB0GTO5Q.js";const a=({className:a})=>s.jsx("div",{className:`${a||""} container mx-auto`,children:s.jsx("img",{src:"/logo.svg",alt:"logo"})});export{a as Logo,a as default};

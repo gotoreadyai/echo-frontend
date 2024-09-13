@@ -1,0 +1,1 @@
+import{r as s,j as t}from"./react-oZDKVO_S.js";import"./ajv-Dq24E4CF.js";import"./fast-deep-equal-BfsdOM8n.js";import"./json-schema-traverse-CSPPDTu_.js";import"./fast-uri-DB0GTO5Q.js";const e=({scope:e})=>(s.useEffect((()=>{(async()=>{})()}),[]),t.jsx(t.Fragment,{children:"AlertAction"}));export{e as default};
