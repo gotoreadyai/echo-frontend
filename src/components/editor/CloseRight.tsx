@@ -1,18 +1,21 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FiX } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
-// Import the useTheme hook
+interface CloseRightProps {
+  callback: () => void;
+  label: string;
+}
 
-const CloseRight = ({ callback, label }: any) => {
+const CloseRight: React.FC<CloseRightProps> = ({ callback, label }) => {
   const navigate = useNavigate();
+
   const handleDeselectBlock = () => {
     callback();
-    const params = new URLSearchParams(location.search);
+    const params = new URLSearchParams(window.location.search);
     params.delete("rightbar");
 
     navigate({
-      pathname: location.pathname,
+      pathname: window.location.pathname,
       search: params.toString(),
     });
   };
@@ -22,6 +25,7 @@ const CloseRight = ({ callback, label }: any) => {
       <button
         className="btn btn-circle btn-outline btn-xs"
         onClick={handleDeselectBlock}
+        aria-label="Zamknij"
       >
         <FiX />
       </button>
@@ -31,4 +35,5 @@ const CloseRight = ({ callback, label }: any) => {
     </div>
   );
 };
+
 export default CloseRight;

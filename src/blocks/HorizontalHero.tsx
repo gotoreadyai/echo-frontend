@@ -21,9 +21,9 @@ export const HorizontalHero: React.FC<{ text: string; className?: string }> = ({
       </div>
 
       <div className="flex-1 relative mt-10 lg:mt-0">
-        <div className="mockup-browser border-base-300 border w-2/3 -mt-16">
+        <div className="mockup-browser border-base-300 border w-2/3 -mt-16 bg-base-300">
           <div className="mockup-browser-toolbar">
-            <div className="input border-base-300 border">
+            <div className="input border-base-300 border bg-base-100">
               https://smartstart.com
             </div>
           </div>
@@ -35,7 +35,7 @@ export const HorizontalHero: React.FC<{ text: string; className?: string }> = ({
           </div>
         </div>
 
-        <div className="mockup-browser border-base-300 border absolute -bottom-12 right-0 w-1/2  bg-base-200">
+        <div className="mockup-browser border-base-300 border absolute -bottom-12 right-0 w-1/2  bg-base-300">
           <div className="mockup-browser-toolbar ">
             <div className="input border-base-300 border">
               https://smartstart.com

@@ -31,6 +31,16 @@ export default {
         bold: 700,
         extrabold: 900,
       },
+      keyframes: {
+        wave: {        
+          "25%": { opacity: ".75" },
+          "100%": { opacity: "1" },
+          
+        },
+      },
+      animation: {
+        "init-pulse": "wave 0.5s cubic-bezier(0.4, 0, 0.6, 1)",
+      },
     },
   },
   daisyui: {

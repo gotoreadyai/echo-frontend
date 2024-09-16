@@ -1,20 +1,19 @@
-import { FiPower } from "react-icons/fi";
-import { actionsListSchemaPart } from "../data/schemaParts";
+  import { FiPower } from "react-icons/fi";
+  import { actionsListSchemaPart } from "../data/schemaParts";
 
-export const ActionBlockSchema = {
-  id: "query",
-  filename: "ActionBlock",
-  jsonSchema: {
-    title: "Initial actions block",
-    properties: {
-      scope: { type: "string", label: "Scope" },
-      actions: actionsListSchemaPart,
-
+  export const ActionBlockSchema = {
+    id: "query",
+    filename: "ActionBlock",
+    jsonSchema: {
+      title: "Initial actions block",
+      properties: {
+        
+        actions: actionsListSchemaPart,
+      },
     },
-  },
-  icon: FiPower,
-  group: "data",
-  data: {},
-};
+    icon: FiPower,
+    group: "data",
+    data: {},
+  };
 
-export default ActionBlockSchema;
+  export default ActionBlockSchema;

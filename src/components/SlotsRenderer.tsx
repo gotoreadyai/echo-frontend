@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC } from "react";
+// src/components/SlotsRenderer.tsx
+import React, { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
+import { Block } from "../types/types";
 
 interface SlotsRendererProps {
-  slots: Record<string, any>;
+  slots: Record<string, Block[]>;
   slotName: string;
 }
 
@@ -14,7 +15,7 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
 
   return (
     <>
-      {slots[slotName].map((block: any) => (
+      {slots[slotName].map((block: Block) => (
         <div key={block.id} className="block-wrapper">
           <BlockRenderer block={block} />
         </div>

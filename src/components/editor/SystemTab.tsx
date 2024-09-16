@@ -1,36 +1,47 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { FiCheck, FiHome, FiPackage, FiSun, FiUser } from "react-icons/fi";
+import {
+  FiAlertOctagon,
+  FiCheck,
+  FiHome,
+  FiPackage,
+  FiSun,
+  FiUser,
+} from "react-icons/fi";
 import { useTheme } from "../../providers/ThemeProvider";
-import ThemeSelector from "../daisy/ThemeSelector";
 import PreviewSwitch from "./PreviewSwitch";
-import { useGlobalStore } from "../../stores/globalStore"; // Import globalStore
+import { useGlobalStore } from "../../stores/globalStore";
+import ThemeSelector from "../uikit/ThemeSelector";
+import { notifyText } from "../../utils/actions";
 
 const SystemTab = () => {
-  const { theme, updateTheme } = useTheme(); // Access theme and updateTheme from the context
+  const { theme, updateTheme } = useTheme();
   const navigate = useNavigate();
-  const location = useLocation(); // Get current location to access existing search params
+  const location = useLocation();
 
   const { mainMessage } = useGlobalStore((state) => ({
     mainMessage: state.mainMessage,
-  })); // Access mainMessage from globalStore
+  }));
 
-  const handleThemeChange = (event: { target: { value: string } }) => {
+  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateTheme(event.target.value);
   };
 
-  // Navigate with rightbar query parameter without losing other search params
   const handleRightbarClick = (value: string) => {
     const searchParams = new URLSearchParams(location.search);
-    searchParams.set("rightbar", value); // Set or update the rightbar param
+    searchParams.set("rightbar", value);
     navigate({
-      pathname: location.pathname, // Keep the same path
-      search: searchParams.toString(), // Preserve and update search params
+      pathname: location.pathname,
+      search: searchParams.toString(),
     });
   };
 
   return (
     <div className="sticky top-0 p-sm px-md bg-base-300 text-xs z-20 flex gap-0.5 w-full border-b border-base-300 shadow-lg">
-      <button className="btn btn-sm btn-square" onClick={() => navigate("/")}>
+      <button
+        className="btn btn-sm btn-square"
+        onClick={() => navigate("/")}
+        aria-label="Strona główna"
+      >
         <FiHome />
       </button>
       <PreviewSwitch />
@@ -44,18 +55,16 @@ const SystemTab = () => {
         </div>
       </div>
 
-      {/* Conditionally render the message from globalStore */}
       {mainMessage.message && (
         <div
-          className={`${
-            mainMessage.type === "success"
-              ? "text-success bg-success"
-              : mainMessage.type === "error"
-              ? "text-error bg-error"
-              : "text-content"
-          } flex px-sm items-center justify-center gap-xs bg-opacity-5`}
+          className={`${notifyText(
+            mainMessage.type
+          )} flex px-sm items-center justify-center gap-sm bg-neutral rounded animate-init-pulse text-xs`}
         >
-         <FiCheck /> {mainMessage.message}
+          {mainMessage.type === "error" && (
+            <FiAlertOctagon className="text-base" />
+          )}{" "}
+          {mainMessage.type === "success" && <FiCheck />} {mainMessage.message}
         </div>
       )}
 
@@ -64,6 +73,7 @@ const SystemTab = () => {
       <button
         className="btn btn-sm btn-square"
         onClick={() => handleRightbarClick("workspaces")}
+        aria-label="Workspaces"
       >
         <FiPackage />
       </button>
@@ -71,10 +81,12 @@ const SystemTab = () => {
       <button
         className="btn btn-sm btn-square"
         onClick={() => handleRightbarClick("user")}
+        aria-label="Użytkownik"
       >
         <FiUser />
       </button>
     </div>
   );
 };
+
 export default SystemTab;

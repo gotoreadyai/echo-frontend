@@ -6,6 +6,11 @@ import { usePageStore } from "../stores/pageStore";
 const InsertAction: React.FC = ({scope}:any) => {
   const pageData = usePageStore((state) => state.pageData);
   const handleAction = async () => {
+    if (!scope || !pageData[scope]) {
+      alert("Scope is undefined or invalid.");
+      return;
+    }
+  
     try {
       const result = await createItem("workspaces", {
         title: pageData[scope].title,
@@ -16,7 +21,6 @@ const InsertAction: React.FC = ({scope}:any) => {
           },
         },
       });
-
       console.log("Sign In successful:", result);
     } catch (error) {
       alert(error);

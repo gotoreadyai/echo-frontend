@@ -1,28 +1,36 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// src/components/BlockRenderer.tsx
 import React, { useState, useEffect } from "react";
 import { blockComponents } from "../data/blocksData";
 import { useBlockStore } from "../stores/blockStore";
+import { Block } from "../types/types";
 
-const BlockRenderer: React.FC<{ block: any }> = ({ block }) => {
-  const [Component, setComponent] = useState<React.FC | null>(null);
+interface BlockRendererProps {
+  block: Block;
+}
+
+const BlockRenderer: React.FC<BlockRendererProps> = ({ block }) => {
+  const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
   const isEditing = useBlockStore((state) => state.isEditing);
 
   useEffect(() => {
     const loadComponent = async () => {
-      const componentLoader =
-        blockComponents[`../blocks/${block.filename}.tsx`];
-      if (componentLoader) {
-        const mod: any = await componentLoader();
-        setComponent(() => mod.default);
-      } else {
-        console.error(`Component not found for block: ${block.filename}`);
+      try {
+        const componentLoader =
+          blockComponents[`../blocks/${block.filename}.tsx`];
+        if (componentLoader) {
+          const mod = await componentLoader() as { default: React.FC<Block> };
+          setComponent(() => mod.default);
+        } else {
+          console.error(`Component not found for block: ${block.filename}`);
+        }
+      } catch (error) {
+        console.error(`Error loading component for block: ${block.filename}`, error);
       }
     };
     loadComponent();
   }, [block.filename]);
 
-  if (!Component) return <></>;
+  if (!Component) return null;
 
   return (
     <div className={isEditing ? "" : ""}>

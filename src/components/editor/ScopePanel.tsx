@@ -1,60 +1,116 @@
-import React, { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useEffect } from "react";
 import JSONBlock from "./JSONBlock";
 import { usePageStore } from "../../stores/pageStore";
 import { useBlockStore } from "../../stores/blockStore";
-import { useGlobalStore } from "../../stores/globalStore"; // Import globalStore hook
+import { useGlobalStore } from "../../stores/globalStore";
+import { FiSave } from "react-icons/fi";
+import { useParams } from "react-router-dom";
+import { useCrudMutations } from "../../hooks/useCrudMutations";
+import { PathParams } from "../../types/types";
 
 const ScopePanel: React.FC = () => {
-  // State to manage the active tab
-  const [activeTab, setActiveTab] = useState<'initialScope' | 'actualScope' | 'slotsPreview' | 'globalScope'>('initialScope');
+  const [activeTab, setActiveTab] = useState<
+    "initialScope" | "actualScope" | "slotsPreview" | "globalScope"
+  >("initialScope");
 
-  // Fetch data from pageStore, blockStore, and globalStore
+  const [editedValue, setEditedValue] = useState<object>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
   const initialScope = usePageStore((state) => state.initialScope);
   const pageData = usePageStore((state) => state.pageData);
   const slots = useBlockStore((state) => state.slots);
   const globalScope = useGlobalStore((state) => state.globalScope());
 
-  const handleChange = (value: object) => {
-    console.log(value); // Implement logic for updating if necessary
-  };
+  const setMainMessage = useGlobalStore((state) => state.setMainMessage);
+
+  const { workspace } = useParams<PathParams>();
+
+  const { updateContentMutation } = useCrudMutations<any>({
+    model: "content",
+    setSelectedItem: () => {},
+    setErrorMessage,
+  });
 
   // Determine the value to display based on the active tab
-  let jsonValue;
-  if (activeTab === 'initialScope') {
+  let jsonValue: object | null = null;
+  let isReadOnly = false; // Default is false
+
+  if (activeTab === "initialScope") {
     jsonValue = initialScope;
-  } else if (activeTab === 'actualScope') {
+  } else if (activeTab === "actualScope") {
     jsonValue = pageData;
-  } else if (activeTab === 'slotsPreview') {
+    isReadOnly = true; // Make actualScope read-only
+  } else if (activeTab === "slotsPreview") {
     jsonValue = slots;
-  } else if (activeTab === 'globalScope') {
+  } else if (activeTab === "globalScope") {
     jsonValue = globalScope;
+    isReadOnly = true; // Make globalScope read-only
   }
+
+  // Update editedValue when jsonValue changes
+  useEffect(() => {
+    setEditedValue(jsonValue || {});
+  }, [jsonValue]);
+
+  const handleChange = (value: object) => {
+    setEditedValue(value);
+  };
+
+  const handleSave = () => {
+    const resolvedWorkspace = workspace;
+    if (!resolvedWorkspace) {
+      setErrorMessage("Workspace is undefined. Cannot save content.");
+      setMainMessage("Workspace is undefined. Cannot save content.", "error");
+      return;
+    }
+
+    updateContentMutation.mutate(
+      {
+        model: "workspace", // Save to the 'workspace' model
+        slug: resolvedWorkspace, // Use 'workspace' as the slug
+        slot: "_pageData",
+        content: editedValue,
+      },
+      {
+        onSuccess: () => {
+          setMainMessage("Initial scope saved successfully!", "success");
+          setErrorMessage(null); // Clear any previous errors
+        },
+        onError: (error: any) => {
+          const errorMsg = error?.message || "An error occurred.";
+          setErrorMessage(errorMsg);
+          setMainMessage(`Failed to save initial scope: ${errorMsg}`, "error");
+        },
+      }
+    );
+  };
 
   return (
     <div className="w-full sticky top-16">
       {/* Tabs to switch between scopes */}
       <div className="tabs tabs-lifted border-b border-base-200 mt-sm">
         <button
-          className={`tab ${activeTab === 'initialScope' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('initialScope')}
+          className={`tab ${activeTab === "initialScope" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("initialScope")}
         >
           Initial Scope
         </button>
         <button
-          className={`tab ${activeTab === 'actualScope' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('actualScope')}
+          className={`tab ${activeTab === "actualScope" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("actualScope")}
         >
           Actual Scope
         </button>
         <button
-          className={`tab ${activeTab === 'slotsPreview' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('slotsPreview')}
+          className={`tab ${activeTab === "slotsPreview" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("slotsPreview")}
         >
           Slots Preview
         </button>
         <button
-          className={`tab ${activeTab === 'globalScope' ? 'tab-active' : ''}`}
-          onClick={() => setActiveTab('globalScope')}
+          className={`tab ${activeTab === "globalScope" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("globalScope")}
         >
           Global Scope
         </button>
@@ -64,24 +120,38 @@ const ScopePanel: React.FC = () => {
       <JSONBlock
         id="json-block-id"
         label={
-          activeTab === 'initialScope'
+          activeTab === "initialScope"
             ? "Page scope range"
-            : activeTab === 'actualScope'
+            : activeTab === "actualScope"
             ? "Actual page scope"
-            : activeTab === 'slotsPreview'
+            : activeTab === "slotsPreview"
             ? "Slots Preview"
             : "Global Scope"
         }
-        value={jsonValue || {}} // Load data based on the active tab
+        value={editedValue}
         isRequired={true}
+        isReadOnly={isReadOnly}
         onChange={handleChange}
       />
 
-      <div className="p-sm">
-        <button className="btn btn-success btn-outline w-full">
-          Update page scope
-        </button>
-      </div>
+      {/* Display error message if it exists */}
+      {errorMessage && (
+        <div className="bg-error text-white p-2 my-2 rounded">
+          {errorMessage}
+        </div>
+      )}
+
+      {/* Render the button only for Initial Scope tab */}
+      {activeTab === "initialScope" && (
+        <div className="p-sm">
+          <button
+            onClick={handleSave}
+            className="btn btn-success btn-outline w-full"
+          >
+            <FiSave /> Update initial scope
+          </button>
+        </div>
+      )}
     </div>
   );
 };

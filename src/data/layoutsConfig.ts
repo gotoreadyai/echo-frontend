@@ -11,7 +11,7 @@ export const layoutsConfig: Record<string, LayoutConfig> = {
   layout2: {
     id: "layout2",
     component: React.lazy(() => import("../layouts/Layout2")),
-    slots: ["header", "primaryContent", "footer"], // Zdefiniowane sloty
+    slots: ["header", "primaryContent", "secondaryContent", "footer"], // Zdefiniowane sloty
     parentSlots: ["header", "footer"],
   },
 };

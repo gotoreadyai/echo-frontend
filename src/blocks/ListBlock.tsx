@@ -15,11 +15,7 @@ interface ListBlockProps {
 const ListBlock: React.FC<ListBlockProps> = ({ path, repeater, className }) => {
   // Pobierz dane z pageStore za pomocą ścieżki
   const listData =
-    usePageStore((state) => {
-      const data = getGetterByPath(path)(state.pageData);
-      console.log(`Dane pod ścieżką ${path}:`, data); // Logowanie pobranych danych
-      return data;
-    }) || [];
+    usePageStore((state) => getGetterByPath(path)(state.pageData)) || [];
 
   // Sprawdź, czy ścieżka jest prawidłowa
   if (!path) {
@@ -34,15 +30,17 @@ const ListBlock: React.FC<ListBlockProps> = ({ path, repeater, className }) => {
   }
 
   return (
-    <div className={`flex flex-col gap-sm ${className}`}>
+    <div className={`container m-auto p-md flex flex-col gap-sm ${className}`}>
       {listData.map((item, index) => (
-        <div className="card bg-base-100 p-sm shadow-xl" key={index}>
-          {repeater.map(({ label, key }) => (
-            <div key={key}>
-              <strong>{label}: </strong>
-              <div>{item[key] ?? "Brak danych"}</div>
-            </div>
-          ))}
+        <div className="card bg-base-100 p-sm shadow-xl " key={index}>
+          <div className="flex gap-md">
+            {repeater.map(({ label, key }) => (
+              <div key={key} className="flex-1">
+                <strong>{label}: </strong>
+                <div>{item[key] ?? "Brak danych"}</div>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>

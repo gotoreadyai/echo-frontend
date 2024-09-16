@@ -25,10 +25,28 @@ export const backgroundSchemaPart: any = {
 
 export const actionsListSchemaPart: any = {
   type: "array",
-  title: "Avilable actions",
+  title: "Available actions",
   items: {
-    type: "string",
-    default: "",
-    enum: ["", "AlertAction", "InsartAction", "SignInAction"],
+    type: "object",
+    properties: {
+      scope: {
+        type: "string",
+        enum: ["workspaces", "documents"],
+        title: "Scope",
+        default: "workspaces",
+      },
+      action: {
+        type: "string",
+        enum: [
+          "",
+          "AlertAction",
+          "InsertAction",
+          "SignInAction",
+          "FetchItemsAction",
+        ],
+        default: "",
+        title: "Action",
+      },
+    },
   },
-}
+};

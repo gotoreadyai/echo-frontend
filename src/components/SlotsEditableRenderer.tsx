@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { FC } from "react";
+// src/components/SlotsEditableRenderer.tsx
+import React, { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
 import { useBlockStore } from "../stores/blockStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import { pattern_bg } from "../data/styles";
 import { FiCheckCircle } from "react-icons/fi";
+import { Block } from "../types/types";
 
 interface SlotsRendererProps {
-  slots: Record<string, any>;
+  slots: Record<string, Block[]>;
   slotName: string;
 }
 
-const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
+const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   const {
     selectedSlot,
     selectedBlock,
@@ -23,13 +23,11 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Funkcja obsługująca kliknięcie w slot
   const handleSlotClick = () => {
     if (isEditing && selectedSlot !== slotName) {
       setSelectedSlot(slotName);
       setSelectedBlock(null);
 
-      // Zaktualizuj parametry URL, usuwając "rightbar" gdy nie ma bloku zaznaczonego
       const searchParams = new URLSearchParams(location.search);
       searchParams.delete("rightbar");
       navigate({
@@ -39,21 +37,14 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     }
   };
 
-  // Funkcja obsługująca kliknięcie w blok
-  const handleBlockClick = (block: any) => {
+  const handleBlockClick = (block: Block) => {
     setSelectedBlock(block);
     setSelectedSlot(slotName);
 
-    // Zaktualizuj parametry URL, aby dodać "rightbar" gdy blok jest zaznaczony
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("rightbar", "block");
     navigate({ pathname: location.pathname, search: searchParams.toString() });
   };
-
-  // Ensure slots[slotName] is an array
-  // if (!(slots[slotName])) {
-  //   return <div>No content for {slotName}</div>;
-  // }
 
   return (
     <>
@@ -69,8 +60,16 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
         }`}
       >
         <div className="flex px-md gap-xs items-center h-full text-sm cursor-pointer">
-          <FiCheckCircle className={`${selectedSlot === slotName ? "text-neutral" : "text-warning"}`} />
-          <span  className={`${selectedSlot === slotName ? "text-neutral" : ""}`}>{slotName}</span>
+          <FiCheckCircle
+            className={`${
+              selectedSlot === slotName ? "text-neutral" : "text-warning"
+            }`}
+          />
+          <span
+            className={`${selectedSlot === slotName ? "text-neutral" : ""}`}
+          >
+            {slotName}
+          </span>
         </div>
         <div
           className="absolute w-full h-full top-0 "
@@ -79,15 +78,13 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
       </div>
       <div className="h-px"></div>
       {slots[slotName] &&
-        slots[slotName].map((block: any) => (
+        slots[slotName].map((block: Block) => (
           <div key={block.id} className="block-wrapper m-px relative">
             <BlockRenderer block={block} />
-            {/* <!-- Border around selected block --> */}
             <div
-              style={selectedBlock?.id === block.id ? pattern_bg : {}}
-              className={`absolute top-px bottom-px left-px right-px w-full h-full border  ${
+              className={`absolute top-px bottom-px left-px right-px w-full h-full border ${
                 selectedBlock?.id === block.id
-                  ? "bg-primary bg-opacity-10 border-secondaary"
+                  ? "bg-primary bg-opacity-10 border-secondary"
                   : "border-base-300 border-dashed"
               }`}
               onPointerDown={(e) => {
@@ -101,4 +98,4 @@ const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   );
 };
 
-export default SlotsRenderer;
+export default SlotsEditableRenderer;

@@ -1,27 +1,34 @@
 import React, { useState } from "react";
 import Editor from "@monaco-editor/react";
 
-const JSONBlock: React.FC<{
+interface JSONBlockProps {
   id: string;
   label: string;
-  value: object; // Zakładamy, że value jest obiektem JSON
+  value: object;
   isRequired: boolean;
+  isReadOnly?: boolean;
   onChange: (value: object) => void;
-}> = ({ label, value, isRequired, onChange }) => {
+}
+
+const JSONBlock: React.FC<JSONBlockProps> = ({
+  label,
+  value,
+  isRequired,
+  isReadOnly = false,
+  onChange,
+}) => {
   const [error, setError] = useState<string | null>(null);
 
-  // Konwersja obiektu JSON na string
   const jsonString = JSON.stringify(value, null, 2);
 
   const handleEditorChange = (newValue: string | undefined) => {
-    if (newValue !== undefined) {
+    if (!isReadOnly && newValue !== undefined) {
       try {
-        // Konwersja stringa z powrotem na obiekt JSON
         const parsedValue = JSON.parse(newValue);
-        setError(null); // Jeśli JSON jest poprawny, wyczyść błąd
+        setError(null);
         onChange(parsedValue);
       } catch (error) {
-        setError("Invalid JSON syntax"); // Ustawienie błędu w przypadku niepoprawnego JSON-a
+        setError("Niepoprawna składnia JSON");
       }
     }
   };
@@ -32,12 +39,13 @@ const JSONBlock: React.FC<{
         {label} {isRequired && <span>*</span>}
       </label>
       <Editor
-        height="calc(100vh - 280px)" // "100vh"
+        height="calc(100vh - 280px)"
         language="json"
         value={jsonString}
         onChange={handleEditorChange}
         theme="vs-dark"
         options={{
+          readOnly: isReadOnly,
           minimap: { enabled: false },
           lineNumbers: "on",
         }}

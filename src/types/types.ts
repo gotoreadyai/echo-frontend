@@ -1,35 +1,42 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
-import { ReactNode } from "react";
+// src/types/types.ts
+import { ReactNode, ElementType } from "react";
+import { JSONSchema7 } from "json-schema";
 
 export interface Block {
-  icon: ReactNode;
   id: string;
   filename: string;
-  data: any;
+  data: Record<string, unknown>;
+  icon?: ReactNode;
 }
 
-export interface BlockDefinition extends Block {
-  jsonSchema: any;
-  icon: any;
+export interface BlockDefinition {
+  id?: string;
+  filename: string;
+  jsonSchema: JSONSchema7;
+  icon?: ElementType;
   group: string;
+  data?: Record<string, unknown>;
+  default?: Record<string, unknown>;
 }
 
 export interface BlockAttributesProps {
   block: Block;
-  onChange: (blockId: number, data: Record<string, any>) => void;
+  onChange: (blockId: string, data: Record<string, unknown>) => void;
   onClose?: () => void;
-  onEdit?: (formData: any) => void;
+  onEdit?: (formData: Record<string, unknown>) => void;
 }
 
-export type LayoutConfig = {
+export interface LayoutConfig {
   id: string;
-  component: any;
+  component: React.FC<any>;
   slots: string[];
   parentSlots: string[];
-};
+}
+
 export interface PathParams {
   [key: string]: string | undefined;
 }
 
 export type MutationSuccessHandler = () => void;
+  

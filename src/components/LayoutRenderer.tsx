@@ -5,10 +5,9 @@ import { usePageStore } from "../stores/pageStore";
 import { layoutsConfig } from "../data/layoutsConfig";
 import BlockDetailsPanel from "./editor/BlockDetailsPanel";
 import BlockSidebar from "./editor/BlockSidebar";
-import Drawer from "./daisy/Drawer";
 import { useParams, useLocation } from "react-router-dom";
 import ScopePanel from "./editor/ScopePanel";
-import RightBar from "./RightBar";
+import RightBar from "./uikit/RightBar";
 import useWorkspaceAndDocumentData from "../hooks/useWorkspaceAndDocumentData";
 import { PathParams } from "../types/types";
 import SlotsRenderer from "./SlotsRenderer";
@@ -16,6 +15,8 @@ import SlotsEditableRenderer from "./SlotsEditableRenderer";
 import LoginForm from "./user/LoginForm";
 import CreateWorkspace from "./workspaces/CreateWorkspace";
 import { SystemTab } from "./editor";
+import Drawer from "./uikit/Drawer";
+import KeyboardHandler from "../hooks/keyboardHandler";
 
 // Utility functions extracted for better readability and reusability
 const combineBlocks = (workspaceBlocks: any, documentBlocks: any) => ({
@@ -110,6 +111,7 @@ const LayoutRenderer: React.FC = () => {
             }`}
           >
             <SystemTab />
+            <KeyboardHandler />
             <div className="flex items-stretch">
               {action === "edit-scope" && (
                 <div className="bg-base-300 w-3/5">

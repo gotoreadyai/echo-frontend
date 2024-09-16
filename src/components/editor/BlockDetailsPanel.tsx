@@ -1,8 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/components/editor/BlockDetailsPanel.tsx
 import React, { useEffect, useState } from "react";
-
 import { useBlockStore } from "../../stores/blockStore";
 import Form, { IChangeEvent } from "@rjsf/core";
 import validator from "@rjsf/validator-ajv8";
@@ -17,9 +14,12 @@ import {
   TitleFieldTemplate,
 } from "./FormUI";
 import { CloseRight } from ".";
+import { BlockDefinition } from "../../types/types";
 
-
-const blockSchemas = import.meta.glob("../../blocks/*.ts");
+const   blockSchemas = import.meta.glob<BlockDefinition>(
+  "../../blocks/*Schema.ts",
+  { eager: true }
+);
 
 const BlockDetailsPanel: React.FC = () => {
   const {
@@ -29,57 +29,32 @@ const BlockDetailsPanel: React.FC = () => {
     removeBlock,
     moveBlock,
     deselectBlock,
-  } = useBlockStore((state) => ({
-    selectedBlock: state.selectedBlock,
-    selectedSlot: state.selectedSlot,
-    setBlockData: state.setBlockData,
-    removeBlock: state.removeBlock,
-    moveBlock: state.moveBlock,
-    deselectBlock: state.deselectBlock,
-  }));
+  } = useBlockStore();
 
   const [schema, setSchema] = useState<JSONSchema7 | null>(null);
 
   useEffect(() => {
     if (selectedBlock) {
-      const loadSchema = async () => {
-        const blockSchemaKey = `../../blocks/${selectedBlock.filename}Schema.ts`;
-        if (blockSchemas[blockSchemaKey]) {
-          const module = await blockSchemas[blockSchemaKey]();
-          const schemaModule = module as {
-            default: { jsonSchema: JSONSchema7 };
-          };
-          setSchema(schemaModule.default.jsonSchema); // Assuming schema is exported as default
-        } else {
-          setSchema(null); // Schema not found for block
-        }
-      };
-
-      loadSchema();
+      const blockSchemaKey = `../../blocks/${selectedBlock.filename}Schema.ts`;
+      const blockSchema = blockSchemas[blockSchemaKey]?.default;
+      if (blockSchema) {
+        setSchema(blockSchema.jsonSchema as JSONSchema7 | null);
+      } else {
+        setSchema(null);
+      }
     }
   }, [selectedBlock]);
 
   const handleChange = (e: IChangeEvent) => {
-    // Handle the form data change
     if (!selectedBlock) return;
     setBlockData(selectedBlock.id, e.formData);
   };
-
-  // const handleBlur = (e: any) => {
-  //   if (!selectedBlock) return; // Add a null check here
-  //   const formElement = e.target?.closest("form");
-  //   const formData = new FormData(formElement);
-  //   const jsonFormData = Object.fromEntries(formData.entries());
-  //   console.log("Blur event:", jsonFormData);
-  //   setBlockData(selectedBlock.id, jsonFormData);
-  // };
 
   const widgets = {
     SelectWidget: CustomSelectWidget,
   };
 
   if (!selectedBlock) return <div className="p-4">No block selected</div>;
-
   if (!schema) return <div className="p-4">Loading block schema...</div>;
 
   return (
@@ -96,10 +71,8 @@ const BlockDetailsPanel: React.FC = () => {
         validator={validator}
         formData={selectedBlock.data}
         onChange={handleChange}
-        // onBlur={handleBlur}
         uiSchema={{
           "ui:submitButtonOptions": { norender: true },
-         
         }}
         templates={{
           BaseInputTemplate,

@@ -65,14 +65,13 @@ const SelectedSlotSaver: React.FC = () => {
 
   return (
     <div className="p-md border-t border-base-300">
-      {!rightbar && (
+      {!rightbar? (
         <>
           <span className="font-semibold">Selected Slot: </span>
           <span>{selectedSlot ? selectedSlot : "No slot selected"}</span>
         </>
-      )}
-
-      {errorMessage && <div className="text-error">{errorMessage}</div>}
+      ) : <div className="text-center">SLOT</div>}
+      {errorMessage && <div className="bg-error"></div>}
       {selectedSlot && (
         <button
           onClick={handleSaveContent}
