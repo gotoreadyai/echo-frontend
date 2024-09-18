@@ -2,6 +2,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "selector",
+  mode: "jit", // Włącza Just-In-Time mode
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -32,10 +33,10 @@ export default {
         extrabold: 900,
       },
       keyframes: {
-        wave: {        
+        wave: {
+          "0%": { opacity: "0" },
           "25%": { opacity: ".75" },
           "100%": { opacity: "1" },
-          
         },
       },
       animation: {

@@ -86,10 +86,8 @@ export const updateItem = async (
   id: string,
   updatedItem: Record<string, unknown>
 ) => {
-  const singular = ModelSingular[resourceName] || "";
-
   const response = await fetch(
-    `${import.meta.env.VITE_API_ENDPOINT}/${singular}/${id}`,
+    `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/${id}`,
     {
       method: "PUT",
       headers: getHeadersWithToken(),
@@ -136,7 +134,7 @@ export const updateContentBySlug = async (
   const response = await fetch(endpoint, {
     method: "PUT",
     headers: getHeadersWithToken(),
-    body: JSON.stringify({key: slot, value: content}),
+    body: JSON.stringify({ key: slot, value: content }),
   });
 
   return handleResponse(
@@ -146,10 +144,8 @@ export const updateContentBySlug = async (
 };
 
 export const deleteItem = async (resourceName: string, id: string) => {
-  const singular = ModelSingular[resourceName] || "";
-
   const response = await fetch(
-    `${import.meta.env.VITE_API_ENDPOINT}/${singular}/${id}`,
+    `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/${id}`,
     {
       method: "DELETE",
       headers: getHeadersWithToken(),

@@ -1,20 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // src/types/types.ts
-import { ReactNode, ElementType } from "react";
+import { ElementType } from "react";
 import { JSONSchema7 } from "json-schema";
 
 export interface Block {
   id: string;
   filename: string;
   data: Record<string, unknown>;
-  icon?: ReactNode;
 }
 
 export interface BlockDefinition {
   id?: string;
   filename: string;
   jsonSchema: JSONSchema7;
-  icon?: ElementType;
+  icon: ElementType;
   group: string;
   data?: Record<string, unknown>;
   default?: Record<string, unknown>;
@@ -39,4 +38,8 @@ export interface PathParams {
 }
 
 export type MutationSuccessHandler = () => void;
-  
+
+export interface FetchItemsActionProps {
+  scope: string;
+  onActionResult: (stste: boolean) => void;
+}

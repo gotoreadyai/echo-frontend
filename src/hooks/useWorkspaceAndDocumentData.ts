@@ -4,7 +4,7 @@ import { PathParams } from "../types/types";
 import { useParams } from "react-router-dom";
 
 const useWorkspaceAndDocumentData = () => {
-  const { workspace, slug } = useParams<PathParams>();
+  const { workspace,slug } = useParams<PathParams>();
 
   const {
     data: workspaceData,

@@ -3,7 +3,11 @@ const Drawer: React.FC<{
   content: JSX.Element;
 }> = ({ context, content }) => {
   return (
-    <div className={`${context && "drawer lg:drawer-open"} font-inter relative`}>
+    <div
+      className={`${
+        context && "drawer lg:drawer-open"
+      } font-inter relative bg-base-100 min-h-screen`}
+    >
       {context && (
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
       )}
@@ -26,7 +30,6 @@ const Drawer: React.FC<{
           {context}
         </div>
       )}
-      |
     </div>
   );
 };

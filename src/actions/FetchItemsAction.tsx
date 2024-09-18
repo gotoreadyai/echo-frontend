@@ -4,11 +4,9 @@ import { ModelSingular } from "../../models_EXPORT/models";
 import { useGlobalStore } from "../stores/globalStore";
 import ActionMsg from "../components/uikit/ActionMsg";
 import { usePageStore } from "../stores/pageStore";
+import { FetchItemsActionProps } from "../types/types";
 
-interface FetchItemsActionProps {
-  scope: string;
-  onActionResult: (stste: boolean) => void;
-}
+
 
 const FetchItemsAction: React.FC<FetchItemsActionProps> = ({
   scope,

@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Logo: React.FC<{ className?: string }> = ({ className }) => {
-  return <div className={`${className || ''} container mx-auto`}>
+  return <Link to="/" className={`${className || 'inline-block'} `}>
     <img src="/logo.svg" alt="logo" />
-  </div>;
+  </Link>;
 };
 
 export default Logo;

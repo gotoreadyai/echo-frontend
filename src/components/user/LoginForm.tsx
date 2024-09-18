@@ -26,7 +26,7 @@ const LoginForm: React.FC = () => {
       {
         id: "5b8d9266-a445-425b-aae2-59aa0b181314",
         filename: "SubmitForm",
-        data: { actions: ["AlertAction", "SignInAction"] },
+        data: { actions: [{ scope: "user", action: "SignInAction" }] },
       },
     ],
   };

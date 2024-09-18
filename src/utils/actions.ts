@@ -1,53 +1,77 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface actionMod {
-  default: React.FC<{ scope: string }>;
-}
+import React from "react";
+
+// Initialize the import.meta.glob once to avoid re-execution on each function call
+const actionFiles: Record<string, () => Promise<any>> = import.meta.glob(
+  "../actions/*.tsx"
+);
+
+// Use a Map for caching components for better performance and flexibility
+const actionCache = new Map<
+  string,
+  React.FC<{ scope: string; onActionResult: (success: boolean) => void }>
+>();
 
 export const loadActionComponent = async (
   action: string,
-  setComponent: any
-) => {
-  const files = import.meta.glob("../actions/*.tsx");
+  setComponent: React.Dispatch<
+    React.SetStateAction<React.FC<{
+      scope: string;
+      onActionResult: (success: boolean) => void;
+    }> | null>
+  >,
+  setError: React.Dispatch<React.SetStateAction<string | null>>
+): Promise<void> => {
+  if (!action) {
+    setError("Action parameter is undefined");
+    setComponent(null);
+    return;
+  }
+
+  // Check if the component is already cached
+  const cachedComponent = actionCache.get(action);
+  if (cachedComponent) {
+    console.log(`Using cached action component for: ${action}`);
+    setComponent(() => cachedComponent);
+    return;
+  }
+
+  const path = `../actions/${action}.tsx`;
+  console.log("Loading action:", path);
+
+  const loadFile = actionFiles[path];
+  if (!loadFile) {
+    const errorMessage = `Action file: ${path} not found`;
+    console.error(errorMessage);
+    setError(errorMessage);
+    setComponent(null);
+    return;
+  }
+
   try {
-    const path = `../actions/${action}.tsx`;
-    console.log("Loading action:", path);
-    if (files[path]) {
-      const actionMod = await files[path]();
-      if (actionMod && (actionMod as actionMod).default) {
-        setComponent(() => (actionMod as actionMod).default);
-      } else {
-        console.error(`Component not found in module for action: ${action}`);
-      }
+    // Load the module dynamically
+    const actionMod = await loadFile();
+
+    // Handle the possibility of a nested promise for default export
+    const Component = (
+      actionMod.default ? actionMod.default : (await actionMod()).default
+    ) as React.FC<{
+      scope: string;
+      onActionResult: (success: boolean) => void;
+    }>;
+
+    if (Component) {
+      // Cache the loaded component
+      actionCache.set(action, Component);
+      setComponent(() => Component);
     } else {
-      console.error(`Mutation file: ${path} not found`);
+      throw new Error(`Component not found for action: ${action}`);
     }
   } catch (error) {
-    console.error("Error loading mutation component:", error);
-  }
-};
-
-export const notifyColor = (type: string) => {
-  switch (type) {
-    case "success":
-      return "bg-success";
-    case "error":
-      return "bg-error";
-    case "info":
-      return "bg-info";
-    default:
-      return "gb-base-300";
-  }
-};
-
-export const notifyText = (type: string) => {
-  switch (type) {
-    case "success":
-      return "text-success";
-    case "error":
-      return "text-error";
-    case "info":
-      return "text-info";
-    default:
-      return "text-neutral";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error occurred";
+    console.error("Error loading Action component:", errorMessage);
+    setError(`Error loading action: ${errorMessage}`);
+    setComponent(null);
   }
 };

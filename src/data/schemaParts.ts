@@ -6,7 +6,7 @@ export const initBackgrounds: any = {
   primary: "bg-primary",
   secondary: "bg-secondary",
   outerLights:
-    "bg-[radial-gradient(50%_70%_at_60%_10%,oklch(var(--s)/0.3)_0%,oklch(var(--s)/0.3)_10%,oklch(var(--b1)/0.8)_100%)]",
+    "bg-[radial-gradient(60%_40%_at_40%_0%,oklch(var(--s)/0.1)_0%,oklch(var(--s)/0.15)_5%,oklch(var(--b1)/0.8)_100%)]",
 };
 
 export const backgroundSchemaPart: any = {
@@ -41,8 +41,11 @@ export const actionsListSchemaPart: any = {
           "",
           "AlertAction",
           "InsertAction",
+          "UpdateAction",
+          "DeleteAction",
           "SignInAction",
           "FetchItemsAction",
+          "FilterScopeByIdAction",
         ],
         default: "",
         title: "Action",

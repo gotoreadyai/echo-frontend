@@ -1,5 +1,5 @@
 // src/components/SlotsEditableRenderer.tsx
-import React, { FC } from "react";
+import { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
 import { useBlockStore } from "../stores/blockStore";
 import { useLocation, useNavigate } from "react-router-dom";

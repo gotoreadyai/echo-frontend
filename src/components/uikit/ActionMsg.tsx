@@ -1,6 +1,7 @@
 
 import { FiCheckCircle, FiLoader } from "react-icons/fi";
-import { notifyColor } from "../../utils/actions";
+import { notifyColor } from "../../utils/display";
+
 
 const ActionMsg: React.FC<{children: React.ReactNode,  type: string }> = ({ type ,children}) => {
   return (

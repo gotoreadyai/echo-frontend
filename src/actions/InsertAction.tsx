@@ -2,8 +2,9 @@
 import React, { useEffect } from "react";
 import { createItem } from "../services/genericService";
 import { usePageStore } from "../stores/pageStore";
+import ActionMsg from "../components/uikit/ActionMsg";
 
-const InsertAction: React.FC = ({scope}:any) => {
+const InsertAction: React.FC = ({scope,onActionResult}:any) => {
   const pageData = usePageStore((state) => state.pageData);
   const handleAction = async () => {
     if (!scope || !pageData[scope]) {
@@ -22,6 +23,7 @@ const InsertAction: React.FC = ({scope}:any) => {
         },
       });
       console.log("Sign In successful:", result);
+      onActionResult(true);
     } catch (error) {
       alert(error);
     }
@@ -32,6 +34,6 @@ const InsertAction: React.FC = ({scope}:any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <>RunSignInAction</>;
+  return <ActionMsg type="info">RUN: Insert to: {scope}</ActionMsg>;
 };
 export default InsertAction;

@@ -6,11 +6,13 @@ import { layoutsConfig } from "../../data/layoutsConfig";
 import { useCrudMutations } from "../../hooks/useCrudMutations";
 import { PathParams } from "../../types/types";
 import { usePageStore } from "../../stores/pageStore";
-import { getUSParam } from "../../utils/navigation";
+
 import { FiSave } from "react-icons/fi";
 import { useGlobalStore } from "../../stores/globalStore"; // Import globalStore
+import useNavigation from "../../hooks/useNavigation";
 
 const SelectedSlotSaver: React.FC = () => {
+  const { getUSParam } = useNavigation();
   const { layout } = usePageStore((state) => ({
     layout: state.pageData.layout,
   }));
@@ -74,6 +76,7 @@ const SelectedSlotSaver: React.FC = () => {
       {errorMessage && <div className="bg-error"></div>}
       {selectedSlot && (
         <button
+         aria-label="Save"
           onClick={handleSaveContent}
           className="btn btn-md btn-outline w-full no-animation font-light mt-sm"
         >

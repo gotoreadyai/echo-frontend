@@ -3,6 +3,7 @@
 import { ChangeEvent, InputHTMLAttributes } from "react";
 
 import {
+  ArrayFieldTemplateItemType,
   ArrayFieldTemplateProps,
   BaseInputTemplateProps,
   DescriptionFieldProps,
@@ -125,13 +126,14 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
     <div className="mb-sm">
       {items.map((element, index) => (
         <div key={index} className="array-item">
-          <div className="border-l-8 pl-1 border-primary-content -ml-sm">
+          <div className="border-l-8 pl-1 border-base-content border-opacity-70 -ml-sm">
             {element.children}
           </div>
           <div className="flex justify-end gap-1 mb-sm">
             {element.hasMoveUp && (
               <button
                 type="button"
+                aria-label="Move up"
                 className="btn btn-sm btn-outline"
                 onClick={element.onReorderClick(
                   element.index,
@@ -143,6 +145,7 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
             )}
             {element.hasMoveDown && (
               <button
+                aria-label="Move Down"
                 type="button"
                 className="btn btn-sm btn-outline"
                 onClick={element.onReorderClick(
@@ -155,6 +158,7 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
             )}
             {element.hasRemove && (
               <button
+                aria-label="Remove"
                 type="button"
                 className="btn btn-sm btn-danger"
                 onClick={element.onDropIndexClick(element.index)}
@@ -168,6 +172,7 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
 
       {canAdd && (
         <button
+          aria-label="Add item"
           type="button"
           className="btn btn-primary btn-sm w-full mt-sm no-animation"
           onClick={onAddClick}
@@ -177,6 +182,11 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
       )}
     </div>
   );
+}
+
+export function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType) {
+  const { children, className } = props;
+  return <div className={className}>#####{children}####</div>;
 }
 
 export function DescriptionFieldTemplate(props: DescriptionFieldProps) {
@@ -198,7 +208,12 @@ export function FieldTemplate(props: FieldTemplateProps) {
       }  border-base-300`}
     >
       {schema.label && schema.type && (
-        <label htmlFor={id} className="form-label">
+        <label
+          htmlFor={id}
+          className={`block form-label ${
+            id.split("_").length === 2 ? "text-xl font-normal text-base-content text-opacity-70" : "-mt-sm"
+          }  pt-sm`}
+        >
           {schema.label}
           {required && <span className="text-danger">*</span>}
         </label>

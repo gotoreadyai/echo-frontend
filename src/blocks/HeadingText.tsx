@@ -5,11 +5,11 @@ export const HeadingText: React.FC<{ text: string; className?: string }> = ({
   className,
 }) => {
   return (
-    <div className="container mx-auto px-md">
-      <h1 className={`${className || "py-md text-2xl pb-md"}`}>
+    
+      <h1 className={`${className || "py-md text-4xl pb-md text-center font-bold"}`}>
         {text || "Default Header"}
       </h1>
-    </div>
+   
   );
 };
 

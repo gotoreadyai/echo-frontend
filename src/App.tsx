@@ -5,14 +5,14 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { ThemeProvider } from "./providers/ThemeProvider";
+
 
 import { ReactQueryProvider } from "./providers/QueryClientProvider";
 import { UserProvider } from "./providers/UserProvider";
 import LayoutRenderer from "./components/LayoutRenderer";
 const App: React.FC = () => {
   return (
-    <ThemeProvider>
+    
       <UserProvider>
         <ReactQueryProvider>
           <Router>
@@ -20,7 +20,7 @@ const App: React.FC = () => {
               {/* Przekierowanie do edycji jako domyślna trasa */}
               <Route
                 path="/"
-                element={<Navigate to="/dashboard/documents/edit-document/" replace />}
+                element={<Navigate to="/dashboard/headpage/" replace />}
               />
               <Route path="/:workspace/:slug" element={<LayoutRenderer />} />
               <Route
@@ -31,7 +31,7 @@ const App: React.FC = () => {
           </Router>
         </ReactQueryProvider>
       </UserProvider>
-    </ThemeProvider>
+    
   );
 };
 

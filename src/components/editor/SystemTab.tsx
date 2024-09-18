@@ -1,70 +1,72 @@
-import { useNavigate, useLocation } from "react-router-dom";
-import {
-  FiAlertOctagon,
-  FiCheck,
-  FiHome,
-  FiPackage,
-  FiSun,
-  FiUser,
-} from "react-icons/fi";
+// src/components/SystemTab.tsx
+import React from "react";
+import { FiAlertOctagon, FiCheck, FiPackage, FiSun, FiUser } from "react-icons/fi";
 import { useTheme } from "../../providers/ThemeProvider";
 import PreviewSwitch from "./PreviewSwitch";
 import { useGlobalStore } from "../../stores/globalStore";
 import ThemeSelector from "../uikit/ThemeSelector";
-import { notifyText } from "../../utils/actions";
+import { notifyText } from "../../utils/display";
+import useNavigation from "../../hooks/useNavigation"; // Upewnij się, że ścieżka jest poprawna
+import { useParams } from "react-router-dom";
 
-const SystemTab = () => {
+
+const SystemTab: React.FC = () => {
   const { theme, updateTheme } = useTheme();
-  const navigate = useNavigate();
-  const location = useLocation();
-
   const { mainMessage } = useGlobalStore((state) => ({
     mainMessage: state.mainMessage,
   }));
+
+  const {  setUSParam } = useNavigation();
+  const params = useParams<{ workspace: string; slug: string; action?: string }>();
+
+
+  const action = params.action;
 
   const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     updateTheme(event.target.value);
   };
 
   const handleRightbarClick = (value: string) => {
-    const searchParams = new URLSearchParams(location.search);
-    searchParams.set("rightbar", value);
-    navigate({
-      pathname: location.pathname,
-      search: searchParams.toString(),
-    });
+    setUSParam("rightbar", value);
+    // Opcjonalnie: Dodaj powiadomienia lub inne akcje
+
   };
 
   return (
-    <div className="sticky top-0 p-sm px-md bg-base-300 text-xs z-20 flex gap-0.5 w-full border-b border-base-300 shadow-lg">
-      <button
-        className="btn btn-sm btn-square"
-        onClick={() => navigate("/")}
-        aria-label="Strona główna"
-      >
-        <FiHome />
-      </button>
-      <PreviewSwitch />
-
+    <div
+      className={`
+        ${action === 'edit-document' ? 'bg-neutral' : 'bg-base-300'}
+        sticky top-0 p-sm px-md  text-xs z-20 flex gap-0.5 w-full 
+        border-b border-base-300 shadow-lg`}
+    >
       <div className="dropdown">
-        <div tabIndex={1} role="button" className="btn btn-sm btn-square">
+        
+        <button
+          aria-label="Theme"
+          role="button"
+          className="btn btn-sm btn-square"
+        >
           <FiSun />
-        </div>
-        <div tabIndex={1} className="dropdown-content z-[1] w-52 pb-2">
+        </button>
+        <div className="dropdown-content z-[1] w-52 pb-2">
           <ThemeSelector theme={theme} handleThemeChange={handleThemeChange} />
         </div>
       </div>
+      <PreviewSwitch />
 
       {mainMessage.message && (
         <div
           className={`${notifyText(
             mainMessage.type
-          )} flex px-sm items-center justify-center gap-sm bg-neutral rounded animate-init-pulse text-xs`}
+          )} toast toast-center -top-2.5 toast-top animate-init-pulse text-xs`}
         >
-          {mainMessage.type === "error" && (
-            <FiAlertOctagon className="text-base" />
-          )}{" "}
-          {mainMessage.type === "success" && <FiCheck />} {mainMessage.message}
+          <div className="flex px-sm items-center py-sm p-md justify-center gap-sm bg-info-content rounded">
+            {mainMessage.type === "error" && (
+              <FiAlertOctagon className="text-base" />
+            )}
+            {mainMessage.type === "success" && <FiCheck />}
+            {mainMessage.message}
+          </div>
         </div>
       )}
 

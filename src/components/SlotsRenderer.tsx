@@ -1,5 +1,5 @@
 // src/components/SlotsRenderer.tsx
-import React, { FC } from "react";
+import { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
 import { Block } from "../types/types";
 
@@ -8,9 +8,11 @@ interface SlotsRendererProps {
   slotName: string;
 }
 
+
 const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   if (!slots[slotName]) {
-    return <div>No content for {slotName}</div>;
+    console.log(`No content for {slotName}`)
+    return <></>;
   }
 
   return (

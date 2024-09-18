@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from "react";
-import { blockComponents } from "../data/blocksData";
+import React, { Suspense } from "react";
 import { useBlockStore } from "../stores/blockStore";
 import { Block } from "../types/types";
 
@@ -8,33 +7,39 @@ interface BlockRendererProps {
   block: Block;
 }
 
+interface BlockData {}
+const componentCache: Record<
+  string,
+  React.LazyExoticComponent<React.FC<BlockData>> | null
+> = {};
+
 const BlockRenderer: React.FC<BlockRendererProps> = ({ block }) => {
-  const [Component, setComponent] = useState<React.ComponentType<any> | null>(null);
   const isEditing = useBlockStore((state) => state.isEditing);
+  let LazyComponent: React.LazyExoticComponent<React.FC<BlockData>> | null =
+    componentCache[block.filename];
 
-  useEffect(() => {
-    const loadComponent = async () => {
-      try {
-        const componentLoader =
-          blockComponents[`../blocks/${block.filename}.tsx`];
-        if (componentLoader) {
-          const mod = await componentLoader() as { default: React.FC<Block> };
-          setComponent(() => mod.default);
-        } else {
-          console.error(`Component not found for block: ${block.filename}`);
-        }
-      } catch (error) {
-        console.error(`Error loading component for block: ${block.filename}`, error);
-      }
-    };
-    loadComponent();
-  }, [block.filename]);
-
-  if (!Component) return null;
+  if (!LazyComponent) {
+    LazyComponent = React.lazy(() =>
+      import(`../blocks/${block.filename}.tsx`)
+        .then((module) => ({ default: module.default as React.FC<BlockData> }))
+        .catch((error) => {
+          console.error(
+            `Błąd podczas ładowania komponentu dla bloku: ${block.filename}`,
+            error
+          );
+          return {
+            default: () => <div>Nie udało się załadować komponentu.</div>,
+          };
+        })
+    );
+    componentCache[block.filename] = LazyComponent;
+  }
 
   return (
-    <div className={isEditing ? "" : ""}>
-      <Component {...block.data} />
+    <div className={isEditing ? "editing-class" : "view-class"}>
+      <Suspense fallback={<div>Ładowanie...</div>}>
+        <LazyComponent {...block.data} />
+      </Suspense>
     </div>
   );
 };

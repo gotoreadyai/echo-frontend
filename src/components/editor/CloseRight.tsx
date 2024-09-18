@@ -29,7 +29,7 @@ const CloseRight: React.FC<CloseRightProps> = ({ callback, label }) => {
       >
         <FiX />
       </button>
-      <h3 className="text-2xl font-extrabold drop-shadow-sm text-warning">
+      <h3 className="text-2xl font-extrabold drop-shadow-sm text-accent">
         {label}
       </h3>
     </div>

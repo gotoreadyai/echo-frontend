@@ -5,7 +5,7 @@ import { usePageStore } from "../stores/pageStore";
 import { layoutsConfig } from "../data/layoutsConfig";
 import BlockDetailsPanel from "./editor/BlockDetailsPanel";
 import BlockSidebar from "./editor/BlockSidebar";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import ScopePanel from "./editor/ScopePanel";
 import RightBar from "./uikit/RightBar";
 import useWorkspaceAndDocumentData from "../hooks/useWorkspaceAndDocumentData";
@@ -17,6 +17,8 @@ import CreateWorkspace from "./workspaces/CreateWorkspace";
 import { SystemTab } from "./editor";
 import Drawer from "./uikit/Drawer";
 import KeyboardHandler from "../hooks/keyboardHandler";
+import { FiLoader } from "react-icons/fi";
+import useNavigation from "../hooks/useNavigation";
 
 // Utility functions extracted for better readability and reusability
 const combineBlocks = (workspaceBlocks: any, documentBlocks: any) => ({
@@ -40,7 +42,8 @@ const updateLayout = (_pageData: any) => {
 const LayoutRenderer: React.FC = () => {
   const { slots, setSlots } = useBlockStore();
   const { action } = useParams<PathParams>();
-  const location = useLocation();
+  const { getUSParam } = useNavigation();
+  const rightbar = getUSParam("rightbar");
   const selectedLayoutName = usePageStore((state) => state.pageData?.layout);
 
   const {
@@ -61,7 +64,7 @@ const LayoutRenderer: React.FC = () => {
       usePageStore.setState(() => ({ pageData: _pageData }));
       updateLayout(_pageData);
     }
-  }, [workspaceData, documentData, setSlots]);
+  }, [documentData, setSlots, workspaceData]);
 
   // Early return if loading or errors occur
   if (isWorkspaceLoading || isDocumentLoading) return null;
@@ -95,12 +98,9 @@ const LayoutRenderer: React.FC = () => {
     return acc;
   }, {});
 
-  const searchParams = new URLSearchParams(location.search);
-  const rightbar = searchParams.get("rightbar");
-
   return (
     <Drawer
-      context={action  ? <BlockSidebar /> : null}
+      context={action ? <BlockSidebar /> : null}
       content={
         <>
           <div
@@ -118,26 +118,28 @@ const LayoutRenderer: React.FC = () => {
                   <ScopePanel />
                 </div>
               )}
-              <div className="container-type-inline flex-1">
-                <Suspense
-                  fallback={
-                    <div className="text-gray-500">Loading layout...</div>
-                  }
-                >
-                  {layoutConfig.component && (
-                    <layoutConfig.component {...slotProps} />
-                  )}
+              <div className="container-type-inline flex-1 ">
+                <Suspense fallback={<></>}>
+                  {layoutConfig.component &&
+                    React.createElement(layoutConfig.component, slotProps)}
                 </Suspense>
               </div>
+              {(action === "edit-side" ||
+                action === "edit-modal" ||
+                action === "edit-workspace") && (
+                <div className="bg-base-300 p-lg shadow text-center">
+                  <FiLoader />
+                  {action}
+                </div>
+              )}
             </div>
           </div>
 
           {rightbar && (
             <RightBar>
-              
               {rightbar === "user" && <LoginForm />}
               {rightbar === "block" && <BlockDetailsPanel />}
-              {rightbar === "workspaces" && <CreateWorkspace/>}
+              {rightbar === "workspaces" && <CreateWorkspace />}
             </RightBar>
           )}
         </>

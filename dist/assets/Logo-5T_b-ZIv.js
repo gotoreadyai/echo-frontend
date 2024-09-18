@@ -1,0 +1,1 @@
+import{j as s,x as o}from"./vendor-BORITBlt.js";const a=({className:a})=>s.jsx(o,{to:"/",className:`${a||"inline-block"} `,children:s.jsx("img",{src:"/logo.svg",alt:"logo"})});export{a as Logo,a as default};

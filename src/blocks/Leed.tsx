@@ -26,7 +26,13 @@ export const Leed: React.FC<{
 
 export default Leed;
 
+/* Classes scope for build */
 /* text-right text-center */
 /* text-xl text-2xl text-4xl */
 /* font-bold font-extrabold */
-/* py-md py-sm py-lg pt-md py-lg*/
+/* px-sm px-md px-lg */
+/* py-sm py-md py-lg */
+/* pt-sm pt-md pt-lg */
+/* pb-sm pb-md pb-lg */
+
+

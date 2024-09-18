@@ -1,136 +1,106 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import { lingui } from "@lingui/vite-plugin";
-import { VitePWA } from "vite-plugin-pwa";
-import monacoEditorPlugin, {
-  type IMonacoEditorOpts,
-} from "vite-plugin-monaco-editor";
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const monacoEditorPluginDefault = (monacoEditorPlugin as any).default as (
-  options: IMonacoEditorOpts
+  import { defineConfig } from "vite";
+  import react from "@vitejs/plugin-react";
+  import { lingui } from "@lingui/vite-plugin";
+  import { VitePWA } from "vite-plugin-pwa";
+  import viteCompression from 'vite-plugin-compression';
+  import monacoEditorPlugin, {
+    type IMonacoEditorOpts,
+  } from "vite-plugin-monaco-editor";
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-) => any;
+  const monacoEditorPluginDefault = (monacoEditorPlugin as any).default as (
+    options: IMonacoEditorOpts
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) => any;
 
-export default defineConfig({
-  build: {
-    minify: "terser",
-    terserOptions: {
-      compress: {
-        drop_console: true,
-      },
+  export default defineConfig({
+    resolve: {
+      extensions: ['.js', '.jsx', '.ts', '.tsx'], // Skrócona lista rozszerzeń
     },
-    rollupOptions: {
-      output: {
-        manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            return id
-              .toString()
-              .split("node_modules/")[1]
-              .split("/")[0]
-              .toString();
-          }
+    build: {
+      target: 'esnext',
+      minify: "terser",
+      sourcemap: false,
+      terserOptions: {
+        compress: {
+          drop_console: true,
         },
       },
+      rollupOptions: {
+        output: {
+          // Redukcja wielkości plików i wydajności za pomocą chunków
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              return 'vendor'; // Wyodrębnienie paczek z node_modules
+            }
+          },
+        },
+      },
+      // rollupOptions: {
+      //   output: {
+      //     manualChunks: (id) => {
+      //       if (id.includes("node_modules")) {
+      //         return id
+      //           .toString()
+      //           .split("node_modules/")[1]
+      //           .split("/")[0]
+      //           .toString();
+      //       }
+      //     },
+      //   },
+      // },
     },
-  },
-  plugins: [
-    VitePWA({
-      registerType: "autoUpdate",
-      manifest: {
-        name: "Smart Interactive EDU platform",
-        short_name: "SmartInteractive",
-        description:
-          "Adaptatywna platforma edukacyjna wspierająca nauczanie hybrydowe.",
-        theme_color: "#ffffff",
-        background_color: "#ffffff",
-        display: "standalone",
-        scope: "/",
-        start_url: "/",
-        orientation: "portrait",
-        icons: [
+    // esbuild: {
+    //   jsxInject: `import React from 'react'`, // Automatyczne wstrzykiwanie Reacta (jeśli jest potrzebne)
+    // },
+    plugins: [
+      VitePWA({
+        registerType: "autoUpdate",
+        workbox: {
+          runtimeCaching: [
+            {
+              urlPattern: ({ url }) => url.origin === self.location.origin,
+              handler: "CacheFirst",
+              options: {
+                cacheName: "pages",
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 7 * 24 * 60 * 60, // 1 week
+                },
+              },
+            },
+          ],
+        },
+      }),
+      monacoEditorPluginDefault({
+        languageWorkers: ["typescript", "editorWorkerService"],
+        customWorkers: [
           {
-            src: "pwa/16x16.png",
-            sizes: "16x16",
-            type: "image/png",
-          },
-          {
-            src: "pwa/32x32.png",
-            sizes: "32x32",
-            type: "image/png",
-          },
-          {
-            src: "pwa/72x72.png",
-            sizes: "72x72",
-            type: "image/png",
-          },
-          {
-            src: "pwa/96x96.png",
-            sizes: "96x96",
-            type: "image/png",
-          },
-          {
-            src: "pwa/120x120.png",
-            sizes: "120x120",
-            type: "image/png",
-          },
-          {
-            src: "pwa/128x128.png",
-            sizes: "128x128",
-            type: "image/png",
-          },
-          {
-            src: "pwa/144x144.png",
-            sizes: "144x144",
-            type: "image/png",
-          },
-          {
-            src: "pwa/152x152.png",
-            sizes: "152x152",
-            type: "image/png",
-          },
-          {
-            src: "pwa/180x180.png",
-            sizes: "180x180",
-            type: "image/png",
-          },
-          {
-            src: "pwa/192x192.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "pwa/384x384.png",
-            sizes: "384x384",
-            type: "image/png",
-          },
-          {
-            src: "pwa/512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "pwa/512x512.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "maskable",
+            label: "tsworker",
+            entry: "vite-plugin-monaco-editor/cdn/ts.worker.bundle.js",
           },
         ],
-      },
-    }),
-    monacoEditorPluginDefault({
-      languageWorkers: ["typescript", "editorWorkerService"],
-      customWorkers: [
-        {
-          label: "tsworker",
-          entry: "vite-plugin-monaco-editor/cdn/ts.worker.bundle.js",
+      }),
+      react({
+        babel: {
+          plugins: ["macros"],
         },
-      ],
-    }),
-    react({
-      babel: {
-        plugins: ["macros"],
-      },
-    }),
-    lingui(),
-  ],
-});
+      }),
+      viteCompression({
+        // Konfiguracja dla gzip
+        algorithm: 'gzip', 
+        ext: '.gz', // Rozszerzenie dla skompresowanych plików
+      }),
+      // viteCompression({
+      //   // Konfiguracja dla Brotli
+      //   algorithm: 'brotliCompress',
+      //   ext: '.br', // Rozszerzenie dla plików Brotli
+      // }),
+      lingui(),
+    ],
+    // server: {
+    //   port: 3000,
+    //   host: true,
+    //   watch: {
+    //      usePolling: true,
+    //   },}
+  });

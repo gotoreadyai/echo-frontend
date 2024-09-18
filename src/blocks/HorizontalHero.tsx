@@ -7,7 +7,7 @@ export const HorizontalHero: React.FC<{ text: string; className?: string }> = ({
 }) => {
   //return <h1 className={`${className || ''}`}>{text || 'Default Header'}</h1>;
   return (
-    <div className="container mx-auto lg:flex p-md gap-md">
+    <div className="container mx-auto lg:flex p-md gap-md relative">
       <div className="flex-1 pb-md">
         <h1 className="text-base font-semibold leading-7 text-info">
           By the makers of SmartStart

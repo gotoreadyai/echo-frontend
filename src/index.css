@@ -1,33 +1,34 @@
-@import "katex/dist/katex.min.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.katex {
+/* .katex {
   font: normal 1em KaTeX_Main, Times New Roman, serif;
   line-height: 1.2;
   font-size: x-large;
   color: #333;
-}
+} */
 .prose {
   max-width: 75ch !important;
 }
 
 @layer base {
-  @font-face {
+  /* @font-face {
     font-family: "Pixel";
     src: local("Pixel"), url("/pixel.ttf") format("truetype");
-  }
+  } */
   @font-face {
     font-family: "Inter";
     src: url("/fonts/Inter_18pt-Regular.woff2") format("woff2");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   @font-face {
     font-family: "Inter";
     src: url("/fonts/Inter_18pt-ExtraBold.woff2") format("woff2");
     font-weight: 900;
     font-style: extrabold;
+    font-display: swap;
   }
 }

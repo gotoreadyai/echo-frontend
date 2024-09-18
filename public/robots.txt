@@ -1,0 +1,9 @@
+# public/robots.txt
+User-agent: *
+Allow: /
+
+# Disallow access to specific directories
+Disallow: /admin
+
+# Link to sitemap
+Sitemap: https://yourwebsite.com/sitemap.xml

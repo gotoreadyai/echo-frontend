@@ -91,24 +91,28 @@ const ScopePanel: React.FC = () => {
       {/* Tabs to switch between scopes */}
       <div className="tabs tabs-lifted border-b border-base-200 mt-sm">
         <button
+          aria-label="Tab"
           className={`tab ${activeTab === "initialScope" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("initialScope")}
         >
           Initial Scope
         </button>
         <button
+          aria-label="Tab"
           className={`tab ${activeTab === "actualScope" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("actualScope")}
         >
           Actual Scope
         </button>
         <button
+          aria-label="Tab"
           className={`tab ${activeTab === "slotsPreview" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("slotsPreview")}
         >
           Slots Preview
         </button>
         <button
+          aria-label="Tab"
           className={`tab ${activeTab === "globalScope" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("globalScope")}
         >

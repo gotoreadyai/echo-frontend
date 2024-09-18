@@ -1,3 +1,4 @@
+// HeadingTextSchema.ts
 import { LuHeading } from "react-icons/lu";
 
 export const HeadingTextSchema = {
@@ -5,12 +6,22 @@ export const HeadingTextSchema = {
   filename: "HeadingText",
   jsonSchema: {
     title: "Heading text block",
+    description: "Schemat definiujący blok nagłówka tekstowego, który wyświetla tytuł z opcjonalnymi klasami CSS.",
     properties: {
-      text: { type: "string", label: "Header Text" },
-      className: { type: "string", label: "CSS Class" },
+      text: {
+        type: "string",
+        label: "Header Text",
+        description: "Tekst, który będzie wyświetlany jako nagłówek.",
+      },
+      className: {
+        type: "string",
+        label: "CSS Class",
+        description: "Opcjonalna klasa CSS do zastosowania dla elementu nagłówka w celu dostosowania stylów. [py-md text-4xl pb-md text-center font-bold]",
+      },
     },
+    required: ["text"], // Zakładam, że 'text' jest wymagany
   },
-  icon: LuHeading, // Store the component, not the string
+  icon: LuHeading, // Przechowuje komponent, nie string
   group: "content",
   data: { text: "Default Header", className: "" },
 };
