@@ -29,6 +29,6 @@ const LandingDoubleClasic: React.FC<{ [key: string]: React.ReactNode }> = (props
       </footer>
     </div>
   );
-};
+};  
 
 export default LandingDoubleClasic;

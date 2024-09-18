@@ -20,7 +20,7 @@ const UpdateAction:  React.FC<FetchItemsActionProps> = ({
     }
   
     try {
-      const result = await updateItem(scope, getUSParam(`${scope}_id`) ?? "", {
+      const result = await updateItem(scope, getUSParam(`${scope}Id`) ?? "", {
         title: pageData[scope].title,
       });
       console.log("Sign In successful:", result);

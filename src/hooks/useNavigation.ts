@@ -13,7 +13,7 @@ export interface Navigation {
   upSParams: (queryString: string) => void;
   removeUSParam: (param: string) => void;
   navigateTo: (path: string) => void;
-  getAll: () => string;
+  getAll: () => Record<string, string>; // Zmieniony typ zwracany
 }
 
 const useNavigation = (): Navigation => {
@@ -80,13 +80,15 @@ const useNavigation = (): Navigation => {
   };
 
   /**
-   * Pobranie wszystkich wartości parametrów wyszukiwania jako string
-   * @returns Sklejone wartości wszystkich parametrów, oddzielone przecinkami
+   * Pobranie wszystkich parametrów wyszukiwania jako obiekt kluczy i wartości
+   * @returns Obiekt zawierający wszystkie pary klucz-wartość parametrów
    */
-  const getAll = (): string => {
-    const values: string[] = [];
-    searchParams.forEach((value) => values.push(value));
-    return values.join(",");
+  const getAll = (): Record<string, string> => {
+    const paramsObject: Record<string, string> = {};
+    searchParams.forEach((value, key) => {
+      paramsObject[key] = value;
+    });
+    return paramsObject;
   };
 
   return useMemo(
@@ -103,6 +105,7 @@ const useNavigation = (): Navigation => {
 };
 
 export default useNavigation;
+
 export const parseKeyFromPath = (path: string, item: any) => {
   return path.replace(/{(\w+)}/g, (_, key: string) => item[key] || `{${key}}`);
 };

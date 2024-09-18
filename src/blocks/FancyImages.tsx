@@ -22,7 +22,7 @@ export const FancyImages: React.FC<{ text: string; className?: string }> = ({
           </div>
         </div>
 
-        <div className="mockup-browser border-base-300 border absolute -bottom-12 right-0 w-1/2  bg-base-300">
+        <div className="z-20 mockup-browser border-base-300 border absolute -bottom-12 right-0 w-1/2  bg-base-300">
           <div className="mockup-browser-toolbar ">
             <div className="input border-base-300 border">
               https://smartstart.com

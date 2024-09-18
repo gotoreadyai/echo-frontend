@@ -42,7 +42,7 @@ const updateLayout = (_pageData: any) => {
 const LayoutRenderer: React.FC = () => {
   const { slots, setSlots } = useBlockStore();
   const { action } = useParams<PathParams>();
-  const { getUSParam } = useNavigation();
+  const { getUSParam, getAll } = useNavigation();
   const rightbar = getUSParam("rightbar");
   const selectedLayoutName = usePageStore((state) => state.pageData?.layout);
 
@@ -61,7 +61,14 @@ const LayoutRenderer: React.FC = () => {
       const documentBlocks = documentData?.document?.content || {};
       const combinedBlocks = combineBlocks(workspaceBlocks, documentBlocks);
       setSlots(combinedBlocks);
-      usePageStore.setState(() => ({ pageData: _pageData }));
+
+      usePageStore.setState((state) => ({
+        pageData: {
+          ..._pageData,
+          filters: { ...state.pageData.filters, ...getAll() },
+        },
+      }));
+
       updateLayout(_pageData);
     }
   }, [documentData, setSlots, workspaceData]);

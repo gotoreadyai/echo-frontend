@@ -2,14 +2,15 @@ import React, { useEffect, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useBlockStore } from "../stores/blockStore";
 import { Block } from "../types/types";
+import { v4 as uuidv4 } from "uuid";
 
 const KeyboardHandler: React.FC = () => {
   const {
     isEditing,
     selectedSlot,
     selectedBlock,
-    copiedBlock, // Destructure copiedBlock from the store
-    setCopiedBlock,
+    copiedBlocks, // Destructure copiedBlocks from the store
+    setCopiedBlocks,
     addBlockToSlot,
     removeBlock,
     deselectBlock,
@@ -59,17 +60,20 @@ const KeyboardHandler: React.FC = () => {
   // Handler for Ctrl + C (Copy)
   const handleCtrlC = useCallback(() => {
     if (selectedBlock) {
-      setCopiedBlock(selectedBlock);
+      // setCopiedBlocks([...copiedBlocks, selectedBlock]); // Add the selected block to the copiedBlocks array
+      setCopiedBlocks([ selectedBlock]);
     }
-  }, [selectedBlock, setCopiedBlock]);
+  }, [selectedBlock, setCopiedBlocks, copiedBlocks]);
 
   // Handler for Ctrl + V (Paste)
   const handleCtrlV = useCallback(() => {
-    if (selectedSlot && copiedBlock) {
-      const newBlock: Block = { ...copiedBlock, id: Date.now().toString() };
-      addBlockToSlot(selectedSlot, newBlock);
+    if (selectedSlot && copiedBlocks.length > 0) {
+      copiedBlocks.forEach((block) => {
+        const newBlock: Block = { ...block, id: uuidv4() };
+        addBlockToSlot(selectedSlot, newBlock);
+      });
     }
-  }, [selectedSlot, copiedBlock, addBlockToSlot]);
+  }, [selectedSlot, copiedBlocks, addBlockToSlot]);
 
   // Handler for Delete key
   const handleDelete = useCallback(() => {
@@ -89,7 +93,7 @@ const KeyboardHandler: React.FC = () => {
     [selectedBlock, selectedSlot, moveBlock]
   );
 
-  // Handler dla Ctrl + Q
+  // Handler for Ctrl + Q
   const handleCtrlQ = useCallback(() => {
     alert("Q");
   }, []);
@@ -115,10 +119,11 @@ const KeyboardHandler: React.FC = () => {
 
         case "c":
         case "C":
-          if (e.ctrlKey) {
+          if (e.ctrlKey && !isFieldFocused()) {
             e.preventDefault();
             handleCtrlC();
           }
+
           break;
 
         case "v":
@@ -162,7 +167,7 @@ const KeyboardHandler: React.FC = () => {
       handleCtrlE,
       handleCtrlC,
       handleCtrlV,
-      handleCtrlQ, // Dodano handleCtrlQ do zależności
+      handleCtrlQ,
       handleDelete,
       handleArrowKeys,
     ]

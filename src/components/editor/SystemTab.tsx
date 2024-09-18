@@ -36,7 +36,7 @@ const SystemTab: React.FC = () => {
     <div
       className={`
         ${action === 'edit-document' ? 'bg-neutral' : 'bg-base-300'}
-        sticky top-0 p-sm px-md  text-xs z-20 flex gap-0.5 w-full 
+        sticky top-0 p-sm px-md  text-xs z-30 flex gap-0.5 w-full 
         border-b border-base-300 shadow-lg`}
     >
       <div className="dropdown">

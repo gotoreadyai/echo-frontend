@@ -15,22 +15,20 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
   reloadOnParamsChange = false,
   onComplete, // Destrukturyzacja props
 }) => {
-  const [Component, setComponent] = useState<
-    React.FC<{
-      scope: string;
-      onActionResult: (success: boolean) => void;
-    }>
-  | null>(null);
+  const [Component, setComponent] = useState<React.FC<{
+    scope: string;
+    onActionResult: (success: boolean) => void;
+  }> | null>(null);
 
   const [index, setIndex] = useState<number>(0);
   const [completed, setCompleted] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const { getAll } = useNavigation();
-  const [currentGetAll, setCurrentGetAll] = useState<string>(getAll());
+  const [currentGetAll, setCurrentGetAll] = useState<string>(JSON.stringify(getAll()));
 
   useEffect(() => {
-    if (reloadOnParamsChange && currentGetAll !== getAll()) {
-      setCurrentGetAll(getAll());
+    if (reloadOnParamsChange && currentGetAll !== JSON.stringify(getAll())) {
+      setCurrentGetAll(JSON.stringify(getAll()));
       setIndex(0);
       setCompleted(false);
       setError(null);
@@ -54,7 +52,15 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
       setCompleted(true);
       onComplete?.(true); // Wywołanie callbacka z sukcesem
     }
-  }, [actions, index, error, getAll, reloadOnParamsChange, currentGetAll, onComplete]);
+  }, [
+    actions,
+    index,
+    error,
+    getAll,
+    reloadOnParamsChange,
+    currentGetAll,
+    onComplete,
+  ]);
 
   const handleActionResult = async (success: boolean) => {
     if (success) {

@@ -3,7 +3,7 @@ import { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
 import { useBlockStore } from "../stores/blockStore";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle, FiCopy } from "react-icons/fi"; // Import FiCopy icon
 import { Block } from "../types/types";
 
 interface SlotsRendererProps {
@@ -18,11 +18,13 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     setSelectedSlot,
     setSelectedBlock,
     isEditing,
+    setCopiedBlocks, // Include setCopiedBlocks from the store
   } = useBlockStore();
 
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Function to handle slot selection
   const handleSlotClick = () => {
     if (isEditing && selectedSlot !== slotName) {
       setSelectedSlot(slotName);
@@ -37,6 +39,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     }
   };
 
+  // Function to handle individual block selection
   const handleBlockClick = (block: Block) => {
     setSelectedBlock(block);
     setSelectedSlot(slotName);
@@ -46,20 +49,36 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     navigate({ pathname: location.pathname, search: searchParams.toString() });
   };
 
+  // Function to handle copying all blocks in the slot
+  const handleCopySlotBlocks = () => {
+    if (isEditing) {
+      const blocksToCopy = slots[slotName] || [];
+      setCopiedBlocks(blocksToCopy); // Replace copiedBlocks with blocksToCopy
+      console.log(`Copied ${blocksToCopy.length} blocks from slot "${slotName}"`);
+      // Optional: Provide user feedback here (e.g., toast notification)
+    }
+  };
+
   return (
     <>
+      {/* Border around the slot */}
       <div
         className={`absolute w-full h-full border z-10 pointer-events-none ${
-          selectedSlot === slotName ? "border-primary" : "border-base-300 "
+          selectedSlot === slotName ? "border-primary" : "border-base-300"
         }`}
       ></div>
+
+      {/* Slot Header */}
       <div
-        onClick={handleSlotClick}
-        className={`absolute -top-8 h-8 z-10 rounded-t ${
-          selectedSlot === slotName ? "bg-primary" : "bg-base-300 "
+        className={`absolute -top-8 h-8 z-20 rounded-t flex justify-between items-center px-md gap-xs ${
+          selectedSlot === slotName ? "bg-primary" : "bg-base-300"
         }`}
       >
-        <div className="flex px-md gap-xs items-center h-full text-sm cursor-pointer">
+        {/* Slot Name and Check Icon */}
+        <div
+          className="flex gap-xs items-center h-full text-sm cursor-pointer"
+          onClick={handleSlotClick}
+        >
           <FiCheckCircle
             className={`${
               selectedSlot === slotName ? "text-neutral" : "text-warning"
@@ -71,12 +90,26 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
             {slotName}
           </span>
         </div>
-        <div
-          className="absolute w-full h-full top-0 "
-          onClick={handleSlotClick}
-        ></div>
+
+        {/* Copy Button */}
+        {isEditing && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent triggering handleSlotClick
+              handleCopySlotBlocks();
+            }}
+            className="p-1 rounded hover:bg-gray-200 focus:outline-none z-30"
+            title="Copy all blocks in this slot"
+          >
+            <FiCopy className="text-sm" />
+          </button>
+        )}
       </div>
+
+      {/* Spacer */}
       <div className="h-px"></div>
+
+      {/* Render All Blocks in the Slot */}
       {slots[slotName] &&
         slots[slotName].map((block: Block) => (
           <div key={block.id} className="block-wrapper m-px relative">

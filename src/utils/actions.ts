@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
+import { ModelSingular } from "../../models_EXPORT/models";
 
 // Initialize the import.meta.glob once to avoid re-execution on each function call
 const actionFiles: Record<string, () => Promise<any>> = import.meta.glob(
@@ -75,3 +76,37 @@ export const loadActionComponent = async (
     setComponent(null);
   }
 };
+
+export const getModelKey = (input: string): string | undefined => {
+  if (input in ModelSingular) {
+    return input;
+  }
+  return findModelByValue(input);
+};
+
+export const findModelByValue = (value: string): string | undefined => {
+  return Object.keys(ModelSingular).find((key) => ModelSingular[key] === value);
+};
+
+
+
+
+export const sanitizeByModel = <
+  T extends Record<string, any>,
+  K extends keyof T
+>(
+  inputData: T,
+  scope: Record<K, any>
+): Pick<T, K> => {
+  const allowedKeys = Object.keys(scope) as K[];
+  const sanitizedData = {} as Pick<T, K>;
+
+  allowedKeys.forEach((key) => {
+    if (key in inputData) {
+      sanitizedData[key] = inputData[key];
+    }
+  });
+
+  return sanitizedData;
+};
+

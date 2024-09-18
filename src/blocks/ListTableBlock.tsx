@@ -130,7 +130,7 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
     );
 
     return (
-      <div className={`container m-auto p-md ${className}`}>
+      <div className={`container m-auto ${className}`}>
         <table className="table">
           <thead>
             <tr>
@@ -138,7 +138,9 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
                 <th key={key}>{label}</th>
               ))}
               {actions && actions.length > 0 && (
-                <th key="actions-header">Akcje</th>
+                <th key="actions-header" className="text-right">
+                  Akcje
+                </th>
               )}
             </tr>
           </thead>

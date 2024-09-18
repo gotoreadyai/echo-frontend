@@ -11,9 +11,9 @@ const SubmitForm: React.FC<{
   const [resultMessage, setResultMessage] = useState<string | null>(null); // Nowy stan dla komunikatu
 
   const handleSubmit = async () => {
-    setLoading(true);
-    setTriggerActions(true);
-    setResultMessage(null); // Resetowanie komunikatu
+   setLoading(true);
+   setTriggerActions(true);
+   setResultMessage(null); // Resetowanie komunikatu
   };
 
   const handleActionsComplete = (success: boolean) => {
@@ -27,7 +27,7 @@ const SubmitForm: React.FC<{
   };
 
   return (
-    <div className={className}>
+    <div className={className || "container mx-auto"}>
       <button
         onClick={handleSubmit}
         type="button"

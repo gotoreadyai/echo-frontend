@@ -20,7 +20,7 @@ const DeleteAction:  React.FC<FetchItemsActionProps> = ({
     }
   
     try {
-      const result = await deleteItem(scope, getUSParam(`${scope}_id`) ?? "");
+      const result = await deleteItem(scope, getUSParam(`${scope}Id`) ?? "");
       console.log("Sign In successful:", result);
       onActionResult(true);
     } catch (error) {

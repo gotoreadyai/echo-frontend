@@ -7,7 +7,8 @@ export const InputBlockSchema = {
     title: "Input Block",
     properties: {
       label: { type: "string", label: "Input Label" },
-      fieldName: { type: "string", label: "Field Name" },
+      fieldName: { type: "string", label: "Field target" },
+      forcedDefaultValue: { type: "string", label: "Forced default" },
       className: { type: "string", label: "CSS Class" },
     },
   },

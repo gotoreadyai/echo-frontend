@@ -67,10 +67,10 @@ export const createItem = async (
   resourceName: string,
   newItem: Record<string, unknown>
 ) => {
-  const singular = ModelSingular[resourceName] || "";
+ 
 
   const response = await fetch(
-    `${import.meta.env.VITE_API_ENDPOINT}/${singular}`,
+    `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}`,
     {
       method: "POST",
       headers: getHeadersWithToken(),

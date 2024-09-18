@@ -7,12 +7,12 @@ interface BlockStore {
   isEditing: boolean;
   selectedSlot: string | null;
   selectedBlock: Block | null;
-  copiedBlock: Block | null; // Dodane
+  copiedBlocks: Block[]; // Renamed and changed type
   setSlots: (slots: Record<string, Block[]>) => void;
   addBlockToSlot: (slotName: string, block: Block) => void;
   setSelectedSlot: (slotName: string) => void;
   setSelectedBlock: (block: Block | null) => void;
-  setCopiedBlock: (block: Block | null) => void; // Dodane
+  setCopiedBlocks: (blocks: Block[]) => void; // Renamed and updated
   removeBlock: (blockId: string, slotName: string) => void;
   deselectBlock: () => void;
   moveBlock: (
@@ -28,7 +28,7 @@ export const useBlockStore = create<BlockStore>((set) => ({
   isEditing: true,
   selectedSlot: null,
   selectedBlock: null,
-  copiedBlock: null, // Dodane
+  copiedBlocks: [], // Initialized as empty array
 
   setSlots: (slots) => set({ slots }),
 
@@ -45,7 +45,7 @@ export const useBlockStore = create<BlockStore>((set) => ({
 
   setSelectedBlock: (block) => set({ selectedBlock: block }),
 
-  setCopiedBlock: (block) => set({ copiedBlock: block }), // Dodane
+  setCopiedBlocks: (blocks) => set({ copiedBlocks: blocks }), // Updated
 
   removeBlock: (blockId, slotName) => {
     set((state) => ({
@@ -94,8 +94,8 @@ export const useBlockStore = create<BlockStore>((set) => ({
             block.id === blockId ? { ...block, data } : block
           );
         } else {
-          // Obsłuż przypadek, gdy blocks nie jest tablicą
-          console.warn(`Slot "${slotName}" nie jest tablicą.`, blocks);
+          // Handle case where blocks is not an array
+          console.warn(`Slot "${slotName}" is not an array.`, blocks);
         }
       });
 

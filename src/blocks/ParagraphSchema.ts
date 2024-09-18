@@ -1,4 +1,4 @@
-import { FiFileText } from "react-icons/fi";
+import { LuText } from "react-icons/lu";
 
 export const ParagraphSchema = {
   id: "3b6883c2-4cd2-40f0-8bb9-63223362bf9e",
@@ -10,7 +10,7 @@ export const ParagraphSchema = {
       className: { type: "string", label: "CSS Class" },
     },
   },
-  icon: FiFileText,
+  icon: LuText,
   group: "content",
   data: { text: "Default paragraph text.", className: "paragraph-class" },
 };

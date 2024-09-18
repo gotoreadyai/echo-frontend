@@ -31,9 +31,8 @@ export const actionsListSchemaPart: any = {
     properties: {
       scope: {
         type: "string",
-        enum: ["workspaces", "documents"],
         title: "Scope",
-        default: "workspaces",
+        default: "",
       },
       action: {
         type: "string",
@@ -51,5 +50,34 @@ export const actionsListSchemaPart: any = {
         title: "Action",
       },
     },
+    allOf: [
+      {
+        if: {
+          properties: { action: { enum: ["InsertAction", "UpdateAction", "DeleteAction"] } },
+          required: ["action"],
+        },
+        then: {
+          properties: {
+            scope: {
+              enum: ["workspace", "document"],
+            },
+          },
+        },
+        else: {
+          properties: {
+            scope: {
+              enum: ["workspaces", "documents"],
+            },
+          },
+        },
+      },
+    ],
   },
 };
+
+
+export const textVariantsSchemaPart: any = {
+  type: "string",
+  label: "Text Variant",
+  enum: ["","hero", "leed", "info"],
+}

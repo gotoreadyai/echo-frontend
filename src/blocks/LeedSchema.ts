@@ -1,4 +1,4 @@
-import { FiAlignLeft } from "react-icons/fi";
+import { LuBlinds } from "react-icons/lu";
 import { backgroundSchemaPart } from "../data/schemaParts";
 export const LeedSchema = {
   filename: "Leed",
@@ -23,7 +23,7 @@ export const LeedSchema = {
     required: ["title", "text"],
   },
 
-  icon: FiAlignLeft,
+  icon: LuBlinds,
   group: "content",
   data: {
     title: "Default Header",

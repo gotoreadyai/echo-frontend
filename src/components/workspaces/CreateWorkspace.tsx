@@ -34,15 +34,15 @@ const CreateWorkspace: React.FC = () => {
               key: "slug",
             },
           ],
-          url: "/dashboard/documents?workspace_id={id}",
+          url: "/dashboard/documents?workspaceId={id}",
           actions: [
             {
               icon: "edit",
-              url: "rightview=edit&rightbar=workspaces&workspace_id={id}",
+              url: "rightview=edit&rightbar=workspaces&workspaceId={id}",
             },
             {
               icon: "trash",
-              url: "rightview=delete&rightbar=workspaces&workspace_id={id}",
+              url: "rightview=delete&rightbar=workspaces&workspaceId={id}",
             },
           ],
           path: "workspaces.workspaces.items",

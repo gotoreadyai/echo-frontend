@@ -16,7 +16,7 @@ const FilterScopeByIdAction: React.FC = ({ scope, onActionResult }: any) => {
     updateField(
       singular,
       Array.isArray(data) &&
-        data.find((x) => x.id === getUSParam(`${singular}_id` || ""))
+        data.find((x) => x.id === getUSParam(`${singular}Id` || ""))
     );
     onActionResult(true);
   };
