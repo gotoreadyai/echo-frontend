@@ -3,7 +3,7 @@ import { fetchItemBySlug } from "../services/genericService";
 import { PathParams } from "../types/types";
 import { useParams } from "react-router-dom";
 
-const useWorkspaceAndDocumentData = () => {
+const useInitialQuerys = () => {
   const { workspace,slug } = useParams<PathParams>();
 
   const {
@@ -35,4 +35,4 @@ const useWorkspaceAndDocumentData = () => {
   };
 };
 
-export default useWorkspaceAndDocumentData;
+export default useInitialQuerys;

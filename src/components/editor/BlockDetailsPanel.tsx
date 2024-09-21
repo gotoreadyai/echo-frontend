@@ -7,6 +7,7 @@ import {
   ArrayFieldItemTemplate,
   ArrayFieldTemplate,
   BaseInputTemplate,
+  CustomCheckboxWidget,
   CustomSelectWidget,
   DescriptionFieldTemplate,
   FieldTemplate,
@@ -61,6 +62,7 @@ const BlockDetailsPanel: React.FC = () => {
 
   const widgets = {
     SelectWidget: CustomSelectWidget,
+    CheckboxWidget: CustomCheckboxWidget, 
   };
 
   if (!selectedBlock) return <div className="p-4">No block selected</div>;

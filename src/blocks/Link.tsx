@@ -1,18 +1,24 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { usePageStore } from "../stores/pageStore";
+import { Link, useLocation } from "react-router-dom";
 import { parseKeyFromPath } from "../hooks/useNavigation";
+import { useGlobalStore } from "../stores/globalStore";
 
 export const LinkBlock: React.FC<{
   name: string;
   to: string;
   className?: string;
 }> = ({ name, to, className }) => {
-  const filters = usePageStore((state) => state.pageData?.filters);
-  
+  const filters = useGlobalStore((state) => state.filters);
+  const location = useLocation();
+
+  // Determine if the current location matches the 'to' value
+  const isActive = location.pathname === parseKeyFromPath(to, filters);
   return (
-    <div className="container mx-auto">
-      <Link to={parseKeyFromPath(to,filters)} className={`${className || "text-info "} w-full block`}>
+    <div className={`${className} container mx-auto`}>
+      <Link
+        to={parseKeyFromPath(to, filters)}
+        className={`btn px-8 ${isActive ? "btn-active" : ""}`}
+      >
         {name || "Link"}
       </Link>
     </div>
@@ -20,4 +26,3 @@ export const LinkBlock: React.FC<{
 };
 
 export default LinkBlock;
-/* text-right */

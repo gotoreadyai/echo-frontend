@@ -1,19 +1,34 @@
 // SubmitForm.tsx
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import ActionBlock from "./ActionBlock";
 
-const SubmitForm: React.FC<{
+interface Action {
+  scope: string;
+  action: string;
+}
+
+interface SubmitFormProps {
   className?: string;
-  actions: { scope: string; action: string }[];
-}> = ({ className, actions = [] }) => {
+  actions: Action[];
+  successRedirect?: string;
+}
+
+const SubmitForm: React.FC<SubmitFormProps> = ({
+  className,
+  successRedirect,
+  actions = [],
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [triggerActions, setTriggerActions] = useState<boolean>(false);
-  const [resultMessage, setResultMessage] = useState<string | null>(null); // Nowy stan dla komunikatu
+  const [resultMessage, setResultMessage] = useState<string | null>(null); // State for the message
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleSubmit = async () => {
-   setLoading(true);
-   setTriggerActions(true);
-   setResultMessage(null); // Resetowanie komunikatu
+    setLoading(true);
+    setTriggerActions(true);
+    setResultMessage(null); // Reset the message
   };
 
   const handleActionsComplete = (success: boolean) => {
@@ -21,6 +36,17 @@ const SubmitForm: React.FC<{
     setTriggerActions(false);
     if (success) {
       setResultMessage("Akcje zakończone pomyślnie!");
+
+      // If a successRedirect URL is provided, navigate to it
+      if (successRedirect) {
+        // Option 1: Immediate Redirect
+        navigate(successRedirect);
+
+        // Option 2: Delayed Redirect (e.g., after 2 seconds)
+        // setTimeout(() => {
+        //   navigate(successRedirect);
+        // }, 2000);
+      }
     } else {
       setResultMessage("Wystąpił błąd podczas wykonywania akcji.");
     }
@@ -42,12 +68,16 @@ const SubmitForm: React.FC<{
         <ActionBlock
           actions={actions}
           reloadOnParamsChange={false}
-          onComplete={handleActionsComplete} // Przekazanie callbacka
+          onComplete={handleActionsComplete} // Pass the callback
         />
       )}
 
       {resultMessage && (
-        <div className={`mt-4 ${resultMessage.includes("błąd") ? "text-red-500" : "text-green-500"}`}>
+        <div
+          className={`mt-4 ${
+            resultMessage.includes("błąd") ? "text-red-500" : "text-green-500"
+          }`}
+        >
           {resultMessage}
         </div>
       )}

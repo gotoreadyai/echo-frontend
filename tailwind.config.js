@@ -45,6 +45,11 @@ export default {
     },
   },
   daisyui: {
+    base: false,
+    // utils: false,
+    //styled: false,
+    logs: false,
+    rtl: false, 
     themes: [
       "light",
       "dark",

@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ModelSingular } from "../../models_EXPORT/models";
+import qs from 'qs';
+
 
 const getAuthTokenFromCookie = (): string | null => {
   const name = "auth_token=";
@@ -24,32 +27,28 @@ const getHeadersWithToken = (): HeadersInit => {
 const handleResponse = async (response: Response, errorMessage: string) => {
   if (!response.ok) {
     const errorData = await response.json();
-    console.error(`###:${errorMessage}:`, errorData);
-    throw new Error(JSON.stringify(errorData));
+    throw { ...errorData, msg: errorMessage };
   }
+
   return response.json();
 };
 
 export const fetchItems = async (
   resourceName: string,
-  related?: string,
-  id?: string,
-  page?: number,
-  limit?: number
+  filters: any,
 ) => {
-  const queryParams = new URLSearchParams();
-  if (page) queryParams.append("page", page.toString());
-  if (limit) queryParams.append("limit", limit.toString());
-
-  const endpoint = related
-    ? `${
-        import.meta.env.VITE_API_ENDPOINT
-      }/${resourceName}/${related}/${id}?${queryParams}`
-    : `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}?${queryParams}`;
-
+  const queryString = qs.stringify(filters[resourceName]);
+  const endpoint = `${
+    import.meta.env.VITE_API_ENDPOINT
+  }/${resourceName}?${queryString}`;
   const response = await fetch(endpoint);
-
   return handleResponse(response, `Failed to fetch ${resourceName}`);
+};
+
+export const fetchItemById = async (resourceName: string, id: string) => {
+  const endpoint = `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}/${id}`;
+  const response = await fetch(endpoint);
+  return handleResponse(response, `Failed to fetch document with slug: ${id}`);
 };
 
 export const fetchItemBySlug = async (resourceName: string, slug: string) => {
@@ -57,6 +56,7 @@ export const fetchItemBySlug = async (resourceName: string, slug: string) => {
     import.meta.env.VITE_API_ENDPOINT
   }/${resourceName}/slug/${slug}`;
   const response = await fetch(endpoint);
+
   return handleResponse(
     response,
     `Failed to fetch document with slug: ${slug}`
@@ -67,8 +67,6 @@ export const createItem = async (
   resourceName: string,
   newItem: Record<string, unknown>
 ) => {
- 
-
   const response = await fetch(
     `${import.meta.env.VITE_API_ENDPOINT}/${resourceName}`,
     {

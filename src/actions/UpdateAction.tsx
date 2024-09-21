@@ -2,31 +2,35 @@
 import React, { useEffect } from "react";
 import { updateItem } from "../services/genericService";
 import { usePageStore } from "../stores/pageStore";
-import useNavigation from "../hooks/useNavigation";
 import { FetchItemsActionProps } from "../types/types";
 import ActionMsg from "../components/uikit/ActionMsg";
+import { useGlobalStore } from "../stores/globalStore";
+import { genErrorMessage } from "../utils/actions";
 
-const UpdateAction:  React.FC<FetchItemsActionProps> = ({
+const UpdateAction: React.FC<FetchItemsActionProps> = ({
   scope,
   onActionResult,
 }) => {
-  const { getUSParam } = useNavigation();
+  const setMainMessage = useGlobalStore((state) => state.setMainMessage);
   const pageData = usePageStore((state) => state.pageData);
- 
+  const filters = useGlobalStore((state) => state.filters);
+  
+  
+
   const handleAction = async () => {
     if (!scope || !pageData[scope]) {
-      alert("Scope is undefined or invalid.");
+      console.error("Scope is undefined or invalid.");
       return;
     }
-  
     try {
-      const result = await updateItem(scope, getUSParam(`${scope}Id`) ?? "", {
-        title: pageData[scope].title,
+      await updateItem(scope, filters[scope].id, {
+        ...pageData[scope],
       });
-      console.log("Sign In successful:", result);
+      const successMsg = `Successfully update item for scope: ${scope}`;
+      setMainMessage(successMsg, "success");
       onActionResult(true);
-    } catch (error) {
-      alert(error);
+    } catch (error: any) {
+      setMainMessage(genErrorMessage(error, scope), "error");
     }
   };
 

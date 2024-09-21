@@ -3,13 +3,14 @@ import React, { useState } from "react";
 import { useBlockStore } from "../../stores/blockStore";
 import { useParams } from "react-router-dom";
 import { layoutsConfig } from "../../data/layoutsConfig";
-import { useCrudMutations } from "../../hooks/useCrudMutations";
+
 import { PathParams } from "../../types/types";
 import { usePageStore } from "../../stores/pageStore";
-
+import { genErrorMessage } from "../../utils/actions";
 import { FiSave } from "react-icons/fi";
 import { useGlobalStore } from "../../stores/globalStore"; // Import globalStore
 import useNavigation from "../../hooks/useNavigation";
+import { useCrudMutations } from "../../hooks";
 
 const SelectedSlotSaver: React.FC = () => {
   const { getUSParam } = useNavigation();
@@ -54,7 +55,9 @@ const SelectedSlotSaver: React.FC = () => {
             setMainMessage("Content saved successfully!", "success"); // Set success message
           },
           onError: (error: any) => {
-            setMainMessage(`Failed to save content: ${error.message}`, "error"); // Set error message
+            console.log(error);
+            
+            setMainMessage(genErrorMessage(error, selectedSlot), "error"); // Set error message
           },
         }
       );

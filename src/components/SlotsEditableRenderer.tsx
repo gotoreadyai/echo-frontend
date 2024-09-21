@@ -5,6 +5,7 @@ import { useBlockStore } from "../stores/blockStore";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FiCheckCircle, FiCopy } from "react-icons/fi"; // Import FiCopy icon
 import { Block } from "../types/types";
+import { useGlobalStore } from "../stores/globalStore";
 
 interface SlotsRendererProps {
   slots: Record<string, Block[]>;
@@ -23,6 +24,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const setMainMessage = useGlobalStore((state) => state.setMainMessage);
 
   // Function to handle slot selection
   const handleSlotClick = () => {
@@ -43,7 +45,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   const handleBlockClick = (block: Block) => {
     setSelectedBlock(block);
     setSelectedSlot(slotName);
-
+    
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("rightbar", "block");
     navigate({ pathname: location.pathname, search: searchParams.toString() });
@@ -54,10 +56,14 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     if (isEditing) {
       const blocksToCopy = slots[slotName] || [];
       setCopiedBlocks(blocksToCopy); // Replace copiedBlocks with blocksToCopy
-      console.log(`Copied ${blocksToCopy.length} blocks from slot "${slotName}"`);
+      console.log(
+        `Copied ${blocksToCopy.length} blocks from slot "${slotName}"`
+      );
       // Optional: Provide user feedback here (e.g., toast notification)
     }
   };
+
+
 
   return (
     <>
@@ -70,9 +76,10 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
 
       {/* Slot Header */}
       <div
-        className={`absolute -top-8 h-8 z-20 rounded-t flex justify-between items-center px-md gap-xs ${
-          selectedSlot === slotName ? "bg-primary" : "bg-base-300"
-        }`}
+        className={`absolute -top-8 h-8 z-20 rounded-t flex justify-between 
+          items-center px-md gap-xs ${
+            selectedSlot === slotName ? "bg-primary" : "bg-base-300"
+          }`}
       >
         {/* Slot Name and Check Icon */}
         <div
@@ -97,8 +104,9 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
             onClick={(e) => {
               e.stopPropagation(); // Prevent triggering handleSlotClick
               handleCopySlotBlocks();
+              setMainMessage('Copied all blocks in this slot', 'info');
             }}
-            className="p-1 rounded hover:bg-gray-200 focus:outline-none z-30"
+            className="btn btn-xs btn-circle z-30 -mr-sm ml-sm"
             title="Copy all blocks in this slot"
           >
             <FiCopy className="text-sm" />

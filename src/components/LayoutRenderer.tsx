@@ -4,21 +4,20 @@ import { useBlockStore } from "../stores/blockStore";
 import { usePageStore } from "../stores/pageStore";
 import { layoutsConfig } from "../data/layoutsConfig";
 import BlockDetailsPanel from "./editor/BlockDetailsPanel";
-import BlockSidebar from "./editor/BlockSidebar";
-import { useParams } from "react-router-dom";
-import ScopePanel from "./editor/ScopePanel";
+
 import RightBar from "./uikit/RightBar";
-import useWorkspaceAndDocumentData from "../hooks/useWorkspaceAndDocumentData";
 import { PathParams } from "../types/types";
 import SlotsRenderer from "./SlotsRenderer";
 import SlotsEditableRenderer from "./SlotsEditableRenderer";
 import LoginForm from "./user/LoginForm";
 import CreateWorkspace from "./workspaces/CreateWorkspace";
-import { SystemTab } from "./editor";
+import { BlockSidebar, ScopePanel, SystemTab } from "./editor";
 import Drawer from "./uikit/Drawer";
-import KeyboardHandler from "../hooks/keyboardHandler";
-import { FiLoader } from "react-icons/fi";
-import useNavigation from "../hooks/useNavigation";
+import { useGlobalStore } from "../stores/globalStore";
+import NotificationMsg from "./uikit/NotificationMsg";
+import { editConditions } from "../utils/layoutRenderer";
+import { KeyboardHandler, useNavigation, useInitialQuerys } from "../hooks";
+import { useParams } from "react-router-dom";
 
 // Utility functions extracted for better readability and reusability
 const combineBlocks = (workspaceBlocks: any, documentBlocks: any) => ({
@@ -45,6 +44,7 @@ const LayoutRenderer: React.FC = () => {
   const { getUSParam, getAll } = useNavigation();
   const rightbar = getUSParam("rightbar");
   const selectedLayoutName = usePageStore((state) => state.pageData?.layout);
+  const setFilters = useGlobalStore((state) => state.setFilters);
 
   const {
     workspaceData,
@@ -53,22 +53,21 @@ const LayoutRenderer: React.FC = () => {
     isDocumentLoading,
     workspaceError,
     documentError,
-  } = useWorkspaceAndDocumentData();
+  } = useInitialQuerys();
 
   useEffect(() => {
     if (workspaceData) {
-      const { _pageData, ...workspaceBlocks } = workspaceData.workspace.content;
-      const documentBlocks = documentData?.document?.content || {};
+      const { _pageData, ...workspaceBlocks } = workspaceData.content;
+      const documentBlocks = documentData?.content || {};
       const combinedBlocks = combineBlocks(workspaceBlocks, documentBlocks);
       setSlots(combinedBlocks);
 
-      usePageStore.setState((state) => ({
+      usePageStore.setState(() => ({
         pageData: {
           ..._pageData,
-          filters: { ...state.pageData.filters, ...getAll() },
         },
       }));
-
+      setFilters(getAll());
       updateLayout(_pageData);
     }
   }, [documentData, setSlots, workspaceData]);
@@ -93,14 +92,10 @@ const LayoutRenderer: React.FC = () => {
     return <div className="text-error">Error: layout config not found</div>;
   }
 
-  // Slot rendering logic simplified
   const slotProps = layoutConfig.slots.reduce((acc: any, slotName: string) => {
-    const SlotComponent =
-      action === "edit-scope" ||
-      action === "edit-document" ||
-      action === "edit-block"
-        ? SlotsEditableRenderer
-        : SlotsRenderer;
+    const SlotComponent = editConditions(action)
+      ? SlotsEditableRenderer
+      : SlotsRenderer;
     acc[slotName] = <SlotComponent slots={slots} slotName={slotName} />;
     return acc;
   }, {});
@@ -110,14 +105,9 @@ const LayoutRenderer: React.FC = () => {
       context={action ? <BlockSidebar /> : null}
       content={
         <>
-          <div
-            className={`${rightbar && "w-2/3"} ${
-              action === "edit-scope" ||
-              action === "edit-document" ||
-              (action === "edit-block" && "pr-24")
-            }`}
-          >
+          <div className={`${rightbar && "w-2/3"} `}>
             <SystemTab />
+            <NotificationMsg />
             <KeyboardHandler />
             <div className="flex items-stretch">
               {action === "edit-scope" && (
@@ -125,20 +115,12 @@ const LayoutRenderer: React.FC = () => {
                   <ScopePanel />
                 </div>
               )}
-              <div className="container-type-inline flex-1 ">
-                <Suspense fallback={<></>}>
+              <div className="container-type-inline flex-1">
+                <Suspense fallback={null}>
                   {layoutConfig.component &&
                     React.createElement(layoutConfig.component, slotProps)}
                 </Suspense>
               </div>
-              {(action === "edit-side" ||
-                action === "edit-modal" ||
-                action === "edit-workspace") && (
-                <div className="bg-base-300 p-lg shadow text-center">
-                  <FiLoader />
-                  {action}
-                </div>
-              )}
             </div>
           </div>
 

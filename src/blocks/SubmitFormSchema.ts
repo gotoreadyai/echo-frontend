@@ -13,13 +13,20 @@ export const SubmitFormSchema = {
         description:
           "Lista akcji do wykonania. Każda akcja zawiera zakres (scope) oraz identyfikator akcji (action).",
       },
+      successRedirect: {
+        type: "string",
+        label: "Success redirect",
+        description:
+          "Adres URL, do ktości ma być przekierowany użytkownik po wykonaniu akcji.",
+      },
+      className: { type: "string", label: "CSS Class" },
       reloadOnParamsChange: {
         type: "boolean",
         default: false,
         description:
           "Określa, czy blok akcji ma się przeładować, gdy zmienią się parametry URL.",
       },
-      className: { type: "string", label: "CSS Class" },
+      
     },
     required: ["actions"],
     

@@ -10,6 +10,7 @@ export const InputBlockSchema = {
       fieldName: { type: "string", label: "Field target" },
       forcedDefaultValue: { type: "string", label: "Forced default" },
       className: { type: "string", label: "CSS Class" },
+      readonly: { type: "boolean", label: "Readonly" },
     },
   },
   icon: LuTextCursorInput,

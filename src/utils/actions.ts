@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { ModelSingular } from "../../models_EXPORT/models";
+import { SchemaValue } from "../types/actionsTypes";
 
 // Initialize the import.meta.glob once to avoid re-execution on each function call
 const actionFiles: Record<string, () => Promise<any>> = import.meta.glob(
@@ -62,7 +63,6 @@ export const loadActionComponent = async (
     }>;
 
     if (Component) {
-      // Cache the loaded component
       actionCache.set(action, Component);
       setComponent(() => Component);
     } else {
@@ -88,6 +88,18 @@ export const findModelByValue = (value: string): string | undefined => {
   return Object.keys(ModelSingular).find((key) => ModelSingular[key] === value);
 };
 
+export const filterReferencesFromModelSchema = (schema: Record<string, SchemaValue>) => {
+  const result = Object.entries(schema).reduce((acc, [key, value]) => {
+    if (typeof value === 'object' && value !== null && 'references' in value && key !== 'ownerId') {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as Record<string, SchemaValue>);
+
+  return Object.keys(result).length > 0 ? result : null;
+};
+
+
 
 
 
@@ -95,9 +107,13 @@ export const sanitizeByModel = <
   T extends Record<string, any>,
   K extends keyof T
 >(
-  inputData: T,
+  inputData: T | undefined,
   scope: Record<K, any>
 ): Pick<T, K> => {
+  if (!inputData) {
+    throw new Error("inputData is undefined");
+  }
+
   const allowedKeys = Object.keys(scope) as K[];
   const sanitizedData = {} as Pick<T, K>;
 
@@ -109,4 +125,8 @@ export const sanitizeByModel = <
 
   return sanitizedData;
 };
-
+export const genErrorMessage = (error: any, scope: string): string => {
+  return ` ${error?.msg ? error.msg : "error"} for scope: ${scope}. ${
+    error?.error ? error.error : ""
+  }`;
+};

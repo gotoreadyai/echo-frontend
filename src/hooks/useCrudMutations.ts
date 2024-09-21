@@ -9,7 +9,7 @@ interface UseCrudMutationsProps<T> {
   setErrorMessage: (message: string | null) => void;
 }
 
-export const useCrudMutations = <T extends Record<string, unknown>>({
+const useCrudMutations = <T extends Record<string, unknown>>({
   model,
   setSelectedItem,
   setErrorMessage,
@@ -72,3 +72,4 @@ export const useCrudMutations = <T extends Record<string, unknown>>({
     updateContentMutation,
   };
 };
+export default useCrudMutations;

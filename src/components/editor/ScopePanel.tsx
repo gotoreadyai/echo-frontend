@@ -6,8 +6,9 @@ import { useBlockStore } from "../../stores/blockStore";
 import { useGlobalStore } from "../../stores/globalStore";
 import { FiSave } from "react-icons/fi";
 import { useParams } from "react-router-dom";
-import { useCrudMutations } from "../../hooks/useCrudMutations";
+
 import { PathParams } from "../../types/types";
+import { useCrudMutations } from "../../hooks";
 
 const ScopePanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
@@ -23,6 +24,7 @@ const ScopePanel: React.FC = () => {
   const globalScope = useGlobalStore((state) => state.globalScope());
 
   const setMainMessage = useGlobalStore((state) => state.setMainMessage);
+  const setSlots = useBlockStore((state) => state.setSlots);
 
   const { workspace } = useParams<PathParams>();
 
@@ -86,6 +88,24 @@ const ScopePanel: React.FC = () => {
     );
   };
 
+  // New function to handle saving slots
+  const handleSaveSlots = () => {
+    try {
+      // Validate that editedValue is in the correct format
+      if (typeof editedValue !== "object" || Array.isArray(editedValue)) {
+        throw new Error("Slots data must be an object.");
+      }
+      // Update slots in blockStore
+      setSlots(editedValue as Record<string, any[]>);
+      setMainMessage("Slots updated successfully!", "success");
+      setErrorMessage(null); // Clear any previous errors
+    } catch (error: any) {
+      const errorMsg = error?.message || "An error occurred while updating slots.";
+      setErrorMessage(errorMsg);
+      setMainMessage(`Failed to update slots: ${errorMsg}`, "error");
+    }
+  };
+
   return (
     <div className="w-full sticky top-16">
       {/* Tabs to switch between scopes */}
@@ -145,7 +165,7 @@ const ScopePanel: React.FC = () => {
         </div>
       )}
 
-      {/* Render the button only for Initial Scope tab */}
+      {/* Render the button for Initial Scope tab */}
       {activeTab === "initialScope" && (
         <div className="p-sm">
           <button
@@ -153,6 +173,18 @@ const ScopePanel: React.FC = () => {
             className="btn btn-success btn-outline w-full"
           >
             <FiSave /> Update initial scope
+          </button>
+        </div>
+      )}
+
+      {/* Render the new button for Slots Preview tab */}
+      {activeTab === "slotsPreview" && (
+        <div className="p-sm">
+          <button
+            onClick={handleSaveSlots}
+            className="btn btn-success btn-outline w-full"
+          >
+            <FiSave /> Update block data
           </button>
         </div>
       )}

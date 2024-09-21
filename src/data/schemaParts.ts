@@ -29,11 +29,7 @@ export const actionsListSchemaPart: any = {
   items: {
     type: "object",
     properties: {
-      scope: {
-        type: "string",
-        title: "Scope",
-        default: "",
-      },
+     
       action: {
         type: "string",
         enum: [
@@ -43,30 +39,45 @@ export const actionsListSchemaPart: any = {
           "UpdateAction",
           "DeleteAction",
           "SignInAction",
+          "FetchItemAction",
           "FetchItemsAction",
           "FilterScopeByIdAction",
         ],
         default: "",
         title: "Action",
       },
+      scope: {
+        type: "string",
+        title: "Scope",
+        default: "",
+      },
     },
     allOf: [
       {
         if: {
-          properties: { action: { enum: ["InsertAction", "UpdateAction", "DeleteAction"] } },
+          properties: {
+            action: {
+              enum: [
+                "InsertAction",
+                "UpdateAction",
+                "DeleteAction",
+                "FetchItemAction",
+              ],
+            },
+          },
           required: ["action"],
         },
         then: {
           properties: {
             scope: {
-              enum: ["workspace", "document"],
+              enum: ["","workspace", "document"],
             },
           },
         },
         else: {
           properties: {
             scope: {
-              enum: ["workspaces", "documents"],
+              enum: ["","workspaces", "documents"],
             },
           },
         },
@@ -75,9 +86,8 @@ export const actionsListSchemaPart: any = {
   },
 };
 
-
 export const textVariantsSchemaPart: any = {
   type: "string",
   label: "Text Variant",
-  enum: ["","hero", "leed", "info"],
-}
+  enum: ["", "hero", "leed", "info"],
+};
