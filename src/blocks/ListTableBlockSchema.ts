@@ -47,6 +47,34 @@ export const ListTableBlockSchema = {
     ],
     className: "list-component-class",
   },
+  preview:`
+  <div class='flex p-sm items-stretch gap-px'>
+    <div class="flex-1 gap-px flex flex-col">
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+    </div>
+    <div class="flex-1 gap-px flex flex-col">
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+    </div>
+    <div class="flex-1 gap-px flex flex-col">
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+        <div class="h-1.5 bg-neutral"></div>
+    </div>
+  </div>
+  `
 };
 
 export default ListTableBlockSchema;

@@ -7,8 +7,8 @@ export const HeadingText: React.FC<{
   className: string;
 }> = ({ text, className = "", variant = "" }) => {
   return (
-    <div className="container mx-auto ">
-      <h1 className={`${variant ? textVariants[variant] : className}`}>
+    <div className={className || `container mx-auto`}>
+      <h1 className={`${variant && textVariants[variant]}`}>
         {text || "Default Header"}
       </h1>
     </div>

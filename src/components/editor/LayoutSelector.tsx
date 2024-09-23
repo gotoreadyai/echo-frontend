@@ -23,7 +23,7 @@ const LayoutSelector: React.FC<LayoutSelectorProps> = ({ label }) => {
   }));
 
   return (
-    <div className="p-md border-b border-base-300">
+    <div className="p-md border-b border-base-content border-opacity-30" >
       <SelectBlock label={label} fieldName="layout" options={layoutOptions} />
     </div>
   );

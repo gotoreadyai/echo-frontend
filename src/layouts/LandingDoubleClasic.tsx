@@ -11,12 +11,7 @@ const LandingDoubleClasic: React.FC<{ [key: string]: React.ReactNode }> = (
         className={`relative border-b border-base-300 ${initBackgrounds["outerLights"]}`}
       >
         <div
-          className={`absolute w-full h-full 
-          bg-[radial-gradient(50%_70%_at_90%_100%,
-              oklch(var(--p)/0.2)_0%,
-              oklch(var(--p)/0.2)_10%,
-              oklch(var(--b2)/0.7)_100%)]
-        `}
+          className={`absolute w-full h-full ${initBackgrounds["pointPrimaryLightRight"]}`}
         ></div>
         <header className="relative flex justify-between items-center container mx-auto mb-md p-md py-lg">
           <div>

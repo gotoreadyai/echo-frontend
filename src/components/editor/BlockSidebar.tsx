@@ -1,4 +1,3 @@
-// src/components/workspaces/BlockSidebar.tsx
 import React, { useEffect, useState } from "react";
 import { useBlockStore } from "../../stores/blockStore";
 import { v4 as uuidv4 } from "uuid";
@@ -12,12 +11,12 @@ import { Link } from "react-router-dom";
 const blockSchemas = import.meta.glob("../../blocks/*.ts");
 
 const BlockSidebar: React.FC = () => {
-  const { 
-    selectedSlot, 
-    addBlockToSlot, 
-    setSelectedBlock, 
-    slots, 
-    selectedBlock 
+  const {
+    selectedSlot,
+    addBlockToSlot,
+    setSelectedBlock,
+    slots,
+    selectedBlock,
   } = useBlockStore((state) => ({
     selectedSlot: state.selectedSlot,
     addBlockToSlot: state.addBlockToSlot,
@@ -84,7 +83,7 @@ const BlockSidebar: React.FC = () => {
     if (!selectedBlock) return null;
 
     for (const [groupName, blocks] of Object.entries(groupedBlocks)) {
-      if (blocks.some(block => block.filename === selectedBlock.filename)) {
+      if (blocks.some((block) => block.filename === selectedBlock.filename)) {
         return groupName;
       }
     }
@@ -97,14 +96,15 @@ const BlockSidebar: React.FC = () => {
   const renderGroupTabs = () =>
     Object.keys(groupedBlocks).map((group) => {
       const isActiveGroup = selectedGroup === group;
-      const isSelectedBlockGroup = group === selectedBlockGroup && !isActiveGroup;
+      const isSelectedBlockGroup =
+        group === selectedBlockGroup && !isActiveGroup;
 
       // Definiowanie klas CSS w zależności od stanu
       let tabClass = "tab";
       if (isActiveGroup) {
         tabClass += " tab-active bg-base-100";
       } else if (isSelectedBlockGroup) {
-        tabClass += " tab-selected-block-group bg-primary"; // Dodaj własną klasę
+        tabClass += " tab-selected-block-group bg-neutral-content bg-opacity-50"; // Dodaj własną klasę
       }
 
       if (rightbar) {
@@ -133,18 +133,27 @@ const BlockSidebar: React.FC = () => {
         <button
           aria-label="Add Block"
           key={i}
-          className={`btn btn-md w-full no-animation font-light px-3 flex items-center gap-xs ${
-            isSelected ? "btn-primary" : "btn-outline"
+          className={`${
+            rightbar ? "min-h-12" : "min-h-24"
+          }  flex flex-col items-stretch justify-stretch ${
+            isSelected ? "bg-neutral-content bg-opacity-50" : ""
           }`}
           onClick={() => handleAddBlock(block.filename)}
         >
-          <div className="text-lg">
-            {block.icon &&
-              typeof block.icon === "function" &&
-              React.createElement(block.icon)}
-          </div>
+          {block.preview ? (
+            <div
+              className="flex-1 grid items-center"
+              dangerouslySetInnerHTML={{ __html: block.preview }}
+            ></div>
+          ) : (
+            <div className="text-lg flex flex-1 justify-center items-center">
+              {block.icon &&
+                typeof block.icon === "function" &&
+                React.createElement(block.icon)}
+            </div>
+          )}
           {!rightbar && (
-            <div className="text-sm text-left flex-1">
+            <div className="text-sm bg-base-300 text-content p-xs text-center">
               {block.jsonSchema.title}
             </div>
           )}
@@ -156,28 +165,34 @@ const BlockSidebar: React.FC = () => {
     <div
       className={`${
         rightbar ? "w-20" : "w-80"
-      } bg-base-200 h-full flex flex-col`}
+      } bg-base-200 h-full flex flex-col border-r border-base-300`}
     >
       <div
         className={`flex items-center gap-sm ${
           rightbar ? "justify-center" : ""
-        } px-md py-sm border-b border-base-300`}
+        } border-b border-base-content border-opacity-20`}
       >
         <FiGrid strokeWidth={0.5} className="w-8 h-8" />
-        {!rightbar && <Link to="/"><h1 className="text-xl font-black text-accent m-0.5">BlockBox EDITOR</h1></Link>}
+        {!rightbar && (
+          <Link to="/">
+            <h1 className="text-xl font-black text-accent m-0.5">
+              BlockBox EDITOR
+            </h1>
+          </Link>
+        )}
       </div>
       {!rightbar && <LayoutSelector label="Choose layout:" />}
       {!rightbar && (
-        <div className="border-b border-base-300">
+        <div className="border-b border-base-content border-opacity-20">
           <label className="block p-md">Choose block:</label>
         </div>
       )}
       <div className="tabs tabs-bordered bg-base-300">{renderGroupTabs()}</div>
-      <div className="border-b border-base-300">
+      <div className="border-b border-base-content border-opacity-20">
         <div
-          className={`grid ${rightbar ? "p-md" : "p-sm py-md"} ${
+          className={`grid gap-px ${rightbar ? "" : ""} ${
             rightbar ? "grid-cols-1" : "grid-cols-2"
-          } gap-sm`}
+          }`}
         >
           {renderBlockButtons()}
         </div>

@@ -17,6 +17,7 @@ export interface BlockDefinition {
   group: string;
   data?: Record<string, unknown>;
   default?: Record<string, unknown>;
+  preview?: string
 }
 
 export interface BlockAttributesProps {

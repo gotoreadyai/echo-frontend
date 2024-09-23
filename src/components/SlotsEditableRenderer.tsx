@@ -135,6 +135,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
             ></div>
           </div>
         ))}
+        <div className="h-8"></div>
     </>
   );
 };

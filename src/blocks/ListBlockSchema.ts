@@ -31,6 +31,27 @@ export const ListBlockSchema = {
     ],
     className: "list-component-class",
   },
+  preview: `<div class='flex flex-col justify-between p-sm items-stretch gap-xs'>
+    
+        <div class="p-0.5 border border-neutral flex gap-xs">
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral flex-1"></div>
+        </div>
+        <div class="p-0.5 border border-neutral flex gap-xs">
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral flex-1"></div>
+        </div>
+         <div class="p-0.5 border border-neutral flex gap-xs">
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral w-1/4"></div>
+         <div class="h-2 bg-neutral flex-1"></div>
+        </div>
+        
+        
+    
+  </div>`,
 };
 
 export default ListBlockSchema;

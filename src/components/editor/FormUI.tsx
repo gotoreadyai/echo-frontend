@@ -51,19 +51,21 @@ export const BaseInputTemplate = (props: BaseInputTemplateProps) => {
     ...getInputProps(schema, type, options),
   } as unknown as InputHTMLAttributes<HTMLInputElement>;
   return (
-    <input
-      id={id}
-      className="w-full input input-bordered my-sm"
-      autoFocus={autofocus}
-      value={value}
-      onChange={onChangeOverride || onTextChange}
-      type={type}
-      placeholder={placeholder}
-      disabled={disabled}
-      readOnly={readonly}
-      required={required}
-      {...inputProps}
-    />
+    <div className="p-xs">
+      <input
+        id={id}
+        className="w-full input input-bordered"
+        autoFocus={autofocus}
+        value={value}
+        onChange={onChangeOverride || onTextChange}
+        type={type}
+        placeholder={placeholder}
+        disabled={disabled}
+        readOnly={readonly}
+        required={required}
+        {...inputProps}
+      />
+    </div>
   );
 };
 
@@ -89,10 +91,10 @@ export const CustomSelectWidget = (props: WidgetProps) => {
   };
 
   return (
-    <div className="my-select-wrapper">
+    <div className="my-select-wrapper p-xs">
       <select
         id={id}
-        className="select select-bordered w-full my-sm"
+        className="select select-bordered w-full"
         value={value || ""}
         required={required}
         disabled={disabled || readonly}
@@ -123,18 +125,16 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
   const { canAdd, items, onAddClick } = props;
 
   return (
-    <div className="mb-sm">
+    <div className="">
       {items.map((element, index) => (
-        <div key={index} className="array-item">
-          <div className="border-l-8 pl-1 border-base-content border-opacity-70 -ml-sm">
-            {element.children}
-          </div>
-          <div className="flex justify-end gap-1 mb-sm">
+        <div key={index} className="mt-sm">
+          
+          <div className="flex justify-end gap-1 mb-xs px-sm">
             {element.hasMoveUp && (
               <button
                 type="button"
                 aria-label="Move up"
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 onClick={element.onReorderClick(
                   element.index,
                   element.index - 1
@@ -147,7 +147,7 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
               <button
                 aria-label="Move Down"
                 type="button"
-                className="btn btn-sm btn-outline"
+                className="btn btn-xs btn-outline"
                 onClick={element.onReorderClick(
                   element.index,
                   element.index + 1
@@ -160,25 +160,29 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
               <button
                 aria-label="Remove"
                 type="button"
-                className="btn btn-sm btn-danger"
+                className="btn btn-xs btn-danger"
                 onClick={element.onDropIndexClick(element.index)}
               >
                 Remove
               </button>
             )}
           </div>
+          <div className="border-l-8 border-base-content border-opacity-70 -mt-lg">
+            {element.children}
+          </div>
         </div>
       ))}
 
       {canAdd && (
+        <div className="px-sm pb-xs">
         <button
           aria-label="Add item"
           type="button"
-          className="btn btn-primary btn-sm w-full mt-sm no-animation"
+          className="btn btn-primary btn-sm w-full no-animation"
           onClick={onAddClick}
         >
           Add Item
-        </button>
+        </button></div>
       )}
     </div>
   );
@@ -192,33 +196,34 @@ export function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType) {
 export function DescriptionFieldTemplate(props: DescriptionFieldProps) {
   const { description, id } = props;
   return (
-    <div id={id} className="text-xs text-neutral pt-1">
-      {description}
-    </div>
+    description && (
+      <div id={id} className="text-xs text-neutral px-xs pt-xs">
+        {description}
+      </div>
+    )
   );
 }
 
 export function FieldTemplate(props: FieldTemplateProps) {
   const { id, help, required, description, errors, children, schema } = props;
+  const isRootLevel = id.split("_").length === 2;
 
   return (
-    <div
-      className={`${
-        id.split("_").length === 2 && "border-b px-sm mb-sm"
-      }  border-base-300`}
-    >
+    <div className={`border-base-300 ${isRootLevel && "border-b"}`}>
       {schema.label && schema.type && (
         <label
           htmlFor={id}
-          className={`block form-label ${
-            id.split("_").length === 2 ? "text-xl font-normal text-base-content text-opacity-70" : "-mt-sm"
-          }  pt-sm`}
+          className={`block form-label text-sm font-normal text-opacity-70 ${
+            isRootLevel ? "bg-base-200 p-sm" : "px-sm pt-sm"
+          }`}
         >
           {schema.label}
           {required && <span className="text-danger">*</span>}
         </label>
       )}
-      {description && <>{description}</>}
+      {schema.description && schema.type && (
+        <div className={`px-xs`}>{description}</div>
+      )}
       <>{children}</>
       {errors && <div className="form-errors text-danger">{errors}</div>}
       {help && <div className="form-help text-muted">{help}</div>}
@@ -247,7 +252,7 @@ export const CustomCheckboxWidget = (props: WidgetProps) => {
   };
 
   return (
-    <div className="flex items-center my-sm">
+    <div className="relative flex items-center px-sm py-xs">
       <input
         type="checkbox"
         id={id}

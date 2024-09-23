@@ -102,10 +102,23 @@ const LayoutRenderer: React.FC = () => {
 
   return (
     <Drawer
-      context={action ? <BlockSidebar /> : null}
+      context={
+        action ? (
+          <BlockSidebar />
+        ) : (
+          workspaceData.content._sideStatic && (
+            <div className="flex flex-col gap-sm border-r border-base-300 h-full">
+              <SlotsRenderer
+                slots={workspaceData.content}
+                slotName={"_sideStatic"}
+              />
+            </div>
+          )
+        )
+      }
       content={
         <>
-          <div className={`${rightbar && "w-2/3"} `}>
+          <div className={`${rightbar && "w-2/3"}`}>
             <SystemTab />
             <NotificationMsg />
             <KeyboardHandler />
@@ -115,7 +128,7 @@ const LayoutRenderer: React.FC = () => {
                   <ScopePanel />
                 </div>
               )}
-              <div className="container-type-inline flex-1">
+              <div className={`flex-1 ${action ? "px-xs  " : ""}`}>
                 <Suspense fallback={null}>
                   {layoutConfig.component &&
                     React.createElement(layoutConfig.component, slotProps)}
