@@ -1,1 +1,0 @@
-import{j as e}from"./vendor-BORITBlt.js";const t=({text:t,className:a})=>e.jsx("div",{className:"container mx-auto px-md",children:e.jsx("h1",{className:`${a||"py-md text-4xl pb-md text-center font-bold"}`,children:t||"Default Header"})});export{t as HeadingText,t as default};

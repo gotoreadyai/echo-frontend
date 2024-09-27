@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import create from 'zustand';
-import { layoutsConfig } from '../data/layoutsConfig';
+import create from "zustand";
+import { layoutsConfig } from "../data/layoutsConfig";
 // Cache dla wygenerowanych getterów
 const cache: Record<string, <T>(state: any) => T> = {};
 
 // Funkcja do dynamicznego pobierania wartości z głęboko zagnieżdżonych pól w obiekcie
-export const getGetterByPath = (path: string): (<T>(state: any) => T | undefined) => {
-  if (!path || path.endsWith('.')) {
+export const getGetterByPath = (
+  path: string
+): (<T>(state: any) => T | undefined) => {
+  if (!path || path.endsWith(".")) {
     // console.error('Nieprawidłowa ścieżka:', path);
     return () => undefined;
   }
@@ -15,7 +17,9 @@ export const getGetterByPath = (path: string): (<T>(state: any) => T | undefined
   if (!cache[path]) {
     cache[path] = (object: any) => {
       try {
-        return path.split('.').reduce((acc, key) => (acc ? acc[key] : undefined), object);
+        return path
+          .split(".")
+          .reduce((acc, key) => (acc ? acc[key] : undefined), object);
       } catch {
         return undefined;
       }
@@ -28,9 +32,12 @@ export const getGetterByPath = (path: string): (<T>(state: any) => T | undefined
 const setDeep = (obj: any, path: string[], value: any) => {
   return path.reduceRight((acc, key, i) => {
     if (isNaN(Number(key))) {
-      return { ...getGetterByPath(path.slice(0, i).join('.'))(obj), [key]: acc };
+      return {
+        ...getGetterByPath(path.slice(0, i).join("."))(obj),
+        [key]: acc,
+      };
     }
-    const arr = getGetterByPath(path.slice(0, i).join('.'))(obj) || [];
+    const arr = getGetterByPath(path.slice(0, i).join("."))(obj) || [];
     (arr as any[])[Number(key)] = acc;
     return arr;
   }, value);
@@ -38,20 +45,25 @@ const setDeep = (obj: any, path: string[], value: any) => {
 
 interface PageState {
   pageData: Record<string, any>;
-  initialScope:Record<string, any>;
+  loading: Record<string, boolean>;
+  initialScope: Record<string, any>;
   selectedLayoutName: string;
   setSelectedLayoutName: (layoutName: string) => void;
   updateField: (path: string, value: any) => void;
   getFieldValue: (path: string) => any;
   resetPage: () => void;
+  setLoading: (path: string, isLoading: boolean) => void;
 }
 
 export const usePageStore = create<PageState>((set, get) => ({
   pageData: {},
   initialScope: {},
+  loading: {},
   selectedLayoutName: Object.keys(layoutsConfig)[0], // Ustaw domyślny layout
-
-  
+  setLoading: (path, isLoading) =>
+    set((state) => ({
+      loading: { ...state.loading, [path]: isLoading },
+    })),
 
   setSelectedLayoutName: (layoutName) => {
     set((state) => ({
@@ -65,11 +77,11 @@ export const usePageStore = create<PageState>((set, get) => ({
 
   updateField: (path: string, value: any) => {
     const pageDataCopy = { ...get().pageData };
-    const updatedData = setDeep(pageDataCopy, path.split('.'), value);
+    const updatedData = setDeep(pageDataCopy, path.split("."), value);
     set({ pageData: { ...pageDataCopy, ...updatedData } });
   },
 
-  getFieldValue: (path: string) => getGetterByPath(path)(get().pageData) ?? '',
-  
+  getFieldValue: (path: string) => getGetterByPath(path)(get().pageData) ?? "",
+
   resetPage: () => set({ pageData: {} }),
 }));

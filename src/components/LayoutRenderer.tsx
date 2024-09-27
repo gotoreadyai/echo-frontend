@@ -4,7 +4,6 @@ import { useBlockStore } from "../stores/blockStore";
 import { usePageStore } from "../stores/pageStore";
 import { layoutsConfig } from "../data/layoutsConfig";
 import BlockDetailsPanel from "./editor/BlockDetailsPanel";
-
 import RightBar from "./uikit/RightBar";
 import { PathParams } from "../types/types";
 import SlotsRenderer from "./SlotsRenderer";
@@ -18,6 +17,7 @@ import NotificationMsg from "./uikit/NotificationMsg";
 import { editConditions } from "../utils/layoutRenderer";
 import { KeyboardHandler, useNavigation, useInitialQuerys } from "../hooks";
 import { useParams } from "react-router-dom";
+import Logo from "../blocks/Logo";
 
 // Utility functions extracted for better readability and reusability
 const combineBlocks = (workspaceBlocks: any, documentBlocks: any) => ({
@@ -56,12 +56,11 @@ const LayoutRenderer: React.FC = () => {
   } = useInitialQuerys();
 
   useEffect(() => {
-    if (workspaceData) {
+    if (workspaceData && documentData) {
       const { _pageData, ...workspaceBlocks } = workspaceData.content;
       const documentBlocks = documentData?.content || {};
       const combinedBlocks = combineBlocks(workspaceBlocks, documentBlocks);
       setSlots(combinedBlocks);
-
       usePageStore.setState(() => ({
         pageData: {
           ..._pageData,
@@ -72,15 +71,28 @@ const LayoutRenderer: React.FC = () => {
     }
   }, [documentData, setSlots, workspaceData]);
 
-  // Early return if loading or errors occur
-  if (isWorkspaceLoading || isDocumentLoading) return null;
-  if (workspaceError || documentError)
+  // Early return if loading
+  if (isWorkspaceLoading || isDocumentLoading) {
     return (
-      <div className="text-error">
-        Error loading content:{" "}
-        {workspaceError?.message || documentError?.message}
+      <div
+        data-theme
+        className="bg-base-100 text-base-content p-lg h-screen"
+      ></div>
+    );
+  }
+
+  // Early return if errors occur
+  if (workspaceError || documentError) {
+    return (
+      <div className="text-error bg-base-100 h-screen p-lg">
+        <Logo/>
+        <div className=" bg-neutral-content p-md">
+          Error loading content:{" "}
+          {workspaceError?.message || documentError?.message}
+        </div>
       </div>
     );
+  }
 
   // Determine the current layout
   const currentLayout = layoutsConfig[selectedLayoutName]
@@ -89,7 +101,13 @@ const LayoutRenderer: React.FC = () => {
   const layoutConfig = layoutsConfig[currentLayout];
 
   if (!layoutConfig) {
-    return <div className="text-error">Error: layout config not found</div>;
+    return (
+      <div>
+        <div className="bg-neutral h-screentext-error">
+          Error: layout config not found
+        </div>
+      </div>
+    );
   }
 
   const slotProps = layoutConfig.slots.reduce((acc: any, slotName: string) => {
@@ -107,7 +125,7 @@ const LayoutRenderer: React.FC = () => {
           <BlockSidebar />
         ) : (
           workspaceData.content._sideStatic && (
-            <div className="flex flex-col gap-sm border-r border-base-300 h-full">
+            <div className="flex flex-col border-r border-base-300 h-full">
               <SlotsRenderer
                 slots={workspaceData.content}
                 slotName={"_sideStatic"}

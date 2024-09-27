@@ -37,7 +37,7 @@ const BlockRenderer: React.FC<BlockRendererProps> = ({ block }) => {
 
   return (
     <div className={isEditing ? "editing-class" : "view-class"}>
-      <Suspense fallback={<div>Ładowanie...</div>}>
+      <Suspense fallback={<></>}>
         <LazyComponent {...block.data} />
       </Suspense>
     </div>

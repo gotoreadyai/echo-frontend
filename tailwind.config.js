@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: "selector",
+  // darkMode: "selector",
   mode: "jit", // Włącza Just-In-Time mode
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {

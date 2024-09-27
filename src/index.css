@@ -32,3 +32,9 @@
     font-display: swap;
   }
 }
+
+@layer components {
+  .btn-hairline {
+    @apply border-0 border-b border-base-300 rounded-none;
+  }
+}

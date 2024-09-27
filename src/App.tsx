@@ -20,7 +20,7 @@ const App: React.FC = () => {
               {/* Przekierowanie do edycji jako domyślna trasa */}
               <Route
                 path="/"
-                element={<Navigate to="/dashboard/headpage/" replace />}
+                element={<Navigate to="/home/home-page/" replace />}
               />
               <Route path="/:workspace/:slug" element={<LayoutRenderer />} />
               <Route

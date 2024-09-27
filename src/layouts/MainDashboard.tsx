@@ -18,7 +18,7 @@ const MainDashboard: React.FC<{ [key: string]: React.ReactNode }> = (props) => {
       <div className="bg-base-200 flex-1 flex flex-col gap-md">
         <section className="relative">{props.primaryContent}</section>
         <div className="card flex flex-col bg-base-100 container mx-auto">
-          <section className="relative">{props.secondaryContent}</section>
+          <section className="relative flex justify-end">{props.secondaryContent}</section>
           <section className="relative">{props.tertiaryContent}</section>
         </div>
       </div>

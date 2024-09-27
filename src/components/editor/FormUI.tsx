@@ -195,9 +195,19 @@ export function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType) {
 
 export function DescriptionFieldTemplate(props: DescriptionFieldProps) {
   const { description, id } = props;
+  
+  // Sprawdzenie, czy opis jest z najwyższego poziomu schematu
+  const isRootLevel = id.split("_");
+
+
   return (
     description && (
-      <div id={id} className="text-xs text-neutral px-xs pt-xs">
+      <div
+        id={id}
+        className={`text-xs px-xs pt-xs ${
+          isRootLevel[1] ? "" : "border border-neutral p-xl m-xs bg-neutral-content"
+        }`}
+      >
         {description}
       </div>
     )

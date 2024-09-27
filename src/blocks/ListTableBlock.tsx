@@ -3,6 +3,8 @@ import React, { useCallback, useMemo } from "react";
 import { usePageStore, getGetterByPath } from "../stores/pageStore";
 import useNavigation, { parseKeyFromPath } from "../hooks/useNavigation";
 import { icons } from "../utils/display";
+import { useParams } from "react-router-dom";
+import { PathParams } from "../types/types";
 
 interface RepeaterField {
   label: string;
@@ -25,11 +27,17 @@ interface ListBlockProps {
 const ListTableBlock: React.FC<ListBlockProps> = React.memo(
   ({ path, repeater, actions, className = "", url = "" }) => {
     const { navigateTo } = useNavigation();
+    const { workspace, slug } = useParams<PathParams>();
 
-    const listData: any[] =
-      usePageStore(
-        useCallback((state) => getGetterByPath(path)(state.pageData), [path])
-      ) || [];
+    // Pobieranie danych z store bez domyślnej wartości
+    const listData: any[] | undefined = usePageStore(
+      useCallback((state) => getGetterByPath(path)(state.pageData), [path])
+    );
+
+    // Pobieranie stanu ładowania dla danej ścieżki
+    const isLoading: boolean = usePageStore(
+      useCallback((state) => state.loading[path], [path])
+    );
 
     const isValidPath = useMemo(() => path.trim() !== "", [path]);
     const isArrayData = useMemo(() => Array.isArray(listData), [listData]);
@@ -43,9 +51,13 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
 
     const handleActionClick = useCallback(
       (e: React.MouseEvent, actionUrl: string, item: Record<string, any>) => {
+       
         e.preventDefault();
         e.stopPropagation();
-        navigateTo(parseKeyFromPath(actionUrl, item));
+        console.log('in',actionUrl, item);
+        console.log('out',parseKeyFromPath(actionUrl, item ));
+        
+        navigateTo(parseKeyFromPath(actionUrl, item ));
       },
       [navigateTo]
     );
@@ -55,25 +67,34 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
       return <div>Nieprawidłowa ścieżka do danych.</div>;
     }
 
-    if (!isArrayData) {
+    if (!isLoading && !isArrayData) {
       console.error(`Ścieżka "${path}" nie wskazuje na tablicę.`);
       return <div>Nieprawidłowe dane - oczekiwano tablicy.</div>;
     }
+
+    const getValueByPath = (obj: Record<string, any>, path: string) => {
+      return path.split(".").reduce((acc, part) => acc && acc[part], obj);
+    };
 
     const renderCell = (
       item: Record<string, any>,
       key: string,
       isSkeleton: boolean
     ) => {
-      return (
-        <td key={key}>
-          {isSkeleton ? (
-            <div className="skeleton p-1 w-full">&nbsp;</div>
-          ) : (
-            item[key] ?? "Brak danych"
-          )}
-        </td>
-      );
+      const value = getValueByPath(item, key);
+      let displayValue;
+
+      if (isSkeleton) {
+        displayValue = <div className="skeleton p-1 w-full">&nbsp;</div>;
+      } else if (typeof value === "string") {
+        displayValue = value;
+      } else if (value !== undefined && value !== null) {
+        displayValue = "Dane są, ale nie są typu string";
+      } else {
+        displayValue = "Brak danych";
+      }
+
+      return <td key={key}>{displayValue}</td>;
     };
 
     const renderAction = (
@@ -95,7 +116,13 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
           <div
             key={index}
             className="bg-base-300 rounded p-sm -my-xs hover:bg-base-100"
-            onClick={(e) => handleActionClick(e, action.url!, item)}
+            onClick={(e) =>
+              handleActionClick(e, action.url!, {
+                ...item
+                ,
+                param:{ workspace, slug } 
+              })
+            }
           >
             {action.icon &&
               typeof icons(action.icon) === "function" &&
@@ -145,9 +172,40 @@ const ListTableBlock: React.FC<ListBlockProps> = React.memo(
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(listData) && listData.length === 0
-              ? Array.from({ length: 9 }).map(() => renderRow({}, true))
-              : listData.map((item) => renderRow(item))}
+            {isLoading ? (
+              // Wyświetlanie szkieletów podczas ładowania
+              Array.from({ length: 5 }).map((_, index) => (
+                <tr key={`skeleton-${index}`}>
+                  {repeater.map(({ key }) => (
+                    <td key={key}>
+                      <div className="skeleton p-1 w-full">&nbsp;</div>
+                    </td>
+                  ))}
+                  {actions && actions.length > 0 && (
+                    <td className="gap-sm flex justify-end" key="actions">
+                      {actions.map((_, idx) => (
+                        <div key={idx} className="skeleton w-8">
+                          &nbsp;
+                        </div>
+                      ))}
+                    </td>
+                  )}
+                </tr>
+              ))
+            ) : listData && listData.length === 0 ? (
+              // Wyświetlanie komunikatu, gdy dane są puste
+              <tr>
+                <td
+                  colSpan={repeater.length + (actions ? 1 : 0)}
+                  className="text-center"
+                >
+                  Brak danych do wyświetlenia.
+                </td>
+              </tr>
+            ) : (
+              // Wyświetlanie rzeczywistych danych
+              listData?.map((item) => renderRow(item))
+            )}
           </tbody>
         </table>
       </div>

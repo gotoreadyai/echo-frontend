@@ -5,6 +5,7 @@ import {
   NavigateFunction,
 } from "react-router-dom";
 import { useMemo } from "react";
+import { getGetterByPath } from "../stores/pageStore";
 
 // Definicja interfejsu dla hooka
 export interface Navigation {
@@ -107,5 +108,10 @@ const useNavigation = (): Navigation => {
 export default useNavigation;
 
 export const parseKeyFromPath = (path: string, item: any) => {
-  return path.replace(/{(\w+)}/g, (_, key: string) => item[key] || `{${key}}`);
+  return path.replace(/{([^}]+)}/g, (_, key: string) => {
+    const getter = getGetterByPath(key);
+    const value = getter(item);
+    return (value?.toString() ?? `{${key}}`);
+  });
 };
+

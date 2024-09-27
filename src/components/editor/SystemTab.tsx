@@ -1,15 +1,16 @@
 // src/components/SystemTab.tsx
 import React from "react";
-import { FiPackage, FiSun, FiUser } from "react-icons/fi";
+import { FiPackage, FiSun, FiUploadCloud, FiUser } from "react-icons/fi";
 import { useTheme } from "../../providers/ThemeProvider";
 import PreviewSwitch from "./PreviewSwitch";
 import ThemeSelector from "../uikit/ThemeSelector";
 
 import useNavigation from "../../hooks/useNavigation"; // Upewnij się, że ścieżka jest poprawna
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const SystemTab: React.FC = () => {
   const { theme, updateTheme } = useTheme();
+  const navigate = useNavigate();
 
   const { setUSParam } = useNavigation();
   const params = useParams<{
@@ -58,11 +59,21 @@ const SystemTab: React.FC = () => {
 
         <button
           className="btn btn-sm btn-square"
-          onClick={() => handleRightbarClick("workspaces")}
+          onClick={() => navigate(`/dashboard/workspaces/`)}
           aria-label="Workspaces"
         >
           <FiPackage />
         </button>
+
+        <button
+          className="btn btn-sm btn-square"
+          onClick={() => handleRightbarClick("workspaces")}
+          aria-label="Workspaces"
+        >
+          <FiUploadCloud />
+        </button>
+
+        
 
         <button
           className="btn btn-sm btn-square"

@@ -16,6 +16,16 @@
     />
     <meta name="blockbox">
     <title>SMART START</title>
+    <script>
+      (function() {
+        try {
+          const theme = localStorage.getItem('theme') || 'default';
+          document.documentElement.setAttribute('data-theme', theme);
+        } catch (e) {
+          console.error('Błąd podczas ustawiania motywu:', e);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

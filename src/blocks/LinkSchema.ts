@@ -9,6 +9,27 @@ export const LinkSchema = {
       name: { type: "string", label: "Link Text" },
       to: { type: "string", label: "Link URL" },
       className: { type: "string", label: "CSS Class" },
+      size: {
+        type: "string",
+        label: "Size",
+        enum: ["", "btn-xs", "btn-sm", "btn-md", "btn-lg", "btn-xl"],
+      },
+      variant: {
+        type: "string",
+        label: "Variant",
+        enum: [
+          "",
+          "btn-neutral",
+          "btn-primary",
+          "btn-secondary",
+          "btn-accent",
+          "btn-ghost",
+          "btn-link",
+          "btn-hairline"
+        ],
+      },
+      outline: { type: "boolean", label: "Is outline" },
+      wide: { type: "boolean", label: "Is wide" },
     },
   },
   icon: FiLink,
