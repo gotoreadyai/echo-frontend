@@ -6,7 +6,7 @@ export const ListTableBlockSchema = {
   jsonSchema: {
     title: "ListTable",
     properties: {
-      path: { type: "string", label: "Path to Data" },
+      path: { type: "string", label: "Scope" },
       repeater: {
         type: "array",
         label: "Repeater Fields",

@@ -21,7 +21,7 @@ const ScopePanel: React.FC = () => {
   const initialScope = usePageStore((state) => state.initialScope);
   const pageData = usePageStore((state) => state.pageData);
   const slots = useBlockStore((state) => state.slots);
-  const globalScope = useGlobalStore((state) => state.globalScope());
+  const globalScope = useGlobalStore((state) => state.globalScope);
 
   const setMainMessage = useGlobalStore((state) => state.setMainMessage);
   const setSlots = useBlockStore((state) => state.setSlots);

@@ -7,7 +7,12 @@ export const InputBlockSchema = {
     title: "Input Block",
     properties: {
       label: { type: "string", label: "Input Label" },
-      fieldName: { type: "string", label: "Field target" },
+      fieldName: {
+        type: "string",
+        label: "Field name",
+        description: "Input Field Name as target path",
+      },
+      autocomplete: { type: "string", label: "Autocomplete" },
       forcedDefaultValue: { type: "string", label: "Forced default" },
       className: { type: "string", label: "CSS Class" },
       readonly: { type: "boolean", label: "Readonly" },

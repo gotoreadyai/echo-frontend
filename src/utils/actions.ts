@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
-import { ModelSingular } from "../../models_EXPORT/models";
-import { SchemaValue } from "../types/actionsTypes";
-
-// Initialize the import.meta.glob once to avoid re-execution on each function call
 const actionFiles: Record<string, () => Promise<any>> = import.meta.glob(
   "../actions/*.tsx"
 );
 
-// Use a Map for caching components for better performance and flexibility
 const actionCache = new Map<
   string,
   React.FC<{ scope: string; onActionResult: (success: boolean) => void }>
@@ -30,17 +25,13 @@ export const loadActionComponent = async (
     return;
   }
 
-  // Check if the component is already cached
   const cachedComponent = actionCache.get(action);
   if (cachedComponent) {
-    console.log(`Using cached action component for: ${action}`);
     setComponent(() => cachedComponent);
     return;
   }
 
   const path = `../actions/${action}.tsx`;
-  console.log("Loading action:", path);
-
   const loadFile = actionFiles[path];
   if (!loadFile) {
     const errorMessage = `Action file: ${path} not found`;
@@ -51,17 +42,13 @@ export const loadActionComponent = async (
   }
 
   try {
-    // Load the module dynamically
     const actionMod = await loadFile();
-
-    // Handle the possibility of a nested promise for default export
     const Component = (
       actionMod.default ? actionMod.default : (await actionMod()).default
     ) as React.FC<{
       scope: string;
       onActionResult: (success: boolean) => void;
     }>;
-
     if (Component) {
       actionCache.set(action, Component);
       setComponent(() => Component);
@@ -71,60 +58,11 @@ export const loadActionComponent = async (
   } catch (error) {
     const errorMessage =
       error instanceof Error ? error.message : "Unknown error occurred";
-    console.error("Error loading Action component:", errorMessage);
     setError(`Error loading action: ${errorMessage}`);
     setComponent(null);
   }
 };
 
-export const getModelKey = (input: string): string | undefined => {
-  if (input in ModelSingular) {
-    return input;
-  }
-  return findModelByValue(input);
-};
-
-export const findModelByValue = (value: string): string | undefined => {
-  return Object.keys(ModelSingular).find((key) => ModelSingular[key] === value);
-};
-
-export const filterReferencesFromModelSchema = (schema: Record<string, SchemaValue>) => {
-  const result = Object.entries(schema).reduce((acc, [key, value]) => {
-    if (typeof value === 'object' && value !== null && 'references' in value && key !== 'ownerId') {
-      acc[key] = value;
-    }
-    return acc;
-  }, {} as Record<string, SchemaValue>);
-
-  return Object.keys(result).length > 0 ? result : null;
-};
-
-
-
-
-
-export const sanitizeByModel = <
-  T extends Record<string, any>,
-  K extends keyof T
->(
-  inputData: T | undefined,
-  scope: Record<K, any>
-): Pick<T, K> => {
-  if (!inputData) {
-    throw new Error("inputData is undefined");
-  }
-
-  const allowedKeys = Object.keys(scope) as K[];
-  const sanitizedData = {} as Pick<T, K>;
-
-  allowedKeys.forEach((key) => {
-    if (key in inputData) {
-      sanitizedData[key] = inputData[key];
-    }
-  });
-
-  return sanitizedData;
-};
 export const genErrorMessage = (error: any, scope: string): string => {
   return ` ${error?.msg ? error.msg : "error"} for scope: ${scope}. ${
     error?.error ? error.error : ""

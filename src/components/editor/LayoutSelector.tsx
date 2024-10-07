@@ -18,8 +18,8 @@ const LayoutSelector: React.FC<LayoutSelectorProps> = ({ label }) => {
   }));
 
   const layoutOptions = Object.keys(layoutsConfig).map((key) => ({
-    label: key.charAt(0).toUpperCase() + key.slice(1),
-    value: key,
+    name: key.charAt(0).toUpperCase() + key.slice(1),
+    id: key,
   }));
 
   return (

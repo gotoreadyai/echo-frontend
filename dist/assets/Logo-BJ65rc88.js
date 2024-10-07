@@ -1,1 +1,0 @@
-import{j as s,A as o}from"./vendor-C2_yBtKn.js";const a=({className:a})=>s.jsx(o,{to:"/",className:`${a||"inline-block"} `,children:s.jsx("img",{src:"/logo.svg",alt:"logo"})});export{a as Logo,a as default};

@@ -10,7 +10,7 @@ import SlotsRenderer from "./SlotsRenderer";
 import SlotsEditableRenderer from "./SlotsEditableRenderer";
 import LoginForm from "./user/LoginForm";
 import CreateWorkspace from "./workspaces/CreateWorkspace";
-import { BlockSidebar, ScopePanel, SystemTab } from "./editor";
+import { BlockSidebar, ScopePanel, TopBar } from "./editor";
 import Drawer from "./uikit/Drawer";
 import { useGlobalStore } from "../stores/globalStore";
 import NotificationMsg from "./uikit/NotificationMsg";
@@ -137,7 +137,7 @@ const LayoutRenderer: React.FC = () => {
       content={
         <>
           <div className={`${rightbar && "w-2/3"}`}>
-            <SystemTab />
+            <TopBar />
             <NotificationMsg />
             <KeyboardHandler />
             <div className="flex items-stretch">

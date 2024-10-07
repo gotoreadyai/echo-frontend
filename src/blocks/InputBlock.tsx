@@ -5,6 +5,7 @@ interface InputBlockProps {
   label: string;
   fieldName: string; // Klucz do identyfikacji pola w globalnym stanie
   type?: string;
+  autocomplete?: string;
   readonly?: boolean;
   forcedDefaultValue?: string; // Dodana nowa właściwość
   className?: string;
@@ -12,11 +13,12 @@ interface InputBlockProps {
 
 export const InputBlock: React.FC<InputBlockProps> = ({
   label,
-  fieldName,
+  fieldName = "",
+  autocomplete,
   type,
   readonly = false,
   forcedDefaultValue,
-  className
+  className,
 }) => {
   // Pobieramy zarówno wartość pola, jak i funkcję aktualizującą w jednym wywołaniu
   const { fieldValue, updateField } = usePageStore((state) => ({
@@ -26,10 +28,13 @@ export const InputBlock: React.FC<InputBlockProps> = ({
 
   // Używamy useEffect, aby ustawić forcedDefaultValue, jeśli wartość nie jest ustawiona
   useEffect(() => {
-    if (!usePageStore.getState().getFieldValue(fieldName) && forcedDefaultValue) {
+    if (
+      !usePageStore.getState().getFieldValue(fieldName) &&
+      forcedDefaultValue
+    ) {
       updateField(fieldName, forcedDefaultValue);
-    }else{
-      updateField(fieldName, fieldValue ? fieldValue : '');
+    } else {
+      updateField(fieldName, fieldValue ? fieldValue : "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fieldName, forcedDefaultValue, updateField]);
@@ -39,14 +44,19 @@ export const InputBlock: React.FC<InputBlockProps> = ({
   };
 
   return (
-    <div className={  `${className} container mx-auto ` }>
-      <label htmlFor={fieldName} className="block text-sm font-medium text-gray-700">
+    <div className={`${className} container mx-auto `}>
+      <label
+        htmlFor={fieldName.replace(/\./g, "")}
+        className="block text-sm font-medium text-gray-700 pb-xs"
+      >
         {label}
       </label>
       <input
-        id={fieldName}
+        id={fieldName.replace(/\./g, "")}
         type={type || "text"}
-        className="input input-bordered w-full mb-2"
+        autoComplete={autocomplete || undefined}
+        name={fieldName.replace(/\./g, "")}
+        className="input input-bordered w-full"
         value={fieldValue}
         readOnly={readonly}
         disabled={readonly}

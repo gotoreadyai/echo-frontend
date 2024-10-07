@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { usePageStore, getGetterByPath } from "../stores/pageStore";
 import useNavigation, { parseKeyFromPath } from "../hooks/useNavigation";
 import { icons } from "../utils/display";
@@ -24,193 +24,141 @@ interface ListBlockProps {
   className?: string;
 }
 
-const ListTableBlock: React.FC<ListBlockProps> = React.memo(
-  ({ path, repeater, actions, className = "", url = "" }) => {
-    const { navigateTo } = useNavigation();
-    const { workspace, slug } = useParams<PathParams>();
+const getValueByPath = (obj: any, path: string) =>
+  path.split(".").reduce((acc, part) => acc?.[part], obj);
 
-    // Pobieranie danych z store bez domyślnej wartości
-    const listData: any[] | undefined = usePageStore(
-      useCallback((state) => getGetterByPath(path)(state.pageData), [path])
-    );
+const ListTableBlock: React.FC<ListBlockProps> = ({
+  path,
+  repeater,
+  actions = [],
+  className = "",
+  url = "",
+}) => {
+  const { navigateTo } = useNavigation();
+  const { workspace, slug } = useParams<PathParams>();
 
-    // Pobieranie stanu ładowania dla danej ścieżki
-    const isLoading: boolean = usePageStore(
-      useCallback((state) => state.loading[path], [path])
-    );
+  const rawData = usePageStore((state) =>
+    getGetterByPath(path)(state.pageData)
+  );
+  const isLoading = usePageStore((state) => state.loading[path]);
 
-    const isValidPath = useMemo(() => path.trim() !== "", [path]);
-    const isArrayData = useMemo(() => Array.isArray(listData), [listData]);
+  const [isVisible, setIsVisible] = useState(false);
 
-    const handleRowClick = useCallback(
-      (item: Record<string, any>) => {
-        navigateTo(parseKeyFromPath(url, item));
-      },
-      [navigateTo, url]
-    );
-
-    const handleActionClick = useCallback(
-      (e: React.MouseEvent, actionUrl: string, item: Record<string, any>) => {
-       
-        e.preventDefault();
-        e.stopPropagation();
-        console.log('in',actionUrl, item);
-        console.log('out',parseKeyFromPath(actionUrl, item ));
-        
-        navigateTo(parseKeyFromPath(actionUrl, item ));
-      },
-      [navigateTo]
-    );
-
-    if (!isValidPath) {
-      console.error("Ścieżka jest niezdefiniowana lub pusta.");
-      return <div>Nieprawidłowa ścieżka do danych.</div>;
+  useEffect(() => {
+    if (!isLoading && (!rawData || (rawData as any[]).length === 0)) {
+      setIsVisible(true);
+    } else {
+      setIsVisible(false);
     }
+  }, [isLoading, rawData]);
 
-    if (!isLoading && !isArrayData) {
-      console.error(`Ścieżka "${path}" nie wskazuje na tablicę.`);
-      return <div>Nieprawidłowe dane - oczekiwano tablicy.</div>;
-    }
-
-    const getValueByPath = (obj: Record<string, any>, path: string) => {
-      return path.split(".").reduce((acc, part) => acc && acc[part], obj);
-    };
-
-    const renderCell = (
-      item: Record<string, any>,
-      key: string,
-      isSkeleton: boolean
-    ) => {
-      const value = getValueByPath(item, key);
-      let displayValue;
-
-      if (isSkeleton) {
-        displayValue = <div className="skeleton p-1 w-full">&nbsp;</div>;
-      } else if (typeof value === "string") {
-        displayValue = value;
-      } else if (value !== undefined && value !== null) {
-        displayValue = "Dane są, ale nie są typu string";
-      } else {
-        displayValue = "Brak danych";
-      }
-
-      return <td key={key}>{displayValue}</td>;
-    };
-
-    const renderAction = (
-      action: Action,
-      item: Record<string, any>,
-      isSkeleton: boolean,
-      index: number
-    ) => {
-      if (isSkeleton) {
-        return (
-          <div key={index} className="skeleton w-8">
-            &nbsp;
-          </div>
-        );
-      }
-
-      if (action.url) {
-        return (
-          <div
-            key={index}
-            className="bg-base-300 rounded p-sm -my-xs hover:bg-base-100"
-            onClick={(e) =>
-              handleActionClick(e, action.url!, {
-                ...item
-                ,
-                param:{ workspace, slug } 
-              })
-            }
-          >
-            {action.icon &&
-              typeof icons(action.icon) === "function" &&
-              React.createElement(icons(action.icon))}
-          </div>
-        );
-      }
-
-      return <span key={index}>{action.icon}</span>;
-    };
-
-    const renderRow = (
-      item: Record<string, any>,
-      isSkeleton: boolean = false
-    ) => (
-      <tr
-        className="hover cursor-pointer"
-        onClick={() => !isSkeleton && handleRowClick(item)}
-        key={
-          isSkeleton ? `skeleton-${Math.random()}` : item.id || Math.random()
-        }
-      >
-        {repeater.map(({ key }) => renderCell(item, key, isSkeleton))}
-        {actions && actions.length > 0 && (
-          <td className="gap-sm flex justify-end" key="actions">
-            {actions.map((action, index) =>
-              renderAction(action, item, isSkeleton, index)
-            )}
-          </td>
-        )}
-      </tr>
-    );
-
-    return (
-      <div className={`container m-auto ${className}`}>
-        <table className="table">
-          <thead>
-            <tr>
-              {repeater.map(({ label, key }) => (
-                <th key={key}>{label}</th>
-              ))}
-              {actions && actions.length > 0 && (
-                <th key="actions-header" className="text-right">
-                  Akcje
-                </th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {isLoading ? (
-              // Wyświetlanie szkieletów podczas ładowania
-              Array.from({ length: 5 }).map((_, index) => (
-                <tr key={`skeleton-${index}`}>
-                  {repeater.map(({ key }) => (
-                    <td key={key}>
-                      <div className="skeleton p-1 w-full">&nbsp;</div>
-                    </td>
-                  ))}
-                  {actions && actions.length > 0 && (
-                    <td className="gap-sm flex justify-end" key="actions">
-                      {actions.map((_, idx) => (
-                        <div key={idx} className="skeleton w-8">
-                          &nbsp;
-                        </div>
-                      ))}
-                    </td>
-                  )}
-                </tr>
-              ))
-            ) : listData && listData.length === 0 ? (
-              // Wyświetlanie komunikatu, gdy dane są puste
-              <tr>
-                <td
-                  colSpan={repeater.length + (actions ? 1 : 0)}
-                  className="text-center"
-                >
-                  Brak danych do wyświetlenia.
-                </td>
-              </tr>
-            ) : (
-              // Wyświetlanie rzeczywistych danych
-              listData?.map((item) => renderRow(item))
-            )}
-          </tbody>
-        </table>
-      </div>
-    );
+  if (!path.trim()) {
+    console.error("Ścieżka jest niezdefiniowana lub pusta.");
+    return <div>Nieprawidłowa ścieżka do danych.</div>;
   }
-);
+
+  // Ustawiamy `listData` jako pustą tablicę, jeśli dane nie są tablicą
+  const listData = Array.isArray(rawData) ? rawData : [];
+
+  const handleRowClick = (item: any) => navigateTo(parseKeyFromPath(url, item));
+
+  const handleActionClick = (
+    e: React.MouseEvent,
+    actionUrl: string,
+    item: any
+  ) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigateTo(
+      parseKeyFromPath(actionUrl, {
+        ...item,
+        _router_workspace: workspace,
+        _router_slug: slug,
+      })
+    );
+  };
+
+  const renderCell = (item: any, key: string, isSkeleton: boolean) => (
+    <td key={key}>
+      {isSkeleton ? (
+        <div className="skeleton p-1 w-full">&nbsp;</div>
+      ) : (
+        getValueByPath(item, key) ?? "Brak danych"
+      )}
+    </td>
+  );
+
+  const renderAction = (
+    action: Action,
+    item: any,
+    isSkeleton: boolean,
+    index: number
+  ) => (
+    <div
+      key={index}
+      className={`w-8 ${
+        isSkeleton
+          ? "skeleton"
+          : "bg-base-300 rounded p-sm -my-xs hover:bg-base-100"
+      }`}
+      onClick={(e) => !isSkeleton && handleActionClick(e, action.url!, item)}
+    >
+      {!isSkeleton && React.createElement(icons(action.icon))}
+    </div>
+  );
+
+  const renderRow = (item: any, isSkeleton: boolean, key: string | number) => (
+    <tr
+      key={key}
+      className="hover cursor-pointer"
+      onClick={() => !isSkeleton && handleRowClick(item)}
+    >
+      {repeater.map(({ key }) => renderCell(item, key, isSkeleton))}
+      {actions.length > 0 && (
+        <td className="gap-sm flex justify-end">
+          {actions.map((action, index) =>
+            renderAction(action, item, isSkeleton, index)
+          )}
+        </td>
+      )}
+    </tr>
+  );
+
+  const totalColumns = repeater.length + (actions.length > 0 ? 1 : 0);
+
+  return (
+    <div className={`container m-auto ${className}`}>
+      <table className="table">
+        <thead>
+          <tr>
+            {repeater.map(({ label, key }) => (
+              <th key={key}>{label}</th>
+            ))}
+            {actions.length > 0 && <th className="text-right">Akcje</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, index) =>
+              renderRow({}, true, `skeleton-${index}`)
+            )
+          ) : listData.length > 0 ? (
+            listData.map((item: any) =>
+              renderRow(item, false, item.id || Math.random())
+            )
+          ) : (
+            <tr
+              className={`transition-opacity ease-in duration-700 ${
+                isVisible ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <td colSpan={totalColumns}>Brak danych do wyświetlenia.</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
 
 export default ListTableBlock;

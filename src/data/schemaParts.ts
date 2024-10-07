@@ -66,6 +66,7 @@ export const actionsListSchemaPart: any = {
                 "UpdateAction",
                 "DeleteAction",
                 "FetchItemAction",
+                "SignInAction",
               ],
             },
           },

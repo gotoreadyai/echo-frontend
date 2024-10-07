@@ -14,11 +14,12 @@ export const SelectBlockSchema = {
         items: {
           type: "object",
           properties: {
-            label: { type: "string", label: "Option Label" },
-            value: { type: "string", label: "Option Value" },
+            name: { type: "string", label: "Option Label" },
+            id: { type: "string", label: "Option Value" },
           },
         },
       },
+      scope: { type: "string", label: "Scope" },
       className: { type: "string", label: "CSS Class" },
     },
   },

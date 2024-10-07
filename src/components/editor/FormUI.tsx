@@ -204,8 +204,8 @@ export function DescriptionFieldTemplate(props: DescriptionFieldProps) {
     description && (
       <div
         id={id}
-        className={`text-xs px-xs pt-xs ${
-          isRootLevel[1] ? "" : "border border-neutral p-xl m-xs bg-neutral-content"
+        className={`text-xs p-sm pt-0  ${
+          isRootLevel[1] ? "bg-base-200" : "border border-neutral p-xl m-xs bg-neutral-content"
         }`}
       >
         {description}

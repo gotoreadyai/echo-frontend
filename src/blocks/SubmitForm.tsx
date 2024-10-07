@@ -36,16 +36,8 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     setTriggerActions(false);
     if (success) {
       setResultMessage("Akcje zakończone pomyślnie!");
-
-      // If a successRedirect URL is provided, navigate to it
       if (successRedirect) {
-        // Option 1: Immediate Redirect
         navigate(successRedirect);
-
-        // Option 2: Delayed Redirect (e.g., after 2 seconds)
-        // setTimeout(() => {
-        //   navigate(successRedirect);
-        // }, 2000);
       }
     } else {
       setResultMessage("Wystąpił błąd podczas wykonywania akcji.");
@@ -53,13 +45,13 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   };
 
   return (
-    <div className={className || "container mx-auto"}>
+    <form className={className || "container mx-auto"} action="#">
       <button
         onClick={handleSubmit}
-        type="button"
+        type="submit" 
         className="btn btn-primary w-full no-animation"
         disabled={loading}
-        aria-labelledby="Submit Form"
+        aria-label="Submit Form"
       >
         {loading ? "Processing..." : "Submit Form"}
       </button>
@@ -81,7 +73,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
           {resultMessage}
         </div>
       )}
-    </div>
+    </form>
   );
 };
 

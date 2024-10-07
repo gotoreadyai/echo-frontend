@@ -1,36 +1,63 @@
-import React from "react";
-import { usePageStore } from "../stores/pageStore";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useCallback, useEffect } from "react";
+import { getGetterByPath, usePageStore } from "../stores/pageStore";
 
 interface Option {
-  label: string;
-  value: string;
+  id: string;
+  name: string;
 }
 
 interface SelectBlockProps {
+  className?: string;
   label: string;
-  fieldName: string; // Klucz do identyfikacji pola w globalnym stanie
-  options: Option[]; // Tablica opcji z etykietą i wartością
+  scope?: string;
+  fieldName: string;
+  options: Option[];
 }
 
-export const SelectBlock: React.FC<SelectBlockProps> = ({ label, fieldName, options = [] }) => {
+export const SelectBlock: React.FC<SelectBlockProps> = ({
+  label,
+  fieldName,
+  className,
+  options = [],
+  scope = "",
+}) => {
   const updateField = usePageStore((state) => state.updateField);
-  const fieldValue = usePageStore((state) => state.getFieldValue(fieldName)) || ""; // Pobieranie wartości
+
+  const listData: any[] =
+    usePageStore(
+      useCallback((state) => getGetterByPath(scope)(state.pageData), [scope])
+    ) || [];
+
+  const fieldValue =
+    usePageStore((state) => state.getFieldValue(fieldName)) || "";
+
+  useEffect(() => {
+    if (scope && listData.length > 0 && !fieldValue) {
+     
+      console.log('updateField', fieldName, listData[0]?.id);
+      
+      updateField(fieldName, listData[0]?.id);
+    }
+  }, [scope, listData, fieldValue, updateField, fieldName]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateField(fieldName, e.target.value); // Aktualizacja dynamicznej ścieżki
+    updateField(fieldName, e.target.value);
   };
 
   return (
-    <div>
-      <label className="block pb-sm ">{label}</label>
+    <div className={`${className} container mx-auto `}>
+      <label className="block text-sm font-medium text-gray-700 pb-xs">
+        {label}
+      </label>
       <select
         className="select select-bordered w-full mb-2"
         value={fieldValue}
-        onChange={handleChange} // Wywołanie funkcji zmiany wartości
+        onChange={handleChange}
       >
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+        {[...listData, ...options].map((option) => (
+          <option key={option?.id} value={option?.id}>
+            {option?.name || option?.title}
           </option>
         ))}
       </select>

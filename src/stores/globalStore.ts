@@ -2,11 +2,11 @@
 import create from "zustand";
 
 interface GlobalState {
-  userData: Record<string, any>;
+  user: Record<string, any>;
   filters: Record<string, any>;
   mainMessage: { message: string; type: string };
   globalScope: () => Record<string, any>;
-  setUserData: (userData: Record<string, any>) => void;
+  setUser: (user: Record<string, any>) => void;
   setFilters: (filters: Record<string, any>) => void;
   setMainMessage: (message: string, type: string) => void;
 }
@@ -52,7 +52,7 @@ const deepMerge = (target: any, source: any): any => {
 };
 
 export const useGlobalStore = create<GlobalState>((set, get) => ({
-  userData: {},
+  user: {},
   filters: {},
 
   mainMessage: {
@@ -60,14 +60,14 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
     type: "info",
   },
   globalScope: () => {
-    const { userData, mainMessage, filters } = get();
+    const { user, mainMessage, filters } = get();
     return {
-      userData: userData || {},
+      user: user || {},
       mainMessage: mainMessage || {},
       filters: filters || {},
     };
   },
-  setUserData: (userData) => set({ userData }),
+  setUser: (user) => set({ user }),
   setFilters: (newFilters) => {
     const nestedFilters = unflatten(newFilters);
     const currentFilters = get().filters;

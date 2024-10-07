@@ -3,6 +3,7 @@ import {
   useNavigate,
   useSearchParams,
   NavigateFunction,
+  useParams,
 } from "react-router-dom";
 import { useMemo } from "react";
 import { getGetterByPath } from "../stores/pageStore";
@@ -19,6 +20,7 @@ export interface Navigation {
 
 const useNavigation = (): Navigation => {
   const navigate: NavigateFunction = useNavigate();
+  const params = useParams<{ workspace?: string; slug?: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   /**
@@ -89,7 +91,11 @@ const useNavigation = (): Navigation => {
     searchParams.forEach((value, key) => {
       paramsObject[key] = value;
     });
-    return paramsObject;
+    return {
+      ...paramsObject,
+      _router_workspace: params.workspace || "",
+      _router_slug: params.slug || "",
+    };
   };
 
   return useMemo(
@@ -111,7 +117,6 @@ export const parseKeyFromPath = (path: string, item: any) => {
   return path.replace(/{([^}]+)}/g, (_, key: string) => {
     const getter = getGetterByPath(key);
     const value = getter(item);
-    return (value?.toString() ?? `{${key}}`);
+    return value?.toString() ?? `{${key}}`;
   });
 };
-

@@ -168,7 +168,7 @@ const BlockSidebar: React.FC = () => {
       } bg-base-200 h-full flex flex-col border-r border-base-300`}
     >
       <div
-        className={`flex items-center gap-sm ${
+        className={`flex items-center gap-sm p-sm ${
           rightbar ? "justify-center" : ""
         } border-b border-base-content border-opacity-20`}
       >

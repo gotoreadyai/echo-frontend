@@ -64,7 +64,7 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
 
   const handleActionResult = async (success: boolean) => {
     if (success) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       if (index < actions.length - 1) {
         setIndex(index + 1);
       } else {
