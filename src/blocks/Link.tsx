@@ -12,13 +12,13 @@ export const LinkBlock: React.FC<{
   variant: string;
   size?: string;
 }> = ({ name, to, className, wide, outline, variant, size }) => {
-  const filters = useGlobalStore((state) => state.filters);
+  const filters = {filters:useGlobalStore((state) => state.filters)};
   const location = useLocation();
 
   // Determine if the current location matches the 'to' value
   const isActive = location.pathname === parseKeyFromPath(to, filters);
   return (
-    <div className={`${className} container mx-auto`}>
+    <div className={`${className ? className : "container mx-auto"}`}>
       <Link
         to={parseKeyFromPath(to, filters)}
         className={`no-animation btn ${wide && "btn-wide"} ${

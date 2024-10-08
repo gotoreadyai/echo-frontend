@@ -20,7 +20,7 @@ const useInitialQuerys = () => {
     isLoading: isDocumentLoading,
     error: documentError,
   } = useQuery({
-    queryKey: ["document", slug],
+    queryKey: ["document", `page-${slug}`],
     queryFn: () => fetchItemBySlug("document", slug || "documents"),
     enabled: !!workspaceData,
   });

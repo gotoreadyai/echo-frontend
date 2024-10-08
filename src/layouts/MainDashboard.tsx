@@ -18,7 +18,9 @@ const MainDashboard: React.FC<{ [key: string]: React.ReactNode }> = (props) => {
       <div className="bg-base-200 flex-1 flex flex-col gap-md">
         <section className="relative">{props.primaryContent}</section>
         <div className="card flex flex-col bg-base-100 container mx-auto">
-          <section className="relative flex justify-end">{props.secondaryContent}</section>
+          <section className="relative flex justify-end">
+            {props.secondaryContent}
+          </section>
           <section className="relative">{props.tertiaryContent}</section>
         </div>
       </div>
@@ -31,3 +33,7 @@ const MainDashboard: React.FC<{ [key: string]: React.ReactNode }> = (props) => {
 };
 
 export default MainDashboard;
+/* flex flex-1 */
+/* px-lg py-lg pr-lg pl-lg pt-lg pl-lg */
+/* px-md py-md pr-md pl-md pt-md pl-md */
+/* px-sm py-sm pr-sm pl-sm pt-sm pl-sm */

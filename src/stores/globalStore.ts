@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import create from "zustand";
+import { create } from "zustand";
 
 interface GlobalState {
   user: Record<string, any>;
@@ -11,17 +11,17 @@ interface GlobalState {
   setMainMessage: (message: string, type: string) => void;
 }
 
-// Funkcja pomocnicza do przekształcenia płaskiego obiektu na zagnieżdżony
+// Helper function to unflatten a flat object into a nested object
 const unflatten = (obj: Record<string, any>): Record<string, any> => {
   const result: Record<string, any> = {};
 
   for (const key in obj) {
-    const keys = key.split('.');
+    const keys = key.split(".");
     keys.reduce((acc, currentKey, index) => {
       if (index === keys.length - 1) {
         acc[currentKey] = obj[key];
       } else {
-        if (!acc[currentKey] || typeof acc[currentKey] !== 'object') {
+        if (!acc[currentKey] || typeof acc[currentKey] !== "object") {
           acc[currentKey] = {};
         }
       }
@@ -32,15 +32,15 @@ const unflatten = (obj: Record<string, any>): Record<string, any> => {
   return result;
 };
 
-// Funkcja pomocnicza do głębokiego łączenia obiektów
+// Helper function to deeply merge objects
 const deepMerge = (target: any, source: any): any => {
   for (const key in source) {
     if (
       source[key] &&
-      typeof source[key] === 'object' &&
+      typeof source[key] === "object" &&
       !Array.isArray(source[key])
     ) {
-      if (!target[key] || typeof target[key] !== 'object') {
+      if (!target[key] || typeof target[key] !== "object") {
         target[key] = {};
       }
       deepMerge(target[key], source[key]);
@@ -54,7 +54,6 @@ const deepMerge = (target: any, source: any): any => {
 export const useGlobalStore = create<GlobalState>((set, get) => ({
   user: {},
   filters: {},
-
   mainMessage: {
     message: "",
     type: "info",
@@ -71,9 +70,9 @@ export const useGlobalStore = create<GlobalState>((set, get) => ({
   setFilters: (newFilters) => {
     const nestedFilters = unflatten(newFilters);
     const currentFilters = get().filters;
-    const mergedFilters = deepMerge({ ...currentFilters }, nestedFilters);
-    set({ filters: mergedFilters });
+    const mergedFilters = deepMerge({ filters: currentFilters }, nestedFilters);
+
+    set(mergedFilters);
   },
-  setMainMessage: (message, type) =>
-    set({ mainMessage: { message, type } }),
+  setMainMessage: (message, type) => set({ mainMessage: { message, type } }),
 }));

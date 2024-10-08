@@ -20,7 +20,7 @@ export interface Navigation {
 
 const useNavigation = (): Navigation => {
   const navigate: NavigateFunction = useNavigate();
-  const params = useParams<{ workspace?: string; slug?: string }>();
+  const params = useParams<{ workspace?: string; slug?: string , action?: string}>();
   const [searchParams, setSearchParams] = useSearchParams();
 
   /**
@@ -46,6 +46,8 @@ const useNavigation = (): Navigation => {
    * @param value - Wartość do ustawienia
    */
   const setUSParam = (param: string, value: string): void => {
+
+
     updateSearchParams((params) => {
       params.set(param, value);
     });
@@ -93,8 +95,9 @@ const useNavigation = (): Navigation => {
     });
     return {
       ...paramsObject,
-      _router_workspace: params.workspace || "",
-      _router_slug: params.slug || "",
+      "filters._action": params.action ?? "",
+      "filters._workspace": params.workspace ?? "",
+      "filters._slug": params.slug ?? "",
     };
   };
 

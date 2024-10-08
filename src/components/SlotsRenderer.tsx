@@ -11,17 +11,15 @@ interface SlotsRendererProps {
 
 const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   if (!slots[slotName]) {
-    console.log(`No content for {slotName}`)
+    console.log(`No content for ${slotName}`)
     return <></>;
   }
 
   return (
     <>
-      {slots[slotName].map((block: Block) => (
-        <div key={block.id} className="block-wrapper">
-          <BlockRenderer block={block} />
-        </div>
-      ))}
+     {slots[slotName].map((block: Block) => (
+  <BlockRenderer key={block.id} block={block} />
+))}
     </>
   );
 };

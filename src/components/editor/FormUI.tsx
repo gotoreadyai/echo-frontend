@@ -128,7 +128,6 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
     <div className="">
       {items.map((element, index) => (
         <div key={index} className="mt-sm">
-          
           <div className="flex justify-end gap-1 mb-xs px-sm">
             {element.hasMoveUp && (
               <button
@@ -175,14 +174,15 @@ export function ArrayFieldTemplate(props: ArrayFieldTemplateProps) {
 
       {canAdd && (
         <div className="px-sm pb-xs">
-        <button
-          aria-label="Add item"
-          type="button"
-          className="btn btn-primary btn-sm w-full no-animation"
-          onClick={onAddClick}
-        >
-          Add Item
-        </button></div>
+          <button
+            aria-label="Add item"
+            type="button"
+            className="btn btn-primary btn-sm w-full no-animation"
+            onClick={onAddClick}
+          >
+            Add Item
+          </button>
+        </div>
       )}
     </div>
   );
@@ -195,17 +195,18 @@ export function ArrayFieldItemTemplate(props: ArrayFieldTemplateItemType) {
 
 export function DescriptionFieldTemplate(props: DescriptionFieldProps) {
   const { description, id } = props;
-  
+
   // Sprawdzenie, czy opis jest z najwyższego poziomu schematu
   const isRootLevel = id.split("_");
-
 
   return (
     description && (
       <div
         id={id}
-        className={`text-xs p-sm pt-0  ${
-          isRootLevel[1] ? "bg-base-200" : "border border-neutral p-xl m-xs bg-neutral-content"
+        className={`text-xs p-sm   ${
+          isRootLevel[1]
+            ? "bg-base-200 -mx-xs pt-0"
+            : "border border-l-4 border-secondary p-xl m-xs"
         }`}
       >
         {description}

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { Suspense } from "react";
-import { useBlockStore } from "../stores/blockStore";
 import { Block } from "../types/types";
 
 interface BlockRendererProps {
@@ -14,7 +13,6 @@ const componentCache: Record<
 > = {};
 
 const BlockRenderer: React.FC<BlockRendererProps> = ({ block }) => {
-  const isEditing = useBlockStore((state) => state.isEditing);
   let LazyComponent: React.LazyExoticComponent<React.FC<BlockData>> | null =
     componentCache[block.filename];
 
@@ -36,11 +34,9 @@ const BlockRenderer: React.FC<BlockRendererProps> = ({ block }) => {
   }
 
   return (
-    <div className={isEditing ? "editing-class" : "view-class"}>
-      <Suspense fallback={<></>}>
-        <LazyComponent {...block.data} />
-      </Suspense>
-    </div>
+    <Suspense fallback={<></>}>
+      <LazyComponent {...block.data} />
+    </Suspense>
   );
 };
 

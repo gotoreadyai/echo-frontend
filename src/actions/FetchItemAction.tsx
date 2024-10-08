@@ -28,11 +28,10 @@ const FetchItemAction: React.FC<FetchItemsActionProps> = ({
   const handleAction = async () => {
     try {
       const result = await fetchItemById(scope, filters[scope].id);
-      const response = updateField(scope, result);
+      updateField(scope, result);
       const successMsg = `Successfully fetched items for scope: ${scope}`;
       setMainMessage(successMsg, "success");
       onActionResult(true);
-      console.log(response);
     } catch (error: any) {
       setMainMessage(genErrorMessage(error, scope), "error");
     }

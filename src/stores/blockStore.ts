@@ -1,5 +1,5 @@
 // src/stores/blockStore.ts
-import create from "zustand";
+import { create } from "zustand";
 import { Block } from "../types/types";
 
 interface BlockStore {
@@ -64,13 +64,9 @@ export const useBlockStore = create<BlockStore>((set) => ({
     set((state) => {
       const slotBlocks = [...(state.slots[slotName] || [])];
       const blockIndex = slotBlocks.findIndex((block) => block.id === blockId);
-
       if (blockIndex === -1) return state;
-
       const newIndex = direction === "up" ? blockIndex - 1 : blockIndex + 1;
-
       if (newIndex < 0 || newIndex >= slotBlocks.length) return state;
-
       const [movedBlock] = slotBlocks.splice(blockIndex, 1);
       slotBlocks.splice(newIndex, 0, movedBlock);
 

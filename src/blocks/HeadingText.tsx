@@ -20,6 +20,5 @@ export default HeadingText;
 /* text-right text-center */
 /* text-xl text-3xl text-5xl */
 /* font-bold font-extrabold */
-/* py-md py-sm */
 /* w-4/5 */
 /* leading-7 leading-1 leading-10 */

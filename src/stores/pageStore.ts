@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import create from "zustand";
+import { create } from "zustand";
 import { layoutsConfig } from "../data/layoutsConfig";
 // Cache dla wygenerowanych getterów
 const cache: Record<string, <T>(state: any) => T> = {};

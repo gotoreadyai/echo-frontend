@@ -91,7 +91,6 @@ export const actionsListSchemaPart: any = {
   },
 };
 
-
 export const textVariantsSchemaPart: any = {
   type: "string",
   label: "Text Variant",

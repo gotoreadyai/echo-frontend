@@ -1,7 +1,7 @@
 import { LuStretchHorizontal } from "react-icons/lu";
 
 export const ListBlockSchema = {
-  id: "b8a6f7a8-7f84-4cbe-b8e6-245a72b9cfa6",
+  id: "79330a7f-a248-4612-bcd1-b1a0cfeda60f",
   filename: "ListBlock",
   jsonSchema: {
     title: "List Block",
