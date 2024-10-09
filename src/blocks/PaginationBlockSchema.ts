@@ -1,4 +1,4 @@
-import { LuHome } from "react-icons/lu";
+import { FiMoreHorizontal } from "react-icons/fi";
 
 export const PaginationBlockSchema = {
   id: "e5e066dc-d0f8-44d2-a87f-b84a505fe42b",
@@ -6,12 +6,18 @@ export const PaginationBlockSchema = {
   jsonSchema: {
     title: "Pagination Block",
     properties: {
+      filterName: { type: "string", label: "filterName" },
+      scope: { type: "string", label: "Scope" },
       className: { type: "string", label: "CSS Class" },
     },
   },
-  icon: LuHome,
-  group: "content",
-  data: { className: "logo-class" },
+  icon: FiMoreHorizontal,
+  group: "data",
+  data: {
+    className: "logo-class",
+    filterName: "filters.documents.page",
+    scope: "documents.items",
+  },
 };
 
 export default PaginationBlockSchema;

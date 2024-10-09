@@ -1,46 +1,62 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigation } from "../hooks";
 import { useGlobalStore } from "../stores/globalStore";
+import { getGetterByPath, usePageStore } from "../stores/pageStore";
 
-export const PaginationBlock: React.FC<{ className?: string }> = ({
-  className,
-}) => {
+interface Option {
+  currentPage: number;
+  totalPages: number;
+}
+
+export const PaginationBlock: React.FC<{
+  className?: string;
+  filterName: string;
+  scope?: string;
+}> = ({ className, filterName, scope }) => {
   const setFilters = useGlobalStore((state) => state.setFilters);
   const { setUSParam } = useNavigation();
+  const filters = useGlobalStore((state) => state.filters);
   const navAction = (path: string, value: string) => {
-
-    
     setUSParam(path, value);
     setFilters({ [path]: value });
   };
+
+  const scopeData: Option = usePageStore(
+    (state) => (scope ? getGetterByPath(scope)(state.pageData) : {}) || {}
+  );
+
+  const { currentPage, totalPages } = scopeData;
+
+  const previousTotalPages = useRef(totalPages);
+
+  useEffect(() => {
+    if (previousTotalPages.current !== totalPages) {
+      setUSParam(filterName, "1");
+      setFilters({ [filterName]: 1 });
+      previousTotalPages.current = totalPages;
+    }
+  }, [totalPages]);
+
+  if (totalPages <= 1) {
+    return <div className="px-md pb-md">_</div>;
+  }
+
   return (
-    <div className={`${className}`}>
+    <div className={`${className} `}>
       <div className={`join`}>
-        <button
-          onClick={() => navAction("documents.where.page", "1")}
-          className="join-item btn"
-        >
-          1
-        </button>
-        <button
-          onClick={() => navAction("documents.where.page", "2")}
-          className="join-item btn"
-        >
-          2
-        </button>
-        <button className="join-item btn btn-disabled">...</button>
-        <button
-          onClick={() => navAction("documents.where.page", "10")}
-          className="join-item btn"
-        >
-          10
-        </button>
-        <button
-          onClick={() => navAction("documents.where.page", "11")}
-          className="join-item btn"
-        >
-          11
-        </button>
+        {[...Array(totalPages)].map((_, index) => {
+          const pageNumber = index + 1;
+          const isSelected = pageNumber === currentPage;
+          return (
+            <button
+              key={pageNumber}
+              onClick={() => navAction(filterName, pageNumber.toString())}
+              className={`join-item btn ${isSelected ? "btn-active" : ""}`}
+            >
+              {pageNumber}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

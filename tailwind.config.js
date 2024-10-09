@@ -34,7 +34,7 @@ export default {
       },
       keyframes: {
         wave: {
-          "0%": { opacity: "0" },
+          "0%": { opacity: "0.5" },
           "25%": { opacity: ".75" },
           "100%": { opacity: "1" },
         },

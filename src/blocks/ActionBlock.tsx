@@ -26,15 +26,28 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
   const { getAll } = useNavigation();
   const [currentGetAll, setCurrentGetAll] = useState<string>(JSON.stringify(getAll()));
 
+  // Efekt resetujący stan przy zmianie parametrów
   useEffect(() => {
-    if (reloadOnParamsChange && currentGetAll !== JSON.stringify(getAll())) {
-      setCurrentGetAll(JSON.stringify(getAll()));
-      setIndex(0);
-      setCompleted(false);
-      setError(null);
+    if (reloadOnParamsChange) {
+      const newGetAll = JSON.stringify(getAll());
+      if (currentGetAll !== newGetAll) {
+        setCurrentGetAll(newGetAll);
+        setIndex(0);
+        setCompleted(false);
+        setError(null);
+        setComponent(null); // Resetowanie komponentu
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reloadOnParamsChange, getAll]);
+
+  // Efekt ładujący komponenty akcji
+  useEffect(() => {
+    if (error) {
+      return; // Jeśli wystąpił błąd, nie kontynuujemy
     }
 
-    if (actions[index] && !error) {
+    if (index < actions.length) {
       const loadComponent = async () => {
         try {
           await loadActionComponent(
@@ -48,25 +61,19 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
       };
 
       loadComponent();
-    } else if (index >= actions.length && !error) {
+    } else if (index >= actions.length && !completed) {
       setCompleted(true);
       onComplete?.(true); // Wywołanie callbacka z sukcesem
     }
-  }, [
-    actions,
-    index,
-    error,
-    getAll,
-    reloadOnParamsChange,
-    currentGetAll,
-    onComplete,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [actions, index, error, onComplete]);
 
   const handleActionResult = async (success: boolean) => {
     if (success) {
+      // Dodaj małe opóźnienie, aby upewnić się, że stan się zaktualizował
       await new Promise((resolve) => setTimeout(resolve, 0));
       if (index < actions.length - 1) {
-        setIndex(index + 1);
+        setIndex((prevIndex) => prevIndex + 1);
       } else {
         setCompleted(true);
         onComplete?.(true); // Wszystkie akcje zakończone pomyślnie

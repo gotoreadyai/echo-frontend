@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { useMemo } from "react";
 import { getGetterByPath } from "../stores/pageStore";
+import { PathParams } from "../types/types";
 
 // Definicja interfejsu dla hooka
 export interface Navigation {
@@ -20,9 +21,9 @@ export interface Navigation {
 
 const useNavigation = (): Navigation => {
   const navigate: NavigateFunction = useNavigate();
-  const params = useParams<{ workspace?: string; slug?: string , action?: string}>();
+  const { workspace, slug, action } = useParams<PathParams>();
   const [searchParams, setSearchParams] = useSearchParams();
-
+  
   /**
    * Aktualizacja parametrów wyszukiwania za pomocą funkcji callback
    * @param callback - Funkcja modyfikująca URLSearchParams
@@ -46,8 +47,6 @@ const useNavigation = (): Navigation => {
    * @param value - Wartość do ustawienia
    */
   const setUSParam = (param: string, value: string): void => {
-
-
     updateSearchParams((params) => {
       params.set(param, value);
     });
@@ -95,9 +94,9 @@ const useNavigation = (): Navigation => {
     });
     return {
       ...paramsObject,
-      "filters._action": params.action ?? "",
-      "filters._workspace": params.workspace ?? "",
-      "filters._slug": params.slug ?? "",
+      "filters._action": action ?? "",
+      "filters._workspace": workspace ?? "",
+      "filters._slug": slug ?? "",
     };
   };
 

@@ -1,5 +1,5 @@
 // ActionBlockSchema.ts
-import { FiPower } from "react-icons/fi";
+import { FiGrid } from "react-icons/fi";
 import { actionsListSchemaPart } from "../data/schemaParts";
 
 export const FancyImagesSchema = {
@@ -25,7 +25,7 @@ export const FancyImagesSchema = {
     },
     required: ["actions"],
   },
-  icon: FiPower,
+  icon: FiGrid,
   group: "data",
   data: {},
 };

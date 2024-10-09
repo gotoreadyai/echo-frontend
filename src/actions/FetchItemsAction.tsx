@@ -40,7 +40,7 @@ const FetchItemsAction: React.FC<FetchItemsActionProps> = ({
     }
   };
 
-  return <ActionMsg type="info">RUN: Fetch action</ActionMsg>;
+  return <ActionMsg type="success">RUN: Fetch action</ActionMsg>;
 };
 
 export default FetchItemsAction;

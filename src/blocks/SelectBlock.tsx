@@ -1,3 +1,4 @@
+// SelectBlock.tsx
 import React, {
   useEffect,
   useState,
@@ -8,6 +9,7 @@ import React, {
 import { getGetterByPath, usePageStore } from "../stores/pageStore";
 import { useGlobalStore } from "../stores/globalStore";
 import { useNavigation } from "../hooks";
+import { handleUpdateStores, initializeSelect } from "../hooks/dynamicSelect";
 
 interface Option {
   id: string;
@@ -32,101 +34,64 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   options = [],
   scope = "",
 }) => {
+  const { setUSParam } = useNavigation();
   const setFilters = useGlobalStore((state) => state.setFilters);
   const filters = useGlobalStore((state) => state.filters);
-  const { setUSParam } = useNavigation();
-
   const listData: Option[] = usePageStore(
     (state) => (scope ? getGetterByPath(scope)(state.pageData) : []) || []
   );
-
-  // Memoize combinedOptions to avoid unnecessary recalculations
   const combinedOptions: Option[] = useMemo(() => {
     return [...listData, ...options];
   }, [listData, options]);
-
   const { fieldValue, updateField } = usePageStore((state) => ({
     fieldValue: fieldName ? state.getFieldValue(fieldName) || "" : "",
     updateField: state.updateField,
   }));
-
   const filterValue: string = filterName
     ? getGetterByPath(filterName.replace("filters.", ""))(filters) || ""
     : "";
-
-  const [initialized, setInitialized] = useState(false);
-
-  /**
-   * Ref to track if the change was initiated by handleChange
-   */
+  const [isInitialized, setIsInitialized] = useState(false);
   const isHandleChangeRef = useRef(false);
 
-  /**
-   * Initializes the select field by setting the initial value based on the current state
-   */
-  const initializeSelect = useCallback(() => {
-    if (initialized) return;
-    if (fieldName && filterName) {
-      if (filterValue) {
-        if (fieldValue !== filterValue) {
-          updateField(fieldName, filterValue);
-        }
-      } else if (combinedOptions.length > 0) {
-        const firstOptionId = combinedOptions[0].id;
-        updateField(fieldName, firstOptionId);
-        setFilters({ [filterName]: firstOptionId });
-        setUSParam(filterName, firstOptionId);
-      }
-    } else if (fieldName) {
-      if (!fieldValue && combinedOptions.length > 0) {
-        const firstOptionId = combinedOptions[0].id;
-        updateField(fieldName, firstOptionId);
-      }
-    } else if (filterName) {
-      if (!filterValue && combinedOptions.length > 0) {
-        const firstOptionId = combinedOptions[0].id;
-        setFilters({ [filterName]: firstOptionId });
-        setUSParam(filterName, firstOptionId);
-      }
-    }
-
-    setInitialized(true);
+  // Inicjalizujemy select za pomocą przeniesionej funkcji initializeSelect
+  const initialize = useCallback(() => {
+    initializeSelect({
+      isInitialized,
+      combinedOptions,
+      fieldName,
+      filterName,
+      filterValue,
+      fieldValue,
+      updateField,
+      setFilters,
+      setUSParam,
+      setIsInitialized,
+    });
   }, [
-    initialized,
+    isInitialized,
+    combinedOptions,
     fieldName,
     filterName,
     filterValue,
     fieldValue,
-    combinedOptions,
     updateField,
     setFilters,
     setUSParam,
   ]);
 
-  /**
-   * Updates the relevant stores and URL parameters based on the selected value
-   * @param value - The selected option's value
-   */
-  const updateStores = useCallback(
+  // Używamy handleUpdateStores za pomocą przeniesionej funkcji handleUpdateStores
+  const handleUpdate = useCallback(
     (value: string) => {
-      if (fieldName && filterName) {
-        if (fieldValue !== value) {
-          updateField(fieldName, value);
-        }
-        if (filterValue !== value) {
-          setFilters({ [filterName]: value });
-          setUSParam(filterName, value);
-        }
-      } else if (fieldName) {
-        if (fieldValue !== value) {
-          updateField(fieldName, value);
-        }
-      } else if (filterName) {
-        if (filterValue !== value) {
-          setFilters({ [filterName]: value });
-          setUSParam(filterName, value);
-        }
-      }
+      handleUpdateStores({
+        value,
+        fieldName,
+        filterName,
+        fieldValue,
+        filterValue,
+        updateField,
+        setFilters,
+        setUSParam,
+      });
     },
     [
       fieldName,
@@ -139,22 +104,25 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
     ]
   );
 
+  // Wywołujemy initializeSelect, gdy komponent zostanie zamontowany lub zmienią się zależności
   useEffect(() => {
-    initializeSelect();
-  }, [initializeSelect]);
+    if (filters._action !== "edit-document") {
+      initialize();
+    }
+  }, [initialize, filters._action]);
 
   /**
-   * Handle change event from the select dropdown
+   * handleChange - Obsługuje zmianę w select dropdown
+   * @param e - Zdarzenie zmiany
    */
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value;
-    // Indicate that the change is initiated by handleChange
     isHandleChangeRef.current = true;
-    updateStores(value);
+    handleUpdate(value);
   };
 
   /**
-   * Determines the value to be selected in the dropdown
+   * selectValue - Określa wartość do wybrania w dropdown na podstawie propsów i stanu
    */
   const selectValue = useMemo(() => {
     if (fieldName && filterName) {
@@ -170,35 +138,46 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   }, [fieldName, filterName, filterValue, fieldValue]);
 
   /**
-   * Effect to update the URL whenever loaded new list to select
+   * Effect to update the URL whenever a new list is loaded for selection
+   * (Uncommented and adjusted to avoid conflicts)
    */
   useEffect(() => {
     if (isHandleChangeRef.current) {
       isHandleChangeRef.current = false;
       return;
     }
-    if (selectValue && filterName && listData.length > 0) {
+
+    const currentOptionExists = combinedOptions.some(
+      (option) => option.id === selectValue
+    );
+
+    if (!currentOptionExists && combinedOptions.length > 0) {
       const firstOptionId = combinedOptions[0].id;
-      setFilters({ [filterName]: firstOptionId });
-      setUSParam(filterName, firstOptionId);
+      handleUpdate(firstOptionId);
     }
-  }, [listData, initialized]);
+  }, [combinedOptions, selectValue, fieldName, filterName, handleUpdate]);
 
   return (
     <div className={className}>
+      {/* Label dla elementu select */}
       <label className="block text-sm font-medium text-gray-700">{label}</label>
+
+      {/* Element select */}
       <select
         className="select select-bordered w-full mb-2"
         value={selectValue}
         onChange={handleChange}
         disabled={combinedOptions.length === 0}
       >
+        {/* Renderowanie każdej opcji */}
         {combinedOptions.map((option) => (
           <option key={option.id} value={option.id}>
             {option.name || option.title}
           </option>
         ))}
       </select>
+
+      {/* Wyświetlanie komunikatu, jeśli brak dostępnych opcji */}
       {combinedOptions.length === 0 && (
         <p className="text-sm text-gray-500">No options available</p>
       )}
