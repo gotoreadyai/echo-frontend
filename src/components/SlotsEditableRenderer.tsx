@@ -2,9 +2,9 @@
 import { FC } from "react";
 import BlockRenderer from "./BlockRenderer";
 import { useBlockStore } from "../stores/blockStore";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FiCheckCircle, FiCopy } from "react-icons/fi"; // Import FiCopy icon
-import { Block } from "../types/types";
+import { Block, PathParams } from "../types/types";
 import { useGlobalStore } from "../stores/globalStore";
 
 interface SlotsRendererProps {
@@ -24,6 +24,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const { action } = useParams<PathParams>();
   const setMainMessage = useGlobalStore((state) => state.setMainMessage);
 
   // Function to handle slot selection
@@ -45,7 +46,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   const handleBlockClick = (block: Block) => {
     setSelectedBlock(block);
     setSelectedSlot(slotName);
-    
+
     const searchParams = new URLSearchParams(location.search);
     searchParams.set("rightbar", "block");
     navigate({ pathname: location.pathname, search: searchParams.toString() });
@@ -63,15 +64,26 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
     }
   };
 
-
-
   return (
     <>
-      {/* Border around the slot */}
+      {/* Border around  the slot */}
       <div
         className={`absolute w-full h-full border z-10 pointer-events-none ${
           selectedSlot === slotName ? "border-primary" : "border-base-300"
-        }`}
+        }
+        ${
+          action === "edit-document" &&
+          (slotName === "header" || slotName === "footer")
+            ? " border-red-200 bg-base-100/75"
+            : ""
+        }
+        ${
+          action === "edit-workspace" &&
+          !(slotName === "header" || slotName === "footer")
+            ? " border-red-200 bg-base-100/75"
+            : ""
+        }
+        `}
       ></div>
 
       {/* Slot Header */}
@@ -79,11 +91,13 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
         className={`absolute -top-8 h-8 z-20 rounded-t flex justify-between 
           items-center px-md gap-xs ${
             selectedSlot === slotName ? "bg-primary" : "bg-base-300"
-          }`}
+          }
+          
+          `}
       >
         {/* Slot Name and Check Icon */}
         <div
-          className="flex gap-xs items-center h-full text-sm cursor-pointer"
+          className="flex gap-xs items-center h-full text-sm cursor-pointer  "
           onClick={handleSlotClick}
         >
           <FiCheckCircle
@@ -104,7 +118,7 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
             onClick={(e) => {
               e.stopPropagation(); // Prevent triggering handleSlotClick
               handleCopySlotBlocks();
-              setMainMessage('Copied all blocks in this slot', 'info');
+              setMainMessage("Copied all blocks in this slot", "info");
             }}
             className="btn btn-xs btn-circle z-30 -mr-sm ml-sm"
             title="Copy all blocks in this slot"
@@ -127,15 +141,30 @@ const SlotsEditableRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
                 selectedBlock?.id === block.id
                   ? "bg-primary bg-opacity-10 border-secondary"
                   : "border-base-300 border-dashed"
-              }`}
+              }
+             
+              `}
               onPointerDown={(e) => {
                 e.stopPropagation();
-                handleBlockClick(block);
+                if (
+                  action === "edit-workspace" &&
+                  (slotName === "header" || slotName === "footer")
+                ) {
+                  handleBlockClick(block);
+                }
+                if (
+                  action === "edit-document" ||  action === "edit-side" &&
+                  !(slotName === "header" || slotName === "footer")
+                ) {
+                  handleBlockClick(block);
+                }
+                
+               
               }}
             ></div>
           </div>
         ))}
-        <div className="h-8"></div>
+      <div className="h-8"></div>
     </>
   );
 };

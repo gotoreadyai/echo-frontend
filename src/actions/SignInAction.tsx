@@ -2,9 +2,11 @@
 
 import React, { useContext, useEffect } from "react";
 import { UserContext } from "../providers/UserProvider";
-import { signIn } from "../services/authServices";
-import { useGlobalStore } from "../stores/globalStore";
+import { getEncodedToken, signIn } from "../services/authServices";
 import ActionMsg from "../components/uikit/ActionMsg";
+import { getGetterByPath, useGlobalStore, usePageStore } from "../stores";
+import { storeCredentials } from "../utils/storeBrowserCredentials";
+import { decodeJwt } from "../utils/auth";
 
 interface SignInActionProps {
   scope: string;
@@ -17,39 +19,34 @@ const SignInAction: React.FC<SignInActionProps> = ({
   onActionResult,
 }) => {
   const { setUserToContext } = useContext(UserContext);
-  const setUserData = useGlobalStore((state) => state.setUser);
-  const setMainMessage = useGlobalStore((state) => state.setMainMessage);
-
+  const { setUser: setUserData, setMainMessage } = useGlobalStore((state) => ({
+    setUser: state.setUser,
+    setMainMessage: state.setMainMessage,
+  }));
+  const userData = usePageStore((state) =>
+    scope
+      ? (getGetterByPath(scope)(state.pageData) as {
+          email: string;
+          password: string;
+        })
+      : undefined
+  );
 
   const handleSignIn = async () => {
-    
-
     try {
-    
-      const result = await signIn("admin@admin.com", "admin");
+      if (!userData) throw new Error("User data is missing");
+      const token = getEncodedToken();
+      const result = await signIn(userData.email, userData.password);
+      const timestamp = new Date();
 
-      // Uncomment and adjust the Credential Management API code if needed
-      /*
-      if ('PasswordCredential' in window) {
-        const credential = new PasswordCredential({
-          id: result.user.id,
-          password: result.user.password,
-          name: result.user.email
-        });
-        navigator.credentials.store(credential)
-          .then(() => {
-            console.log('Credentials stored.');
-          })
-          .catch(err => {
-            console.error('Error storing credentials:', err);
-          });
-      } else {
-        console.warn('Credential Management API not supported in this browser.');
-      }
-      */
+      token && setUserToContext(decodeJwt(token));
+      token && setUserData({ ...result.user, loggedAt: timestamp });
 
-      setUserToContext(result.user);
-      setUserData(result.user);
+      storeCredentials({
+        id: result.user.id,
+        password: userData.password,
+        name: result.user.email,
+      });
       setMainMessage("Sign In successful", "success");
       onActionResult(true);
     } catch (error) {
@@ -66,7 +63,7 @@ const SignInAction: React.FC<SignInActionProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return <ActionMsg type="info">RUN: SignIn to: {scope}</ActionMsg>;
+  return <ActionMsg type="success">RUN: SignIn to: {scope}</ActionMsg>;
 };
 
 export default SignInAction;

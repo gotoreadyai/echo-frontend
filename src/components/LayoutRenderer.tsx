@@ -13,7 +13,6 @@ import CreateWorkspace from "./workspaces/CreateWorkspace";
 import { BlockSidebar, ScopePanel, TopBar } from "./editor";
 import Drawer from "./uikit/Drawer";
 import { useGlobalStore } from "../stores/globalStore";
-import NotificationMsg from "./uikit/NotificationMsg";
 import { editConditions } from "../utils/layoutRenderer";
 import { KeyboardHandler, useNavigation, useInitialQuerys } from "../hooks";
 import { useParams } from "react-router-dom";
@@ -85,7 +84,7 @@ const LayoutRenderer: React.FC = () => {
   if (workspaceError || documentError) {
     return (
       <div className="text-error bg-base-100 h-screen p-lg">
-        <Logo/>
+        <Logo />
         <div className=" bg-neutral-content p-md">
           Error loading content:{" "}
           {workspaceError?.message || documentError?.message}
@@ -98,7 +97,11 @@ const LayoutRenderer: React.FC = () => {
   const currentLayout = layoutsConfig[selectedLayoutName]
     ? selectedLayoutName
     : Object.keys(layoutsConfig)[0];
-  const layoutConfig = layoutsConfig[currentLayout];
+
+  const layoutConfig =
+    action === "edit-side"
+      ? layoutsConfig["SideLayout"]
+      : layoutsConfig[currentLayout];
 
   if (!layoutConfig) {
     return (
@@ -118,6 +121,8 @@ const LayoutRenderer: React.FC = () => {
     return acc;
   }, {});
 
+  console.log(workspaceData);
+
   return (
     <Drawer
       context={
@@ -136,32 +141,31 @@ const LayoutRenderer: React.FC = () => {
       }
       content={
         <>
-          <div className={`${rightbar && "w-2/3"}`}>
+          <div className={`flex flex-col min-h-screen ${rightbar && "w-3/4"}`}>
             <TopBar />
-            <NotificationMsg />
             <KeyboardHandler />
-            <div className="flex items-stretch">
-              {action === "edit-scope" && (
-                <div className="bg-base-300 w-3/5">
-                  <ScopePanel />
-                </div>
-              )}
-              <div className={`flex-1 ${action ? "px-xs  " : ""}`}>
-                <Suspense fallback={null}>
-                  {layoutConfig.component &&
-                    React.createElement(layoutConfig.component, slotProps)}
-                </Suspense>
-              </div>
-            </div>
-          </div>
 
-          {rightbar && (
-            <RightBar>
-              {rightbar === "user" && <LoginForm />}
-              {rightbar === "block" && <BlockDetailsPanel />}
-              {rightbar === "workspaces" && <CreateWorkspace />}
-            </RightBar>
-          )}
+            {action === "edit-scope" && (
+              <div className="bg-base-300">
+                <ScopePanel />
+              </div>
+            )}
+
+            {!action || action !== "edit-scope" ? (
+              <Suspense fallback={null}>
+                {layoutConfig.component &&
+                  React.createElement(layoutConfig.component, slotProps)}
+              </Suspense>
+            ) : null}
+
+            {rightbar && (
+              <RightBar>
+                {rightbar === "user" && <LoginForm />}
+                {rightbar === "block" && <BlockDetailsPanel />}
+                {rightbar === "workspaces" && <CreateWorkspace />}
+              </RightBar>
+            )}
+          </div>
         </>
       }
     />

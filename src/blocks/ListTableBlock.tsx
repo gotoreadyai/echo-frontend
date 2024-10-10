@@ -127,8 +127,10 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
   const totalColumns = repeater.length + (actions.length > 0 ? 1 : 0);
 
   return (
-    <div className={`container m-auto ${className}`}>
-      <table className="table">
+    <div
+      className={`${className ? className : "container m-auto"} select-none`}
+    >
+      <table className="table select-auto">
         <thead>
           <tr>
             {repeater.map(({ label, key }) => (

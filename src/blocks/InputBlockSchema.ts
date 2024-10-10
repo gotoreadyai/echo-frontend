@@ -12,6 +12,11 @@ export const InputBlockSchema = {
         label: "Field name",
         description: "Input Field Name as target path",
       },
+      type: {
+        type: "string",
+        label: "Variant",
+        enum: ["text", "number", "password", "email"],
+      },
       autocomplete: { type: "string", label: "Autocomplete" },
       forcedDefaultValue: { type: "string", label: "Forced default" },
       className: { type: "string", label: "CSS Class" },

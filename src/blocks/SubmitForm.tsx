@@ -45,7 +45,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
   };
 
   return (
-    <form className={className || "container mx-auto"} action="#">
+    <div className={className || "container mx-auto"}>
       <button
         onClick={handleSubmit}
         type="submit" 
@@ -73,7 +73,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
           {resultMessage}
         </div>
       )}
-    </form>
+    </div>
   );
 };
 

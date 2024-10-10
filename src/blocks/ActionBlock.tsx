@@ -71,7 +71,7 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
   const handleActionResult = async (success: boolean) => {
     if (success) {
       // Dodaj małe opóźnienie, aby upewnić się, że stan się zaktualizował
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 150));
       if (index < actions.length - 1) {
         setIndex((prevIndex) => prevIndex + 1);
       } else {
@@ -85,7 +85,7 @@ const ActionBlock: React.FC<ActionBlockProps> = ({
   };
 
   return (
-    <div className="min-h-12 flex items-center justify-center">
+    <div className="min-h-12 flex items-center justify-center mt-sm">
       {error && <ActionMsg type="error">{error}</ActionMsg>}
       {!completed && Component && actions[index] && !error && (
         <Component

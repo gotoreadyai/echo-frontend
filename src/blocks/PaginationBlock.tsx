@@ -15,17 +15,17 @@ export const PaginationBlock: React.FC<{
 }> = ({ className, filterName, scope }) => {
   const setFilters = useGlobalStore((state) => state.setFilters);
   const { setUSParam } = useNavigation();
-  const filters = useGlobalStore((state) => state.filters);
+ 
   const navAction = (path: string, value: string) => {
     setUSParam(path, value);
     setFilters({ [path]: value });
   };
 
-  const scopeData: Option = usePageStore(
-    (state) => (scope ? getGetterByPath(scope)(state.pageData) : {}) || {}
+  const scopeData: Option | undefined = usePageStore(
+    (state) => (scope ? getGetterByPath(scope)(state.pageData) : undefined)
   );
 
-  const { currentPage, totalPages } = scopeData;
+  const { currentPage, totalPages } = scopeData || { currentPage: 1, totalPages: 1 };
 
   const previousTotalPages = useRef(totalPages);
 

@@ -3,18 +3,15 @@ import React, { useEffect, useState, Suspense } from "react";
 import { useBlockStore } from "../../stores/blockStore";
 import { JSONSchema7 } from "json-schema";
 import { FiArrowDown, FiArrowUp, FiTrash2 } from "react-icons/fi";
-import {
-  ArrayFieldItemTemplate,
-  ArrayFieldTemplate,
-  BaseInputTemplate,
-  CustomCheckboxWidget,
-  CustomSelectWidget,
-  DescriptionFieldTemplate,
-  FieldTemplate,
-  TitleFieldTemplate,
-} from "./FormUI";
 import { CloseRight } from ".";
 import { BlockDefinition } from "../../types/types";
+import { BaseInputTemplate } from "../formWidgets/BaseInputTemplate";
+import { CustomSelectWidget } from "../formWidgets/CustomSelectWidget";
+import { ArrayFieldTemplate } from "../formWidgets/ArrayFieldTemplate";
+import { CustomCheckboxWidget } from "../formWidgets/CustomCheckboxWidget";
+import { FieldTemplate } from "../formWidgets/FieldTemplate";
+import { DescriptionFieldTemplate } from "../formWidgets/DescriptionFieldTemplate";
+import { TitleFieldTemplate } from "../formWidgets/TitleFieldTemplate";
 
 // Lazy load react-jsonschema-form and validator-ajv8
 const LazyForm = React.lazy(() => import("@rjsf/core"));
@@ -93,7 +90,6 @@ const BlockDetailsPanel: React.FC = () => {
               BaseInputTemplate,
               TitleFieldTemplate,
               ArrayFieldTemplate,
-              ArrayFieldItemTemplate,
               DescriptionFieldTemplate,
               FieldTemplate,
             }}

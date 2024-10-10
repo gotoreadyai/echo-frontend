@@ -1,3 +1,6 @@
-export const editConditions = (action:string | undefined) => action === "edit-scope" ||
-      action === "edit-document" ||
-      action === "edit-block"
+export const editConditions = (action: string | undefined) =>
+  
+  action === "edit-document" ||
+  action === "edit-workspace" ||
+  action === "edit-side" ||
+  action === "edit-block";

@@ -1,10 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { getEncodedToken, signOut } from "../services/authServices";
+import { decodeJwt } from "../utils/auth";
+
+interface User {
+  id: string;
+  email: string;
+  role: string;
+  exp: number;
+}
 
 interface UserContextType {
-  user: any; // Zmień 'any' na bardziej konkretny typ w zależności od struktury danych użytkownika
-  setUserToContext: React.Dispatch<React.SetStateAction<any>>;
+  user: User | null;
+  setUserToContext: React.Dispatch<React.SetStateAction<User | null>>;
 }
+
 const defaultUserContext: UserContextType = {
   user: null,
   setUserToContext: () => {},
@@ -12,8 +21,24 @@ const defaultUserContext: UserContextType = {
 
 const UserContext = createContext<UserContextType>(defaultUserContext);
 
-const UserProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUserToContext] = useState<any>(null); 
+const UserProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUserToContext] = useState<User | null>(null);
+
+  useEffect(() => {
+    const token = getEncodedToken();
+    if (token) {
+      const decodedUser = decodeJwt(token);
+
+      const currentTime = Math.floor(Date.now() / 1000);
+      if (decodedUser.exp < currentTime) {
+        alert("Token wygasł. Proszę zaloguj się ponownie.");
+        setUserToContext(null);
+        signOut()
+      } else {
+        setUserToContext(decodedUser);
+      }
+    }
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUserToContext }}>

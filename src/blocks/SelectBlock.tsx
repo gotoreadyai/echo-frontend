@@ -10,6 +10,8 @@ import { getGetterByPath, usePageStore } from "../stores/pageStore";
 import { useGlobalStore } from "../stores/globalStore";
 import { useNavigation } from "../hooks";
 import { handleUpdateStores, initializeSelect } from "../hooks/dynamicSelect";
+import { useParams } from "react-router-dom";
+import { PathParams } from "../types/types";
 
 interface Option {
   id: string;
@@ -35,6 +37,7 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   scope = "",
 }) => {
   const { setUSParam } = useNavigation();
+  const { action } = useParams<PathParams>();
   const setFilters = useGlobalStore((state) => state.setFilters);
   const filters = useGlobalStore((state) => state.filters);
   const listData: Option[] = usePageStore(
@@ -106,10 +109,10 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
 
   // Wywołujemy initializeSelect, gdy komponent zostanie zamontowany lub zmienią się zależności
   useEffect(() => {
-    if (filters._action !== "edit-document") {
+    if (!action) {
       initialize();
-    }
-  }, [initialize, filters._action]);
+    } 
+  }, [initialize, action]);
 
   /**
    * handleChange - Obsługuje zmianę w select dropdown
@@ -158,7 +161,7 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   }, [combinedOptions, selectValue, fieldName, filterName, handleUpdate]);
 
   return (
-    <div className={className}>
+    <div className={`${className} select-none`}>
       {/* Label dla elementu select */}
       <label className="block text-sm font-medium text-gray-700">{label}</label>
 

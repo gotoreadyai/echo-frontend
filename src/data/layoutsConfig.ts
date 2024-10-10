@@ -38,4 +38,10 @@ export const layoutsConfig: Record<string, LayoutConfig> = {
     ],
     parentSlots: ["header", "footer"],
   },
+  SideLayout: {
+    id: "SideLayout",
+    component: React.lazy(() => import("../layouts/SideLayout")),
+    slots: ["_sideStatic"],
+    parentSlots: [],
+  },
 };

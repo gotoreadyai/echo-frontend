@@ -8,18 +8,17 @@ interface SlotsRendererProps {
   slotName: string;
 }
 
-
 const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   if (!slots[slotName]) {
-    console.log(`No content for ${slotName}`)
+    console.log(`No content for ${slotName}`);
     return <></>;
   }
 
   return (
     <>
-     {slots[slotName].map((block: Block) => (
-  <BlockRenderer key={block.id} block={block} />
-))}
+      {slots[slotName].map((block: Block) => (
+        <BlockRenderer key={block.id} block={block} />
+      ))}
     </>
   );
 };

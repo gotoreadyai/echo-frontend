@@ -39,7 +39,7 @@ const JSONBlock: React.FC<JSONBlockProps> = ({
         {label} {isRequired && <span>*</span>}
       </label>
       <Editor
-        height="calc(100vh - 280px)"
+        height="calc(100vh - 230px)"
         language="json"
         value={jsonString}
         onChange={handleEditorChange}

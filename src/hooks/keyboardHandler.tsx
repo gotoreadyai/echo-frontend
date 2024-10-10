@@ -61,7 +61,7 @@ const KeyboardHandler: React.FC = () => {
   const handleCtrlC = useCallback(() => {
     if (selectedBlock) {
       // setCopiedBlocks([...copiedBlocks, selectedBlock]); // Add the selected block to the copiedBlocks array
-      setCopiedBlocks([ selectedBlock]);
+      setCopiedBlocks([selectedBlock]);
     }
   }, [selectedBlock, setCopiedBlocks, copiedBlocks]);
 
@@ -105,8 +105,10 @@ const KeyboardHandler: React.FC = () => {
 
       switch (e.key) {
         case "Tab":
-          e.preventDefault();
-          handleTabKey();
+          if (!isFieldFocused()) {
+            e.preventDefault();
+            handleTabKey();
+          }
           break;
 
         case "e":

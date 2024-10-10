@@ -44,7 +44,7 @@ export const InputBlock: React.FC<InputBlockProps> = ({
   };
 
   return (
-    <div className={`${className} container mx-auto `}>
+    <div className={`${className} container mx-auto select-none`}>
       <label
         htmlFor={fieldName.replace(/\./g, "")}
         className="block text-sm font-medium text-gray-700 pb-xs"

@@ -10,12 +10,8 @@ const NotificationMsg: React.FC = () => {
   }));
 
   return mainMessage.message && mainMessage.type ? (
-    <div
-      className={`${notifyText(
-        mainMessage.type
-      )}  fixed top-0 left-0 text-base w-full z-30 flex justify-center items-center p-sm pointer-events-none    `}
-    >
-      <div className="flex py-xs px-md items-center justify-center gap-sm bg-base-300 rounded -mt-px">
+    <div className={`${notifyText(mainMessage.type)} flex-1`}>
+      <div className="flex h-full px-md items-center justify-start gap-sm bg-base-100 rounded ">
         {mainMessage.type === "error" && (
           <FiAlertOctagon className="text-base" />
         )}
