@@ -5,6 +5,12 @@ interface GlobalState {
   user: Record<string, any>;
   filters: Record<string, any>;
   mainMessage: { message: string; type: string };
+  scopeManager: {
+    selectedRJSF_Id: string;
+    selectedScope: string;
+    selectedFilter: string;
+    selectedFieldName: string;
+  };
   globalScope: () => Record<string, any>;
   setUser: (user: Record<string, any>) => void;
   setFilters: (filters: Record<string, any>) => void;
@@ -54,6 +60,12 @@ const deepMerge = (target: any, source: any): any => {
 export const useGlobalStore = create<GlobalState>((set, get) => ({
   user: {},
   filters: {},
+  scopeManager: {
+    selectedRJSF_Id: "",
+    selectedScope: "",
+    selectedFilter: "",
+    selectedFieldName: "",
+  },
   mainMessage: {
     message: "",
     type: "info",

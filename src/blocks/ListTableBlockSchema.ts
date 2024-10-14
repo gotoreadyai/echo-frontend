@@ -1,12 +1,18 @@
 import { FiTable } from "react-icons/fi";
 
 export const ListTableBlockSchema = {
-  id: "b8a6f7a8-7f84-4cbe-b8e6-245a72b9cfa6",
+  id: "ec3dfd6d-7629-417f-91f5-79a830312900",
   filename: "ListTableBlock",
   jsonSchema: {
-    title: "ListTable",
+    title: "List table",
     properties: {
-      path: { type: "string", label: "Scope" },
+      path: {
+        type: "string",
+        label: "Scope",
+        description:
+          "Bezpośrednia ścieżka do (scope) dla zasobu załadowanego do strony",
+      },
+
       repeater: {
         type: "array",
         label: "Repeater Fields",
@@ -18,19 +24,25 @@ export const ListTableBlockSchema = {
           },
         },
       },
-      url: { type: "string", label: "Row url" },
+      url: {
+        type: "string",
+        label: "Row url",
+        description: "Przekierowanie po kliknięciu w wiersz",
+      },
       actions: {
         type: "array",
         label: "Actions",
+        description: "Akcje w postaci ikon umieszczone na końcu wiersza",
         items: {
           type: "object",
           properties: {
             icon: {
               type: "string",
               label: "Icon name",
-              enum: ["","trash", "edit","file"],
+              enum: ["", "trash", "edit", "file"],
             },
             url: { type: "string", label: "Action url" },
+            label: { type: "string", label: "Action label" },
           },
         },
       },
@@ -47,34 +59,7 @@ export const ListTableBlockSchema = {
     ],
     className: "list-component-class",
   },
-  preview:`
-  <div class='flex p-sm items-stretch gap-px'>
-    <div class="flex-1 gap-px flex flex-col">
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-    </div>
-    <div class="flex-1 gap-px flex flex-col">
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-    </div>
-    <div class="flex-1 gap-px flex flex-col">
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-        <div class="h-1.5 bg-neutral"></div>
-    </div>
-  </div>
-  `
+  preview: `<div class="flex gap-px items-stretch p-sm"><div class="flex gap-px flex-1 flex-col"><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div></div><div class="flex gap-px flex-1 flex-col"><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div></div><div class="flex gap-px flex-1 flex-col"><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div><div class="bg-neutral h-1.5"></div></div></div>`,
 };
 
 export default ListTableBlockSchema;

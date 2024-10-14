@@ -1,13 +1,16 @@
+// src/components/LoginForm.tsx
+
 import { useContext } from "react";
 import { CloseRight } from "../editor";
 import SlotsRenderer from "../SlotsRenderer";
-import { UserContext } from "../../providers/UserProvider";
+
 import { formatDistanceToNow } from "date-fns";
+import { UserContext } from "../../providers/UserProvider";
 import { signOut } from "../../services/authServices";
 
+
 const LoginForm: React.FC = () => {
-  //const { user, setUserToContext } = useContext(UserContext);
-  const { user } = useContext(UserContext);
+  const { user, setUserToContext } = useContext(UserContext);
   const slots = {
     loginForm: [
       {
@@ -45,19 +48,24 @@ const LoginForm: React.FC = () => {
       <CloseRight callback={() => {}} label="Login form" />
       {user?.id ? (
         <div className="m-sm p-sm bg-base-200 rounded">
-          <h2 className="text-lg font-semibold">User login as:</h2>
-          <p className="text-xs font-semibold  mt-sm">Email:</p>
+          <h2 className="text-lg font-semibold">User logged in as:</h2>
+          <p className="text-xs font-semibold mt-sm">Email:</p>
           <p>{user.email}</p>
           <p className="text-xs font-semibold mt-sm">Id:</p>
-          <p className="truncate  whitespace-nowrap">{user.id}</p>
-          <p className="text-xs font-semibold mt-sm">Expired at:</p>
-          <p className="truncate  whitespace-nowrap">
+          <p className="truncate whitespace-nowrap">{user.id}</p>
+          <p className="text-xs font-semibold mt-sm">Role:</p>
+          <p className="truncate whitespace-nowrap">{user.role}</p>
+          <p className="text-xs font-semibold mt-sm">Expires in:</p>
+          <p className="truncate whitespace-nowrap">
             {formatDistanceToNow(new Date(user.exp * 1000), {
               addSuffix: true,
             })}
           </p>
           <button
-            onClick={() => signOut()}
+            onClick={() => {
+              signOut();
+              setUserToContext(null); // Aktualizujemy stan użytkownika
+            }}
             className="btn btn-primary w-full no-animation btn-outline mt-md"
           >
             Logout

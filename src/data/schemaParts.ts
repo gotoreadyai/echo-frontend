@@ -46,6 +46,7 @@ export const actionsListSchemaPart: any = {
           "FetchItemAction",
           "FetchItemsAction",
           "FilterScopeByIdAction",
+          "CallToAiAction",
         ],
         default: "",
         title: "Action",

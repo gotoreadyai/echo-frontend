@@ -1,10 +1,10 @@
-import { LuTextCursorInput } from "react-icons/lu";
+import { FiCode } from "react-icons/fi";
 
-export const InputBlockSchema = {
+export const JsonEditorBlockSchema = {
   id: "8d6a0d21-e548-4f0c-bb8a-4ae456479b68",
-  filename: "InputBlock",
+  filename: "JsonEditorBlock",
   jsonSchema: {
-    title: "Input Block",
+    title: "Json editor",
     properties: {
       label: { type: "string", label: "Input Label" },
       fieldName: {
@@ -21,15 +21,16 @@ export const InputBlockSchema = {
       forcedDefaultValue: { type: "string", label: "Forced default" },
       className: { type: "string", label: "CSS Class" },
       readonly: { type: "boolean", label: "Readonly" },
+      height: { type: "number", label: "Height in pixels" },
     },
   },
-  icon: LuTextCursorInput,
+  icon: FiCode,
   group: "data",
   data: {
     label: "Input Label",
     fieldName: "inputField",
-    className: "px-md pb-sm",
+    className: "input-class",
   },
 };
 
-export default InputBlockSchema;
+export default JsonEditorBlockSchema;

@@ -17,6 +17,8 @@ import { editConditions } from "../utils/layoutRenderer";
 import { KeyboardHandler, useNavigation, useInitialQuerys } from "../hooks";
 import { useParams } from "react-router-dom";
 import Logo from "../blocks/Logo";
+import PluginUpdater from "./pluginUpdater/PluginUpdater";
+import ScopeManager from "./editor/ScopeManager";
 
 // Utility functions extracted for better readability and reusability
 const combineBlocks = (workspaceBlocks: any, documentBlocks: any) => ({
@@ -44,6 +46,7 @@ const LayoutRenderer: React.FC = () => {
   const rightbar = getUSParam("rightbar");
   const selectedLayoutName = usePageStore((state) => state.pageData?.layout);
   const setFilters = useGlobalStore((state) => state.setFilters);
+  const scopeManager = useGlobalStore((state) => state.scopeManager);
 
   const {
     workspaceData,
@@ -163,7 +166,33 @@ const LayoutRenderer: React.FC = () => {
                 {rightbar === "user" && <LoginForm />}
                 {rightbar === "block" && <BlockDetailsPanel />}
                 {rightbar === "workspaces" && <CreateWorkspace />}
+                {rightbar === "pluginupdater" && <PluginUpdater />}
               </RightBar>
+            )}
+            {scopeManager.selectedRJSF_Id && (
+              <dialog id="my_modal_1" className="modal modal-open">
+                <div className="modal-box w-11/12 max-w-5xl">
+                  <ScopeManager />
+                  <div className="modal-action">
+                    <form method="dialog">
+                      {/* if there is a button in form, it will close the modal */}
+                      <button
+                        onClick={() =>
+                          useGlobalStore.setState(() => ({
+                            scopeManager: {
+                              ...useGlobalStore.getState().scopeManager,
+                              selectedRJSF_Id: "",
+                            },
+                          }))
+                        }
+                        className="btn"
+                      >
+                        Close
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
             )}
           </div>
         </>

@@ -34,6 +34,7 @@ export const signUp = async (email: string, password: string) => {
 
 export const signOut = () => {
   document.cookie = "auth_token=; path=/; max-age=0; secure; samesite=strict";
+  
 };
 
 export const getEncodedToken = () => {

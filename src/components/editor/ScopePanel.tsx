@@ -13,7 +13,7 @@ import { useCrudMutations } from "../../hooks";
 const ScopePanel: React.FC = () => {
   const [activeTab, setActiveTab] = useState<
     "initialScope" | "actualScope" | "slotsPreview" | "globalScope"
-  >("initialScope");
+  >("actualScope");
 
   const [editedValue, setEditedValue] = useState<object>({});
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -115,21 +115,14 @@ const ScopePanel: React.FC = () => {
           className={`tab ${activeTab === "initialScope" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("initialScope")}
         >
-          Initial Scope
+          Initial page scope
         </button>
         <button
           aria-label="Tab"
           className={`tab ${activeTab === "actualScope" ? "tab-active" : ""}`}
           onClick={() => setActiveTab("actualScope")}
         >
-          Actual Scope
-        </button>
-        <button
-          aria-label="Tab"
-          className={`tab ${activeTab === "slotsPreview" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("slotsPreview")}
-        >
-          Slots Preview
+          Actual page scope
         </button>
         <button
           aria-label="Tab"
@@ -138,6 +131,14 @@ const ScopePanel: React.FC = () => {
         >
           Global Scope
         </button>
+        <button
+          aria-label="Tab"
+          className={`tab ${activeTab === "slotsPreview" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("slotsPreview")}
+        >
+          Slots Preview
+        </button>
+        
       </div>
 
       {/* Display data in JSONBlock depending on the selected tab */}

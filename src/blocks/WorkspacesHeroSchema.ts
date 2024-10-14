@@ -4,7 +4,7 @@ export const WorkspacesHeroSchema = {
   id: "xad8f7ds-2302-4772-ac5f-8a792b000c8d",
   filename: "WorkspacesHero",
   jsonSchema: {
-    title: "Workspaces Hero",
+    title: "Hero",
     properties: {
       text: { type: "string", label: "Header Text" },
       className: { type: "string", label: "CSS Class" },

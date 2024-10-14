@@ -7,6 +7,11 @@ export const SelectBlockSchema = {
     title: "Select Block",
     properties: {
       label: { type: "string", label: "Select Label" },
+      scope: {
+        type: "string",
+        label: "Scope",
+        description: "Śieżka do zasobu będącego załadowaną listą",
+      },
       fieldName: {
         type: "string",
         label: "Field Name",
@@ -29,7 +34,12 @@ export const SelectBlockSchema = {
           },
         },
       },
-      scope: { type: "string", label: "Scope",description: "Śieżka do zasobu będącego załadowaną listą", },
+     
+      pushName: {
+        type: "boolean",
+        label: "Push name",
+        description: "Wysyłaj wybraną nazwę selektora",
+      },
       className: { type: "string", label: "CSS Class" },
     },
   },
@@ -37,7 +47,7 @@ export const SelectBlockSchema = {
   group: "data",
   data: {
     label: "Select an Option",
-    fieldName: "selectField",
+    fieldName: "",
     options: [
       { label: "Option 1", value: "option1" },
       { label: "Option 2", value: "option2" },

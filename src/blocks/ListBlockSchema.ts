@@ -4,7 +4,7 @@ export const ListBlockSchema = {
   id: "79330a7f-a248-4612-bcd1-b1a0cfeda60f",
   filename: "ListBlock",
   jsonSchema: {
-    title: "List Block",
+    title: "List cards",
     properties: {
       path: { type: "string", label: "Scope" },
       repeater: {

@@ -4,7 +4,7 @@ export const PaginationBlockSchema = {
   id: "e5e066dc-d0f8-44d2-a87f-b84a505fe42b",
   filename: "PaginationBlock",
   jsonSchema: {
-    title: "Pagination Block",
+    title: "Pagination",
     properties: {
       filterName: { type: "string", label: "filterName" },
       scope: { type: "string", label: "Scope" },

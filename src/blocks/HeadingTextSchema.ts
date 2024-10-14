@@ -6,7 +6,7 @@ export const HeadingTextSchema = {
   id: "279e0f10-79ce-427a-91a2-81b2e54fb38a",
   filename: "HeadingText",
   jsonSchema: {
-    title: "Heading text block",
+    title: "Heading text",
     description:
       "Schemat definiujący blok nagłówka tekstowego, który wyświetla tytuł z opcjonalnymi klasami CSS.",
     properties: {

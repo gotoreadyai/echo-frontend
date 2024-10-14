@@ -6,7 +6,7 @@ export const ActionBlockSchema = {
   id: "query",
   filename: "ActionBlock",
   jsonSchema: {
-    title: "Initial actions block",
+    title: "Initial actions",
     description:
       "Schemat definiujący blok akcji, które będą wykonywane sekwencyjnie.",
     properties: {

@@ -2,6 +2,8 @@
 
 import { BaseInputTemplateProps, getInputProps } from "@rjsf/utils";
 import { ChangeEvent, InputHTMLAttributes } from "react";
+import { FiCrosshair, FiDatabase, FiFilter } from "react-icons/fi";
+import { useGlobalStore } from "../../stores";
 
 export const BaseInputTemplate = (props: BaseInputTemplateProps) => {
   const {
@@ -41,7 +43,7 @@ export const BaseInputTemplate = (props: BaseInputTemplateProps) => {
   const isRootLevel = id.split("_");
   return (
     <div
-      className={`p-xs bg-base-100 ${
+      className={`p-xs bg-base-100 flex gap-xs items-stretch ${
         isRootLevel.length === 2 ? "bg-base-200" : ""
       }`}
     >
@@ -58,6 +60,48 @@ export const BaseInputTemplate = (props: BaseInputTemplateProps) => {
         required={required}
         {...inputProps}
       />
+      {id === "root_scope" && (
+        <div>
+          <button
+            className="btn btn-xs btn-primary h-full px-md"
+            onClick={() => {
+              useGlobalStore.setState(() => ({
+                scopeManager: {
+                  ...useGlobalStore.getState().scopeManager,
+                  selectedRJSF_Id: "scope",
+                },
+              }));
+             
+            }}
+          >
+            <FiDatabase />
+          </button>
+        </div>
+      )}
+      {id === "root_fieldName" && (
+        <div>
+          <button
+            className="btn btn-xs btn-primary h-full px-md"
+            onClick={() => {
+              console.log("filter");
+            }}
+          >
+            <FiCrosshair />
+          </button>
+        </div>
+      )}
+      {id === "root_filterName" && (
+        <div>
+          <button
+            className="btn btn-xs btn-primary h-full px-md"
+            onClick={() => {
+              console.log("filter");
+            }}
+          >
+            <FiFilter />
+          </button>
+        </div>
+      )}
     </div>
   );
 };

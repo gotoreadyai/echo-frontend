@@ -6,7 +6,7 @@ export const FancyImagesSchema = {
   id: "FancyImagesSchema",
   filename: "FancyImages",
   jsonSchema: {
-    title: "Fancy Images",
+    title: "Fancy images",
     description:
       "Schemat definiujący blok akcji, które będą wykonywane sekwencyjnie.",
     properties: {

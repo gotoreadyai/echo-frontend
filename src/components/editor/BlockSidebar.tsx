@@ -104,7 +104,8 @@ const BlockSidebar: React.FC = () => {
       if (isActiveGroup) {
         tabClass += " tab-active bg-base-100";
       } else if (isSelectedBlockGroup) {
-        tabClass += " tab-selected-block-group bg-neutral-content bg-opacity-50"; // Dodaj własną klasę
+        tabClass +=
+          " tab-selected-block-group bg-neutral-content bg-opacity-50"; // Dodaj własną klasę
       }
 
       if (rightbar) {
@@ -135,8 +136,8 @@ const BlockSidebar: React.FC = () => {
           key={i}
           className={`${
             rightbar ? "min-h-12" : "min-h-24"
-          }  flex flex-col items-stretch justify-stretch ${
-            isSelected ? "bg-neutral-content bg-opacity-50" : ""
+          }  flex flex-col items-stretch justify-stretch  ${
+            isSelected ? "bg-info bg-opacity-25" : "bg-base-100"
           }`}
           onClick={() => handleAddBlock(block.filename)}
         >
@@ -153,7 +154,7 @@ const BlockSidebar: React.FC = () => {
             </div>
           )}
           {!rightbar && (
-            <div className="text-sm bg-base-300 text-content p-xs text-center">
+            <div className="text-sm bg-base-200 text-content p-xs text-center border-0 border-t border-base-300">
               {block.jsonSchema.title}
             </div>
           )}
@@ -187,11 +188,11 @@ const BlockSidebar: React.FC = () => {
           <label className="block p-md">Choose block:</label>
         </div>
       )}
-      <div className="tabs tabs-bordered bg-base-300">{renderGroupTabs()}</div>
-      <div className="border-b border-base-content border-opacity-20">
+      <div className="tabs tabs-bordered">{renderGroupTabs()}</div>
+      <div className="border-b border-base-content">
         <div
-          className={`grid gap-px ${rightbar ? "" : ""} ${
-            rightbar ? "grid-cols-1" : "grid-cols-2"
+          className={`grid gap-px bg-base-300 ${rightbar ? "" : ""} ${
+            rightbar ? "grid-cols-1" : "grid-cols-3 p-px"
           }`}
         >
           {renderBlockButtons()}

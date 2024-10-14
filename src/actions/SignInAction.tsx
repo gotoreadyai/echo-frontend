@@ -8,10 +8,11 @@ import { getGetterByPath, useGlobalStore, usePageStore } from "../stores";
 import { storeCredentials } from "../utils/storeBrowserCredentials";
 import { decodeJwt } from "../utils/auth";
 
+
 interface SignInActionProps {
   scope: string;
   onActionResult: (success: boolean) => void;
-  whitelist?: string[]; // Array of field names to skip reference checks
+  whitelist?: string[]; // Tablica nazw pól do pominięcia podczas sprawdzania referencji
 }
 
 const SignInAction: React.FC<SignInActionProps> = ({
@@ -35,12 +36,18 @@ const SignInAction: React.FC<SignInActionProps> = ({
   const handleSignIn = async () => {
     try {
       if (!userData) throw new Error("User data is missing");
-      const token = getEncodedToken();
+
       const result = await signIn(userData.email, userData.password);
+      const token = getEncodedToken(); // Pobierz token po zalogowaniu
       const timestamp = new Date();
 
-      token && setUserToContext(decodeJwt(token));
-      token && setUserData({ ...result.user, loggedAt: timestamp });
+      if (token) {
+        const decodedUser = decodeJwt(token);
+        setUserToContext(decodedUser);
+        setUserData({ ...result.user, loggedAt: timestamp });
+      } else {
+        throw new Error("Token is missing after sign in");
+      }
 
       storeCredentials({
         id: result.user.id,
@@ -51,7 +58,7 @@ const SignInAction: React.FC<SignInActionProps> = ({
       onActionResult(true);
     } catch (error) {
       setMainMessage(
-        "Sign In error: " + scope + (error as Error).message,
+        "Sign In error: " + scope + " - " + (error as Error).message,
         "error"
       );
       onActionResult(false);

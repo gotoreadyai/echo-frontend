@@ -14,6 +14,7 @@ interface RepeaterField {
 interface Action {
   icon: string;
   url?: string;
+  label?: string;
 }
 
 interface ListBlockProps {
@@ -24,8 +25,13 @@ interface ListBlockProps {
   className?: string;
 }
 
-const getValueByPath = (obj: any, path: string) =>
-  path.split(".").reduce((acc, part) => acc?.[part], obj);
+const getValueByPath = (obj: any, path?: string) => {
+  if (!path) {
+    console.warn("getValueByPath called with undefined path");
+    return undefined;
+  }
+  return path.split(".").reduce((acc, part) => acc?.[part], obj);
+};
 
 const ListTableBlock: React.FC<ListBlockProps> = ({
   path,
@@ -53,11 +59,10 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
   }, [isLoading, rawData]);
 
   if (!path.trim()) {
-    console.error("Ścieżka jest niezdefiniowana lub pusta.");
-    return <div>Nieprawidłowa ścieżka do danych.</div>;
+    console.error("Path is undefined or empty.");
+    return <div>Invalid data path.</div>;
   }
 
-  // Ustawiamy `listData` jako pustą tablicę, jeśli dane nie są tablicą
   const listData = Array.isArray(rawData) ? rawData : [];
 
   const handleRowClick = (item: any) => navigateTo(parseKeyFromPath(url, item));
@@ -78,12 +83,14 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
     );
   };
 
-  const renderCell = (item: any, key: string, isSkeleton: boolean) => (
-    <td key={key}>
+  const renderCell = (item: any, key: string | undefined, isSkeleton: boolean) => (
+    <td key={key || Math.random()}>
       {isSkeleton ? (
         <div className="skeleton p-1 w-full">&nbsp;</div>
+      ) : key ? (
+        getValueByPath(item, key) ?? "No data"
       ) : (
-        getValueByPath(item, key) ?? "Brak danych"
+        "No key"
       )}
     </td>
   );
@@ -96,7 +103,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
   ) => (
     <div
       key={index}
-      className={`w-8 ${
+      className={`flex items-center gap-2 ${
         isSkeleton
           ? "skeleton"
           : "bg-base-300 rounded p-sm -my-xs hover:bg-base-100"
@@ -104,6 +111,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
       onClick={(e) => !isSkeleton && handleActionClick(e, action.url!, item)}
     >
       {!isSkeleton && React.createElement(icons(action.icon))}
+      {!isSkeleton && action.label && <span>{action.label}</span>}
     </div>
   );
 
@@ -115,7 +123,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
     >
       {repeater.map(({ key }) => renderCell(item, key, isSkeleton))}
       {actions.length > 0 && (
-        <td className="gap-sm flex justify-end">
+        <td className="flex gap-sm justify-end">
           {actions.map((action, index) =>
             renderAction(action, item, isSkeleton, index)
           )}
@@ -136,7 +144,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
             {repeater.map(({ label, key }) => (
               <th key={key}>{label}</th>
             ))}
-            {actions.length > 0 && <th className="text-right">Akcje</th>}
+            {actions.length > 0 && <th className="text-right">Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -154,7 +162,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
                 isVisible ? "opacity-100" : "opacity-0"
               }`}
             >
-              <td colSpan={totalColumns}>Brak danych do wyświetlenia.</td>
+              <td colSpan={totalColumns}>No data to display.</td>
             </tr>
           )}
         </tbody>

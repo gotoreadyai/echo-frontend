@@ -4,7 +4,7 @@ export const LinkSchema = {
   id: "bc0d1b89-f8b0-48b9-8978-1f7ed1c5e5c9",
   filename: "Link",
   jsonSchema: {
-    title: "Link Block",
+    title: "Link",
     properties: {
       name: { type: "string", label: "Link Text" },
       to: { type: "string", label: "Link URL" },

@@ -26,6 +26,7 @@ interface SelectBlockProps {
   fieldName?: string;
   filterName?: string;
   options: Option[];
+  pushName:boolean
 }
 
 export const SelectBlock: React.FC<SelectBlockProps> = ({
@@ -35,6 +36,7 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   className = "container mx-auto",
   options = [],
   scope = "",
+  pushName = false
 }) => {
   const { setUSParam } = useNavigation();
   const { action } = useParams<PathParams>();
@@ -108,20 +110,21 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
   );
 
   // Wywołujemy initializeSelect, gdy komponent zostanie zamontowany lub zmienią się zależności
-  useEffect(() => {
-    if (!action) {
-      initialize();
-    } 
-  }, [initialize, action]);
+    useEffect(() => {
+      if (!action) {
+        initialize();
+      }
+    }, [action, initialize]);
 
   /**
    * handleChange - Obsługuje zmianę w select dropdown
    * @param e - Zdarzenie zmiany
    */
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const value = e.target.value; // Wartość wybranej opcji
+    const text = e.target.selectedOptions[0].text; // Tekst wybranej opcji
     isHandleChangeRef.current = true;
-    handleUpdate(value);
+    handleUpdate(pushName ? text :value);
   };
 
   /**
@@ -154,14 +157,14 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
       (option) => option.id === selectValue
     );
 
-    if (!currentOptionExists && combinedOptions.length > 0) {
+    if (!currentOptionExists && combinedOptions.length > 0 && !action) {
       const firstOptionId = combinedOptions[0].id;
       handleUpdate(firstOptionId);
     }
   }, [combinedOptions, selectValue, fieldName, filterName, handleUpdate]);
 
   return (
-    <div className={`${className} select-none`}>
+    <div className={`${className} select-none relative`}>
       {/* Label dla elementu select */}
       <label className="block text-sm font-medium text-gray-700">{label}</label>
 
@@ -174,7 +177,7 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
       >
         {/* Renderowanie każdej opcji */}
         {combinedOptions.map((option) => (
-          <option key={option.id} value={option.id}>
+          <option key={option.id} value={option.id} data-name={option.name || option.title}>
             {option.name || option.title}
           </option>
         ))}
@@ -182,7 +185,9 @@ export const SelectBlock: React.FC<SelectBlockProps> = ({
 
       {/* Wyświetlanie komunikatu, jeśli brak dostępnych opcji */}
       {combinedOptions.length === 0 && (
-        <p className="text-sm text-gray-500">No options available</p>
+        <p className="text-sm text-gray-500 absolute top-0 py-lg px-md">
+          No options available
+        </p>
       )}
     </div>
   );

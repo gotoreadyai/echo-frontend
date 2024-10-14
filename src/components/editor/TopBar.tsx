@@ -13,11 +13,9 @@ import ThemeSelector from "../uikit/ThemeSelector";
 
 import useNavigation from "../../hooks/useNavigation"; // Upewnij się, że ścieżka jest poprawna
 import { useNavigate, useParams } from "react-router-dom";
-import { createItem } from "../../services/genericService";
 
 import NotificationMsg from "../uikit/NotificationMsg";
 import { UserContext } from "../../providers/UserProvider";
-import { useBlockStore, useGlobalStore } from "../../stores";
 
 const TopBar: React.FC = () => {
   const { theme, updateTheme } = useTheme();
@@ -41,9 +39,6 @@ const TopBar: React.FC = () => {
     setUSParam("rightbar", value);
     // Opcjonalnie: Dodaj powiadomienia lub inne akcje
   };
-
-  const slots = useBlockStore((state) => state.slots);
-  const setMainMessage = useGlobalStore((state) => state.setMainMessage);
 
   return (
     <>
@@ -82,16 +77,7 @@ const TopBar: React.FC = () => {
 
         <button
           className="btn btn-sm btn-square"
-          onClick={async () => {
-            const filteredSlots = { ...slots };
-            delete filteredSlots.footer;
-            delete filteredSlots.header;
-            const res = await createItem("seed", {
-              name: params.slug,
-              data: filteredSlots,
-            });
-            setMainMessage(`${res.message} w: ${res.filePath} `, "success"); // Set success message
-          }}
+          onClick={() => handleRightbarClick("pluginupdater")}
           aria-label="Workspaces"
         >
           <FiUploadCloud />
