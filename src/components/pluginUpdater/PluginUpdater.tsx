@@ -22,7 +22,7 @@ const PluginUpdater: React.FC = () => {
       delete filteredSlots.footer;
       delete filteredSlots.header;
 
-      const res = await createItem("seed", {
+      const res = await createItem(`seed/${type==="Content" ? slug : ''}`, {
         name: params.slug,
         data: filteredSlots,
         plugin,

@@ -44,3 +44,8 @@ export interface FetchItemsActionProps {
   scope: string;
   onActionResult: (stste: boolean) => void;
 }
+
+export interface LayoutProps {
+  workspace: Record<string, Block[]>;
+  page: Record<string, Block[]>;
+}

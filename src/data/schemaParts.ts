@@ -27,7 +27,7 @@ export const backgroundSchemaPart: any = {
   ],
 };
 
-export const actionsListSchemaPart: any = {
+export const actionsListSchemaPart = {
   type: "array",
   title: "Available actions",
   items: {
@@ -47,48 +47,79 @@ export const actionsListSchemaPart: any = {
           "FetchItemsAction",
           "FilterScopeByIdAction",
           "CallToAiAction",
+          "Prepare_AI_Arguments",
         ],
-        default: "",
         title: "Action",
       },
       scope: {
         type: "string",
         title: "Scope",
-        default: "",
       },
     },
-    allOf: [
-      {
-        if: {
-          properties: {
-            action: {
-              enum: [
-                "InsertAction",
-                "UpdateAction",
-                "DeleteAction",
-                "FetchItemAction",
-                "SignInAction",
-              ],
+    required: ["action"],
+    dependencies: {
+      action: {
+        oneOf: [
+          {
+            properties: {
+              action: {
+                enum: [
+                  "InsertAction",
+                  "UpdateAction",
+                  "DeleteAction",
+                  "FetchItemAction",
+                  "SignInAction",
+                ],
+              },
+              scope: {
+                enum: Object.values(ModelSingular),
+              },
+            },
+            required: ["scope"],
+          },
+          {
+            properties: {
+              action: {
+                const: "CallToAiAction",
+              },
+              scope: {
+                enum: ["callingFucntion"],
+              },
+            },
+            required: ["scope"],
+          },
+          {
+            properties: {
+              action: {
+                enum: [
+                  "",
+                  "FetchItemsAction",
+                  "FilterScopeByIdAction",
+                ],
+              },
+              scope: {
+                enum: Object.keys(ModelSingular),
+              },
             },
           },
-          required: ["action"],
-        },
-        then: {
-          properties: {
-            scope: {
-              enum: ["", ...(ModelSingular ? Object.values(ModelSingular) : [])],
+          {
+            properties: {
+              action: {
+                enum: [
+                  "",
+                  "AlertAction",
+                  "Prepare_AI_Arguments",
+                ],
+              },
+              scope: {
+                type: "string",
+               
+              },
             },
           },
-        },
-        else: {
-          properties: {
-            scope: {
-              enum: ["", ...(ModelSingular ? Object.keys(ModelSingular) : [])],
-            },
-          },
-        },
+        ],
       },
-    ],
+    },
   },
 };
 
@@ -97,4 +128,3 @@ export const textVariantsSchemaPart: any = {
   label: "Text Variant",
   enum: ["", "hero", "leed", "info"],
 };
-

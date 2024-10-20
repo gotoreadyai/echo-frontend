@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { useBlockStore } from "../stores/blockStore";
 import { Block } from "../types/types";
 import { v4 as uuidv4 } from "uuid";
@@ -9,7 +9,7 @@ const KeyboardHandler: React.FC = () => {
     isEditing,
     selectedSlot,
     selectedBlock,
-    copiedBlocks, // Destructure copiedBlocks from the store
+    copiedBlocks,
     setCopiedBlocks,
     addBlockToSlot,
     removeBlock,
@@ -18,6 +18,7 @@ const KeyboardHandler: React.FC = () => {
   } = useBlockStore();
 
   const navigate = useNavigate();
+  const location = useLocation(); // Użyj useLocation
   const { workspace, slug, action } = useParams<{
     workspace: string;
     slug: string;
@@ -41,29 +42,41 @@ const KeyboardHandler: React.FC = () => {
       return;
     }
     const newAction = action === "edit-document" ? "" : "/edit-document";
-    navigate(`/${workspace}/${slug}${newAction}`);
-  }, [navigate, workspace, slug, action]);
 
-  // Handler for Ctrl + E shortcut
-  const handleCtrlE = useCallback(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set("rightbar", "workspaces");
+
+   
+
+
+    // Zachowaj query string podczas nawigacji
     navigate(
       {
-        pathname: window.location.pathname,
-        search: `?${searchParams.toString()}`,
+        pathname: `/${workspace}/${slug}${newAction}`,
+        search: location.search, // Uwzględnij bieżący query string
+        clearParams: ["rightbar"]
       },
       { replace: true }
     );
-  }, [navigate]);
+  }, [navigate, workspace, slug, action, location.search]);
+
+  // Handler for Ctrl + E shortcut
+  const handleCtrlE = useCallback(() => {
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.set("rightbar", "workspaces");
+    navigate(
+      {
+        pathname: location.pathname, // Użyj bieżącej ścieżki
+        search: `?${searchParams.toString()}`, // Dodaj zaktualizowany query string
+      },
+      { replace: true }
+    );
+  }, [navigate, location.pathname, location.search]);
 
   // Handler for Ctrl + C (Copy)
   const handleCtrlC = useCallback(() => {
     if (selectedBlock) {
-      // setCopiedBlocks([...copiedBlocks, selectedBlock]); // Add the selected block to the copiedBlocks array
       setCopiedBlocks([selectedBlock]);
     }
-  }, [selectedBlock, setCopiedBlocks, copiedBlocks]);
+  }, [selectedBlock, setCopiedBlocks]);
 
   // Handler for Ctrl + V (Paste)
   const handleCtrlV = useCallback(() => {
@@ -125,7 +138,6 @@ const KeyboardHandler: React.FC = () => {
             e.preventDefault();
             handleCtrlC();
           }
-
           break;
 
         case "v":

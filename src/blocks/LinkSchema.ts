@@ -25,16 +25,22 @@ export const LinkSchema = {
           "btn-accent",
           "btn-ghost",
           "btn-link",
-          "btn-hairline"
+          "btn-hairline",
         ],
       },
       outline: { type: "boolean", label: "Is outline" },
       wide: { type: "boolean", label: "Is wide" },
+      preventFilters: { type: "boolean", label: "Prevent filters" },
     },
   },
   icon: FiLink,
   group: "content",
-  data: { name: "Link", to: "/", className: "link-class" },
+  data: {
+    name: "Link",
+    to: "/",
+    className: "link-class",
+    preventFilters: true,
+  },
 };
 
 export default LinkSchema;

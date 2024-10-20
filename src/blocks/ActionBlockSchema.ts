@@ -16,6 +16,7 @@ export const ActionBlockSchema = {
         description:
           "Lista akcji do wykonania. Każda akcja zawiera zakres (scope) oraz identyfikator akcji (action).",
       },
+      
       reloadOnParamsChange: {
         type: "boolean",
         default: false,

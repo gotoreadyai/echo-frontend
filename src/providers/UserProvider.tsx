@@ -42,7 +42,12 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
           // Ustaw timer
           const timeUntilExpiration = (decodedUser.exp - currentTime) * 1000;
           logoutTimerRef.current = setTimeout(() => {
-            alert("Token wygasł. Proszę zaloguj się ponownie.");
+            
+
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('rightbar', 'user');
+            window.history.pushState({}, '', currentUrl);
+            
             setUserToContext(null);
             signOut();
           }, timeUntilExpiration);
@@ -79,7 +84,11 @@ const UserProvider = ({ children }: { children: ReactNode }) => {
       const currentTime = Math.floor(Date.now() / 1000);
       const timeUntilExpiration = (newUser.exp - currentTime) * 1000;
       logoutTimerRef.current = setTimeout(() => {
-        alert("Token wygasł. Proszę zaloguj się ponownie.");
+        
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('rightbar', 'user');
+        window.history.pushState({}, '', currentUrl);
+
         setUserToContext(null);
         signOut();
       }, timeUntilExpiration);

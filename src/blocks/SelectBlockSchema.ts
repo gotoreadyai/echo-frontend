@@ -35,12 +35,22 @@ export const SelectBlockSchema = {
         },
       },
      
-      pushName: {
-        type: "boolean",
-        label: "Push name",
-        description: "Wysyłaj wybraną nazwę selektora",
+      scopeKey: {
+        type: "string",
+        label: "Scope key",
+        description: "Wyświetlaj nazwę z klucza zasobu (domyślnie 'title')",
       },
-      className: { type: "string", label: "CSS Class" },
+      returnKey: {
+        type: "string",
+        label: "Return key",
+        description: "Wysyła wartość z klucza zasobu (domyślnie 'id')",
+      },
+      sendName: {
+        type: "string",
+        label: "Send name",
+        description: "Dodatkowy parametr do wysyłania z klucza zasobu (zostanie wysłana do scope nazwa wyświetlana)",
+      }
+      ,className: { type: "string", label: "CSS Class" },
     },
   },
   icon: LuFormInput,

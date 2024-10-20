@@ -1,7 +1,8 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { parseKeyFromPath } from "../hooks/useNavigation";
-import { useGlobalStore } from "../stores/globalStore";
+// LinkBlock.tsx
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import useNav from '../hooks/useNav';
+
 
 export const LinkBlock: React.FC<{
   name: string;
@@ -9,25 +10,35 @@ export const LinkBlock: React.FC<{
   className?: string;
   wide?: boolean;
   outline?: boolean;
-  variant: string;
+  variant?: string;
   size?: string;
-}> = ({ name, to, className, wide, outline, variant, size }) => {
-  const filters = {filters:useGlobalStore((state) => state.filters)};
+}> = ({
+  name,
+  to,
+  className,
+  wide,
+  outline,
+  variant,
+  size,
+}) => {
+  const { buildLink } = useNav();
   const location = useLocation();
+  const linkTo = buildLink(to);
 
-  // Determine if the current location matches the 'to' value
-  const isActive = location.pathname === parseKeyFromPath(to, filters);
+  // Sprawdź, czy bieżąca ścieżka jest aktywna
+  const isActive = location.pathname === linkTo;
+
   return (
-    <div className={`${className ? className : "container mx-auto"}`}>
+    <div className={`${className ? className : 'container mx-auto'}`}>
       <Link
-        to={parseKeyFromPath(to, filters)}
-        className={`no-animation btn ${wide && "btn-wide"} ${
-          outline && "btn-outline"
-        } ${variant ? `${variant}` : ""}  ${size ? `${size}` : ""} ${
-          isActive ? "btn-active" : ""
+        to={linkTo}
+        className={`no-animation btn ${wide ? 'btn-wide' : ''} ${
+          outline ? 'btn-outline' : ''
+        } ${variant ? variant : ''} ${size ? size : ''} ${
+          isActive ? 'btn-active' : ''
         }`}
       >
-        {name || "Link"}
+        {name || 'Link'}
       </Link>
     </div>
   );

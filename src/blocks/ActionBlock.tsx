@@ -1,102 +1,86 @@
-// ActionBlock.tsx
-import React, { useState, useEffect } from "react";
-import { loadActionComponent } from "../utils/actions";
-import ActionMsg from "../components/uikit/ActionMsg";
-import useNavigation from "../hooks/useNavigation";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useEffect } from "react";
+import { ActionItem } from "../types/actionsTypes";
+import { useLocation, useParams } from "react-router-dom";
+import { PathParams } from "../types/types";
+import { notifyColor } from "../utils/display";
 
 interface ActionBlockProps {
-  actions: { scope: string; action: string }[];
-  reloadOnParamsChange?: boolean;
-  onComplete?: (success: boolean) => void; // Nowy props
+  actions: ActionItem[];
 }
 
-const ActionBlock: React.FC<ActionBlockProps> = ({
-  actions = [],
-  reloadOnParamsChange = false,
-  onComplete, // Destrukturyzacja props
-}) => {
-  const [Component, setComponent] = useState<React.FC<{
-    scope: string;
-    onActionResult: (success: boolean) => void;
-  }> | null>(null);
+const ActionBlock: React.FC<ActionBlockProps> = ({ actions }) => {
+  const { slug } = useParams<PathParams>();
+  const location = useLocation();
+  const [executedActions, setExecutedActions] = useState<ActionItem[]>([]);
+  const [reload, setReload] = useState(false);
 
-  const [index, setIndex] = useState<number>(0);
-  const [completed, setCompleted] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-  const { getAll } = useNavigation();
-  const [currentGetAll, setCurrentGetAll] = useState<string>(JSON.stringify(getAll()));
+  const actionsExecutor = async () => {
+    const actionsExecuted: ActionItem[] = [];
 
-  // Efekt resetujący stan przy zmianie parametrów
-  useEffect(() => {
-    if (reloadOnParamsChange) {
-      const newGetAll = JSON.stringify(getAll());
-      if (currentGetAll !== newGetAll) {
-        setCurrentGetAll(newGetAll);
-        setIndex(0);
-        setCompleted(false);
-        setError(null);
-        setComponent(null); // Resetowanie komponentu
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reloadOnParamsChange, getAll]);
-
-  // Efekt ładujący komponenty akcji
-  useEffect(() => {
-    if (error) {
-      return; // Jeśli wystąpił błąd, nie kontynuujemy
-    }
-
-    if (index < actions.length) {
-      const loadComponent = async () => {
+    for (const action of actions) {
+      if (action.action && action.scope) {
         try {
-          await loadActionComponent(
-            actions[index].action,
-            setComponent,
-            setError
-          );
-        } catch (err) {
-          setError("Failed to load component");
+          const actionFn = await import(`../actions/${action.action}`);
+          await actionFn.default(action.scope);
+          actionsExecuted.push(action);
+        } catch (error) {
+          console.error(`Error executing action: ${action.action}`, error);
         }
-      };
-
-      loadComponent();
-    } else if (index >= actions.length && !completed) {
-      setCompleted(true);
-      onComplete?.(true); // Wywołanie callbacka z sukcesem
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [actions, index, error, onComplete]);
-
-  const handleActionResult = async (success: boolean) => {
-    if (success) {
-      // Dodaj małe opóźnienie, aby upewnić się, że stan się zaktualizował
-      await new Promise((resolve) => setTimeout(resolve, 150));
-      if (index < actions.length - 1) {
-        setIndex((prevIndex) => prevIndex + 1);
-      } else {
-        setCompleted(true);
-        onComplete?.(true); // Wszystkie akcje zakończone pomyślnie
       }
-    } else {
-      setError("Action failed");
-      onComplete?.(false); // Wystąpił błąd w akcji
     }
+
+    setExecutedActions(actionsExecuted);
   };
 
+  useEffect(() => {
+    // Reset executed actions when location or actions change
+    setExecutedActions([]);
+    actionsExecutor();
+  }, [location, actions]);
+
+  useEffect(() => {
+    if (reload) {
+      // Reset executed actions when reloading
+      setExecutedActions([]);
+      actionsExecutor();
+      setReload(false);
+    }
+  }, [reload]);
+
+  const handleReload = () => {
+    setReload(true);
+  };
+
+  const actionsWithScope = actions.filter((action) => action.scope);
+
+  if (actionsWithScope.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="min-h-12 flex items-center justify-center mt-sm">
-      {error && <ActionMsg type="error">{error}</ActionMsg>}
-      {!completed && Component && actions[index] && !error && (
-        <Component
-          key={index}
-          scope={actions[index].scope}
-          onActionResult={handleActionResult}
-        />
-      )}
-      {completed && !error && (
-        <ActionMsg type="success">Actions queue complete</ActionMsg>
-      )}
+    <div key={slug} className="container mx-auto mt-sm bg-base-100 rounded">
+      <div className="mt-4 text-xs border border-base-300 flex flex-col gap-sm p-md rounded">
+        <h3 className="">Wykonane akcje:</h3>
+        <ul className="flex flex-col gap-px">
+          {executedActions.map((actionItem, index) => (
+            <li
+              className={`${notifyColor("success")} p-sm rounded opacity-75`}
+              key={`${actionItem.action}-${index}`}
+            >
+              {index}: {actionItem.action} {actionItem.scope}
+            </li>
+          ))}
+          <li>
+            <button
+              className="btn btn-sm btn-outline btn-secondary no-animation"
+              onClick={handleReload}
+            >
+              Przeładuj akcje dla {slug}
+            </button>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 };

@@ -18,13 +18,13 @@ const LayoutSelector: React.FC<LayoutSelectorProps> = ({ label }) => {
   }));
 
   const layoutOptions = Object.keys(layoutsConfig).map((key) => ({
-    name: key.charAt(0).toUpperCase() + key.slice(1),
+    title: key.charAt(0).toUpperCase() + key.slice(1),
     id: key,
   }));
 
   return (
-    <div className="p-md border-b border-base-content border-opacity-30" >
-      <SelectBlock label={label} fieldName="layout" options={layoutOptions} pushName={false} />
+    <div className="p-md border-b border-neutral" >
+      <SelectBlock label={label} fieldName="layout" options={layoutOptions} />
     </div>
   );
 };

@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import ActionMsg from "../components/uikit/ActionMsg";
 import { getGetterByPath, usePageStore } from "../stores/pageStore";
 import { ModelSingular } from "../../models_EXPORT/models";
-import useNavigation from "../hooks/useNavigation";
+import useNav from "../hooks/useNav";
 
 const FilterScopeByIdAction: React.FC = ({ scope, onActionResult }: any) => {
-  const { getUSParam } = useNavigation();
+  const { getUSParam } = useNav();
   const data =
     usePageStore((state) => getGetterByPath(scope)(state.pageData)) || [];
   const updateField = usePageStore((state) => state.updateField);

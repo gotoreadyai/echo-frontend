@@ -6,11 +6,12 @@ import {
   FiSidebar,
   FiSquare,
 } from "react-icons/fi";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { PathParams } from "../../types/types";
+import useNav from "../../hooks/useNav";
 
 const PreviewSwitch: React.FC = () => {
-  const navigate = useNavigate();
+  const { navigateTo } = useNav();
   const location = useLocation();
   const { workspace, slug, action } = useParams<PathParams>();
 
@@ -19,24 +20,34 @@ const PreviewSwitch: React.FC = () => {
 
   return (
     <>
-      <div className="tooltip tooltip-bottom tooltip-accent" data-tip="[Tab] Preview">
+      <div
+        className="tooltip tooltip-bottom tooltip-accent"
+        data-tip="[Tab] Preview"
+      >
         <button
           aria-label="Tab"
           className={`btn btn-sm btn-square ${
             isPreviewMode ? "btn-active" : ""
           }`}
-          onClick={() => navigate(`/${workspace}/${slug}/`)}
+          onClick={() =>
+            navigateTo(`/${workspace}/${slug}/`, {
+              clearParams: ["rightbar"], // Te parametry zostaną usunięte z query string
+            })
+          }
         >
           <FiEye />
         </button>
       </div>
-      <div className="tooltip tooltip-bottom tooltip-accent" data-tip="[Tab] Document edit">
+      <div
+        className="tooltip tooltip-bottom tooltip-accent"
+        data-tip="[Tab] Document edit"
+      >
         <button
           aria-label="Tab"
           className={`btn btn-sm btn-square ${
             action === "edit-document" ? "btn-active" : ""
           }`}
-          onClick={() => navigate(`/${workspace}/${slug}/edit-document/`)}
+          onClick={() => navigateTo(`/${workspace}/${slug}/edit-document/`)}
         >
           <FiFile />
         </button>
@@ -46,7 +57,7 @@ const PreviewSwitch: React.FC = () => {
         className={`btn btn-sm btn-square ${
           action === "edit-side" ? "btn-active" : ""
         }`}
-        onClick={() => navigate(`/${workspace}/${slug}/edit-side/`)}
+        onClick={() => navigateTo(`/${workspace}/${slug}/edit-side/`)}
       >
         <FiSidebar />
       </button>
@@ -55,7 +66,7 @@ const PreviewSwitch: React.FC = () => {
         className={`btn btn-sm btn-square ${
           action === "edit-workspace" ? "btn-active" : ""
         }`}
-        onClick={() => navigate(`/${workspace}/${slug}/edit-workspace/`)}
+        onClick={() => navigateTo(`/${workspace}/${slug}/edit-workspace/`)}
       >
         <FiLayout />
       </button>
@@ -65,7 +76,7 @@ const PreviewSwitch: React.FC = () => {
         className={`btn btn-sm btn-square ${
           action === "edit-modal" ? "btn-active" : ""
         }`}
-        onClick={() => navigate(`/${workspace}/${slug}/edit-modal/`)}
+        onClick={() => navigateTo(`/${workspace}/${slug}/edit-modal/`)}
       >
         <FiSquare />
       </button>
@@ -75,7 +86,7 @@ const PreviewSwitch: React.FC = () => {
         className={`btn btn-sm btn-square ${
           action === "edit-scope" ? "btn-active" : ""
         }`}
-        onClick={() => navigate(`/${workspace}/${slug}/edit-scope/`)}
+        onClick={() => navigateTo(`/${workspace}/${slug}/edit-scope/`)}
       >
         <FiDatabase />
       </button>

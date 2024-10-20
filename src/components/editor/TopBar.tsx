@@ -44,9 +44,9 @@ const TopBar: React.FC = () => {
     <>
       <div
         className={`
-      ${action === "edit-document" ? "bg-neutral" : "bg-base-300"}
+      ${action === "edit-document" ? "bg-base-200" : "bg-base-300"}
       sticky top-0 p-sm px-md  text-xs z-30 flex gap-0.5 w-full 
-      border-b border-base-300 shadow-lg select-none`}
+      border-b border-base-300 select-none`}
       >
         <div className="dropdown">
           <button

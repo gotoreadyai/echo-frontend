@@ -2,9 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchItemBySlug } from "../services/genericService";
 import { PathParams } from "../types/types";
 import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useBlockStore } from "../stores";
 
 const useInitialQuerys = () => {
-  const { workspace,slug } = useParams<PathParams>();
+  const { workspace, slug } = useParams<PathParams>();
 
   const {
     data: workspaceData,
@@ -23,7 +25,18 @@ const useInitialQuerys = () => {
     queryKey: ["document", `page-${slug}`],
     queryFn: () => fetchItemBySlug("document", slug || "documents"),
     enabled: !!workspaceData,
+    select: (data) => {
+      return data;
+    },
   });
+
+  useEffect(() => {
+    if (documentData && workspaceData) {
+      useBlockStore.setState(() => ({
+        slots: documentData.content,
+      }));
+    }
+  }, [documentData]);
 
   return {
     workspaceData,

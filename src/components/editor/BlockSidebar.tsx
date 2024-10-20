@@ -1,3 +1,4 @@
+// src/components/editor/BlockSidebar.tsx
 import React, { useEffect, useState } from "react";
 import { useBlockStore } from "../../stores/blockStore";
 import { v4 as uuidv4 } from "uuid";
@@ -5,8 +6,8 @@ import { Block, BlockDefinition } from "../../types/types";
 import LayoutSelector from "./LayoutSelector";
 import { FiGrid } from "react-icons/fi";
 import SelectedSlotSaver from "./SelectedSlotSaver";
-import useNavigation from "../../hooks/useNavigation";
 import { Link } from "react-router-dom";
+import useNav from "../../hooks/useNav";
 
 const blockSchemas = import.meta.glob("../../blocks/*.ts");
 
@@ -30,7 +31,7 @@ const BlockSidebar: React.FC = () => {
     Record<string, BlockDefinition[]>
   >({});
 
-  const { getUSParam } = useNavigation();
+  const { getUSParam } = useNav();
   const rightbar = getUSParam("rightbar"); // Pobranie wartości rightbar
 
   useEffect(() => {
@@ -136,7 +137,7 @@ const BlockSidebar: React.FC = () => {
           key={i}
           className={`${
             rightbar ? "min-h-12" : "min-h-24"
-          }  flex flex-col items-stretch justify-stretch  ${
+          } flex flex-col items-stretch justify-stretch ${
             isSelected ? "bg-info bg-opacity-25" : "bg-base-100"
           }`}
           onClick={() => handleAddBlock(block.filename)}
@@ -165,18 +166,18 @@ const BlockSidebar: React.FC = () => {
   return (
     <div
       className={`${
-        rightbar ? "w-20" : "w-80"
-      } bg-base-200 h-full flex flex-col border-r border-base-300`}
+        rightbar ? "w-40" : "w-80"
+      }  h-full flex flex-col   relative `}  
     >
       <div
-        className={`flex items-center gap-sm p-sm ${
+        className={`flex items-center gap-sm p-sm px-md text-accent ${
           rightbar ? "justify-center" : ""
-        } border-b border-base-content border-opacity-20`}
+        } border-b border-base-300  bg-base-200  mb-xs`}
       >
-        <FiGrid strokeWidth={0.5} className="w-8 h-8" />
+        <FiGrid strokeWidth={1.5} className="w-6 h-6   " />
         {!rightbar && (
           <Link to="/">
-            <h1 className="text-xl font-black text-accent m-0.5">
+            <h1 className="text-xl font-black m-0.5">
               BlockBox EDITOR
             </h1>
           </Link>
@@ -191,8 +192,8 @@ const BlockSidebar: React.FC = () => {
       <div className="tabs tabs-bordered">{renderGroupTabs()}</div>
       <div className="border-b border-base-content">
         <div
-          className={`grid gap-px bg-base-300 ${rightbar ? "" : ""} ${
-            rightbar ? "grid-cols-1" : "grid-cols-3 p-px"
+          className={`grid gap-px bg-base-300 opacity-75 ${rightbar ? "" : ""} ${
+            rightbar ? "grid-cols-2" : "grid-cols-3 p-px"
           }`}
         >
           {renderBlockButtons()}

@@ -1,8 +1,7 @@
-import { LuTrash2 } from "react-icons/lu";
+import { LuEye, LuTrash2 } from "react-icons/lu";
 import { LuPenLine } from "react-icons/lu";
 import { LuInfo } from "react-icons/lu";
 import { LuFile } from "react-icons/lu";
-
 
 export const notifyColor = (type: string) => {
   switch (type) {
@@ -30,11 +29,12 @@ export const notifyText = (type: string) => {
   }
 };
 
-
 export const icons = (type: string) => {
   switch (type) {
     case "trash":
       return LuTrash2;
+    case "eye":
+      return LuEye;
     case "edit":
       return LuPenLine;
     case "file":

@@ -53,6 +53,8 @@ const BlockDetailsPanel: React.FC = () => {
   }, [selectedBlock]);
 
   const handleChange = (e: any) => {
+    console.log('ococho');
+    
     if (!selectedBlock) return;
     setBlockData(selectedBlock.id, e.formData);
   };

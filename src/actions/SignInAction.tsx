@@ -1,76 +1,51 @@
 // src/components/SignInAction.tsx
 
-import React, { useContext, useEffect } from "react";
-import { UserContext } from "../providers/UserProvider";
-import { getEncodedToken, signIn } from "../services/authServices";
-import ActionMsg from "../components/uikit/ActionMsg";
+import { signIn, getEncodedToken } from "../services/authServices";
 import { getGetterByPath, useGlobalStore, usePageStore } from "../stores";
-import { storeCredentials } from "../utils/storeBrowserCredentials";
+import { FetchItemsActionProps } from "../types/types";
 import { decodeJwt } from "../utils/auth";
+import { storeCredentials } from "../utils/storeBrowserCredentials";
 
+export const SignInAction = async (scope: FetchItemsActionProps["scope"]) => {
+  // Bezpośredni dostęp do stanu bez użycia hooków
+  const { setUser, setMainMessage } = useGlobalStore.getState();
+  const pageData = usePageStore.getState().pageData;
 
-interface SignInActionProps {
-  scope: string;
-  onActionResult: (success: boolean) => void;
-  whitelist?: string[]; // Tablica nazw pól do pominięcia podczas sprawdzania referencji
-}
+  const userData = scope
+    ? (getGetterByPath(scope)(pageData) as {
+        email: string;
+        password: string;
+      })
+    : undefined;
 
-const SignInAction: React.FC<SignInActionProps> = ({
-  scope,
-  onActionResult,
-}) => {
-  const { setUserToContext } = useContext(UserContext);
-  const { setUser: setUserData, setMainMessage } = useGlobalStore((state) => ({
-    setUser: state.setUser,
-    setMainMessage: state.setMainMessage,
-  }));
-  const userData = usePageStore((state) =>
-    scope
-      ? (getGetterByPath(scope)(state.pageData) as {
-          email: string;
-          password: string;
-        })
-      : undefined
-  );
+  try {
+    console.log(userData);
 
-  const handleSignIn = async () => {
-    try {
-      if (!userData) throw new Error("User data is missing");
-
-      const result = await signIn(userData.email, userData.password);
-      const token = getEncodedToken(); // Pobierz token po zalogowaniu
-      const timestamp = new Date();
-
-      if (token) {
-        const decodedUser = decodeJwt(token);
-        setUserToContext(decodedUser);
-        setUserData({ ...result.user, loggedAt: timestamp });
-      } else {
-        throw new Error("Token is missing after sign in");
-      }
-
-      storeCredentials({
-        id: result.user.id,
-        password: userData.password,
-        name: result.user.email,
-      });
-      setMainMessage("Sign In successful", "success");
-      onActionResult(true);
-    } catch (error) {
-      setMainMessage(
-        "Sign In error: " + scope + " - " + (error as Error).message,
-        "error"
-      );
-      onActionResult(false);
+    if (!userData) {
+      throw new Error("Brak danych użytkownika");
     }
-  };
 
-  useEffect(() => {
-    handleSignIn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const result = await signIn(userData.email, userData.password);
+    const token = getEncodedToken(); // Pobierz token po zalogowaniu
 
-  return <ActionMsg type="success">RUN: SignIn to: {scope}</ActionMsg>;
+    if (token) {
+      const decodedUser = decodeJwt(token);
+      setUser(decodedUser);
+    } else {
+      throw new Error("Brak tokena po zalogowaniu");
+    }
+
+    storeCredentials({
+      id: result.user.id,
+      password: userData.password,
+      name: result.user.email,
+    });
+    setMainMessage("Zalogowano pomyślnie", "success");
+  } catch (error) {
+    console.error(`Error fetching items for scope: ${scope}`, error);
+    const errorMsg = `Błąd logowania: ${scope} - ${(error as Error).message}`;
+    setMainMessage(errorMsg, "error");
+  }
 };
 
 export default SignInAction;

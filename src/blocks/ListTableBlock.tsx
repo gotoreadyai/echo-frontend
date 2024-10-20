@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from "react";
 import { usePageStore, getGetterByPath } from "../stores/pageStore";
-import useNavigation, { parseKeyFromPath } from "../hooks/useNavigation";
+import  { parseKeyFromPath } from "../hooks/useNavigation";
 import { icons } from "../utils/display";
-import { useParams } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
 import { PathParams } from "../types/types";
 
 interface RepeaterField {
@@ -40,7 +40,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
   className = "",
   url = "",
 }) => {
-  const { navigateTo } = useNavigation();
+  const navigate = useNavigate(); 
   const { workspace, slug } = useParams<PathParams>();
 
   const rawData = usePageStore((state) =>
@@ -65,7 +65,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
 
   const listData = Array.isArray(rawData) ? rawData : [];
 
-  const handleRowClick = (item: any) => navigateTo(parseKeyFromPath(url, item));
+  const handleRowClick = (item: any) => navigate(parseKeyFromPath(url, item));
 
   const handleActionClick = (
     e: React.MouseEvent,
@@ -74,7 +74,7 @@ const ListTableBlock: React.FC<ListBlockProps> = ({
   ) => {
     e.preventDefault();
     e.stopPropagation();
-    navigateTo(
+    navigate(
       parseKeyFromPath(actionUrl, {
         ...item,
         _router_workspace: workspace,

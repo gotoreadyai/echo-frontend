@@ -10,10 +10,8 @@ interface SlotsRendererProps {
 
 const SlotsRenderer: FC<SlotsRendererProps> = ({ slots, slotName }) => {
   if (!slots[slotName]) {
-    console.log(`No content for ${slotName}`);
-    return <></>;
+    return <>{/* `No content for ${slotName}` */}</>;
   }
-
   return (
     <>
       {slots[slotName].map((block: Block) => (

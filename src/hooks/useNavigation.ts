@@ -15,15 +15,16 @@ export interface Navigation {
   setUSParam: (param: string, value: string) => void;
   upSParams: (queryString: string) => void;
   removeUSParam: (param: string) => void;
-  navigateTo: (path: string) => void;
-  getAll: () => Record<string, string>; // Zmieniony typ zwracany
+  navigateTo: (path: string, prevent?: boolean) => void;
+  getAll: () => Record<string, string>;
+  getSearchString: () => string; // Dodane getSearchString
 }
 
 const useNavigation = (): Navigation => {
   const navigate: NavigateFunction = useNavigate();
   const { workspace, slug, action } = useParams<PathParams>();
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   /**
    * Aktualizacja parametrów wyszukiwania za pomocą funkcji callback
    * @param callback - Funkcja modyfikująca URLSearchParams
@@ -76,11 +77,24 @@ const useNavigation = (): Navigation => {
   };
 
   /**
-   * Nawigacja do określonej ścieżki
+   * Nawigacja do określonej ścieżki z opcjonalnym zachowaniem query string
    * @param path - Pełna ścieżka URL, do której ma nastąpić nawigacja
+   * @param prevent - Jeśli true, query string nie zostanie dodany
    */
-  const navigateTo = (path: string): void => {
-    navigate(path);
+  const navigateTo = (path: string, prevent = false): void => {
+    navigate({
+      pathname: path,
+      search: !prevent ? `?${searchParams.toString()}` : undefined,
+    });
+  };
+
+  /**
+   * Pobiera bieżący query string z dodanym znakiem '?'
+   * @returns Query string, np. "?param1=wartość1&param2=wartość2"
+   */
+  const getSearchString = (): string => {
+    const str = searchParams.toString();
+    return str ? `?${str}` : "";
   };
 
   /**
@@ -107,7 +121,8 @@ const useNavigation = (): Navigation => {
       upSParams,
       removeUSParam,
       navigateTo,
-      getAll, // Dodanie getAll do zwracanych funkcji
+      getAll,
+      getSearchString, // Dodajemy getSearchString do zwracanych funkcji
     }),
     [searchParams, navigate]
   );

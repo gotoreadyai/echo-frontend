@@ -1,194 +1,114 @@
-// SelectBlock.tsx
-import React, {
-  useEffect,
-  useState,
-  useMemo,
-  useCallback,
-  useRef,
-} from "react";
-import { getGetterByPath, usePageStore } from "../stores/pageStore";
-import { useGlobalStore } from "../stores/globalStore";
-import { useNavigation } from "../hooks";
-import { handleUpdateStores, initializeSelect } from "../hooks/dynamicSelect";
-import { useParams } from "react-router-dom";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import { usePageStore, getGetterByPath } from "../stores/pageStore";
+import useNav from "../hooks/useNav";
+import { editConditions } from "../utils/layoutRendererConditions";
 import { PathParams } from "../types/types";
+import { useParams } from "react-router-dom";
+import { SelectBlockProps } from "../types/selectBlockT";
 
-interface Option {
-  id: string;
-  name?: string;
-  title?: string;
-}
-
-interface SelectBlockProps {
-  className?: string;
-  label: string;
-  scope?: string;
-  fieldName?: string;
-  filterName?: string;
-  options: Option[];
-  pushName:boolean
-}
-
-export const SelectBlock: React.FC<SelectBlockProps> = ({
+const SelectBlock: React.FC<SelectBlockProps> = ({
   label,
+  scope,
   fieldName,
   filterName,
-  className = "container mx-auto",
   options = [],
-  scope = "",
-  pushName = false
+  className = "",
+  returnKey = "id",
+  scopeKey = "title", // Domyślne użycie "title" jako klucza, chyba że podano inny klucz
+  sendName,
 }) => {
-  const { setUSParam } = useNavigation();
+  const { getUSParam, navigateTo } = useNav();
+  const [selectedValue, setSelectedValue] = useState<string>("");
   const { action } = useParams<PathParams>();
-  const setFilters = useGlobalStore((state) => state.setFilters);
-  const filters = useGlobalStore((state) => state.filters);
-  const listData: Option[] = usePageStore(
-    (state) => (scope ? getGetterByPath(scope)(state.pageData) : []) || []
-  );
-  const combinedOptions: Option[] = useMemo(() => {
-    return [...listData, ...options];
-  }, [listData, options]);
-  const { fieldValue, updateField } = usePageStore((state) => ({
-    fieldValue: fieldName ? state.getFieldValue(fieldName) || "" : "",
-    updateField: state.updateField,
-  }));
-  const filterValue: string = filterName
-    ? getGetterByPath(filterName.replace("filters.", ""))(filters) || ""
-    : "";
-  const [isInitialized, setIsInitialized] = useState(false);
-  const isHandleChangeRef = useRef(false);
 
-  // Inicjalizujemy select za pomocą przeniesionej funkcji initializeSelect
-  const initialize = useCallback(() => {
-    initializeSelect({
-      isInitialized,
-      combinedOptions,
-      fieldName,
-      filterName,
-      filterValue,
-      fieldValue,
-      updateField,
-      setFilters,
-      setUSParam,
-      setIsInitialized,
-    });
-  }, [
-    isInitialized,
-    combinedOptions,
-    fieldName,
-    filterName,
-    filterValue,
-    fieldValue,
-    updateField,
-    setFilters,
-    setUSParam,
-  ]);
-
-  // Używamy handleUpdateStores za pomocą przeniesionej funkcji handleUpdateStores
-  const handleUpdate = useCallback(
-    (value: string) => {
-      handleUpdateStores({
-        value,
-        fieldName,
-        filterName,
-        fieldValue,
-        filterValue,
-        updateField,
-        setFilters,
-        setUSParam,
-      });
-    },
-    [
-      fieldName,
-      filterName,
-      fieldValue,
-      filterValue,
-      updateField,
-      setFilters,
-      setUSParam,
-    ]
-  );
-
-  // Wywołujemy initializeSelect, gdy komponent zostanie zamontowany lub zmienią się zależności
-    useEffect(() => {
-      if (!action) {
-        initialize();
+  // Pobieranie dynamicznych opcji z pageStore, jeśli podano scope
+  const dynamicOptions: any[] =
+    usePageStore((state) => {
+      if (scope) {
+        return getGetterByPath(scope)(state.pageData);
       }
-    }, [action, initialize]);
+      return [];
+    }) || [];
 
-  /**
-   * handleChange - Obsługuje zmianę w select dropdown
-   * @param e - Zdarzenie zmiany
-   */
-  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value; // Wartość wybranej opcji
-    const text = e.target.selectedOptions[0].text; // Tekst wybranej opcji
-    isHandleChangeRef.current = true;
-    handleUpdate(pushName ? text :value);
+  // Użycie dynamicznych opcji, jeśli są dostępne, w przeciwnym razie użycie przekazanych options
+  const availableOptions: any[] =
+    dynamicOptions.length > 0 ? dynamicOptions : options;
+  const updateField = usePageStore((state) => state.updateField);
+
+  // Funkcja ustawiająca wartość dla pola
+  const handleSetValue = (name: string) => {
+    const currentValue = getUSParam(name); // Pobieranie wartości z URL
+    if (currentValue) {
+      setSelectedValue(currentValue);
+      updateField(fieldName, currentValue);
+    } else if (availableOptions.length > 0) {
+      // Jeśli nie ma wartości w URL, ustaw pierwszą dostępną opcję
+      const firstOption = availableOptions[0].id;
+      setSelectedValue(firstOption);
+      updateField(fieldName, firstOption);
+
+      // Dodaj domyślną wartość do URL, jeśli jest ustawiony filterName
+      filterName &&
+        navigateTo(window.location.pathname, {
+          queryParams: { [name]: firstOption },
+        });
+    } else {
+      setSelectedValue("");
+    }
   };
 
-  /**
-   * selectValue - Określa wartość do wybrania w dropdown na podstawie propsów i stanu
-   */
-  const selectValue = useMemo(() => {
-    if (fieldName && filterName) {
-      return typeof filterValue === "string" ? filterValue : fieldValue;
-    }
-    if (fieldName) {
-      return typeof fieldValue === "string" ? fieldValue : "";
-    }
-    if (filterName) {
-      return typeof filterValue === "string" ? filterValue : "";
-    }
-    return "";
-  }, [fieldName, filterName, filterValue, fieldValue]);
+  // Obsługa zmiany opcji w select
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    updateField(fieldName, value);
+    setSelectedValue(value);
 
-  /**
-   * Effect to update the URL whenever a new list is loaded for selection
-   * (Uncommented and adjusted to avoid conflicts)
-   */
+    const paramName = filterName || fieldName.replace(/\./g, "");
+    filterName &&
+      navigateTo(window.location.pathname, {
+        queryParams: { [paramName]: value },
+      });
+
+    /* jeśli chcemy dodadkowo do scope wysłąć nazwę pola */
+    const sendAsName = availableOptions.filter(
+      (word) => word[returnKey] === e.target.value
+    )[0][scopeKey];
+    sendName && updateField(sendName, sendAsName);
+  };
+
   useEffect(() => {
-    if (isHandleChangeRef.current) {
-      isHandleChangeRef.current = false;
-      return;
+    if (!editConditions(action)) {
+      handleSetValue(filterName || fieldName.replace(/\./g, ""));
     }
-
-    const currentOptionExists = combinedOptions.some(
-      (option) => option.id === selectValue
-    );
-
-    if (!currentOptionExists && combinedOptions.length > 0 && !action) {
-      const firstOptionId = combinedOptions[0].id;
-      handleUpdate(firstOptionId);
-    }
-  }, [combinedOptions, selectValue, fieldName, filterName, handleUpdate]);
+  }, [filterName, fieldName, availableOptions, updateField]);
 
   return (
-    <div className={`${className} select-none relative`}>
-      {/* Label dla elementu select */}
-      <label className="block text-sm font-medium text-gray-700">{label}</label>
-
-      {/* Element select */}
+    <div className={`${className} container mx-auto`}>
+      {label && (
+        <label
+          htmlFor={filterName ? filterName : fieldName.replace(/\./g, "")}
+          className="block text-sm font-medium text-gray-700 pb-xs"
+        >
+          {label}
+        </label>
+      )}
       <select
-        className="select select-bordered w-full mb-2"
-        value={selectValue}
+        id={filterName ? filterName : fieldName.replace(/\./g, "")}
+        name={filterName ? filterName : fieldName.replace(/\./g, "")}
+        className="select select-bordered w-full text-base-content transition-opacity duration-300 ease-in-out"
         onChange={handleChange}
-        disabled={combinedOptions.length === 0}
+        value={selectedValue} // Ustawienie wybranej wartości
       >
-        {/* Renderowanie każdej opcji */}
-        {combinedOptions.map((option) => (
-          <option key={option.id} value={option.id} data-name={option.name || option.title}>
-            {option.name || option.title}
+        <option value="" disabled>
+          Select an option
+        </option>
+        {availableOptions.map((option) => (
+          <option key={option.id} value={option[returnKey]}>
+            {option[scopeKey] || option.title} {/* Obsługa scopeKey */}
           </option>
         ))}
       </select>
-
-      {/* Wyświetlanie komunikatu, jeśli brak dostępnych opcji */}
-      {combinedOptions.length === 0 && (
-        <p className="text-sm text-gray-500 absolute top-0 py-lg px-md">
-          No options available
-        </p>
-      )}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React from "react";
 import Logo from "../blocks/Logo";
 import { initBackgrounds } from "../data/schemaParts";
+import { LayoutProps } from "../types/types";
+import SlotsRenderer from "../components/SlotsRenderer";
 
-const LandingDoubleClassic: React.FC<{ [key: string]: React.ReactNode }> = (
-  props
-) => {
+const LandingDoubleClassic: React.FC<LayoutProps> = ({ workspace, page }) => {
+
   return (
     <div className="flex flex-col min-h-screen">
       <div
@@ -17,19 +18,18 @@ const LandingDoubleClassic: React.FC<{ [key: string]: React.ReactNode }> = (
           <div>
             <Logo />
           </div>
-          <div className="relative flex gap-xs">{props.header}</div>
+          <div className="relative flex gap-xs"><SlotsRenderer slots={workspace} slotName={"header"} /></div>
         </header>
         <div className="flex container mx-auto px-md">
-          <section className="relative flex-1">{props.primaryContent}</section>
+          <section className="relative flex-1"><SlotsRenderer slots={page} slotName={"primaryContent"} /></section>
           <section className="relative flex-1">
-            {" "}
-            {props.secondaryContent}
+          <SlotsRenderer slots={page} slotName={"secondaryContent"} />
           </section>
         </div>
       </div>
-      <section className="relative flex-1">{props.tertiaryContent}</section>
+      <section className="relative flex-1"><SlotsRenderer slots={page} slotName={"tertiaryContent"} /></section>
       <footer className="sticky bottom-0">
-        <div className="relative">{props.footer}</div>
+        <div className="relative"><SlotsRenderer slots={workspace} slotName={"footer"} /></div>
       </footer>
     </div>
   );

@@ -1,6 +1,7 @@
 import React from "react";
 import { LayoutConfig } from "../types/types";
 
+
 export const layoutsConfig: Record<string, LayoutConfig> = {
   MainDashboard: {
     id: "MainDashboard",

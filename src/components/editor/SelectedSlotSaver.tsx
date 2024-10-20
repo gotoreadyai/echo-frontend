@@ -6,7 +6,6 @@ import { layoutsConfig } from "../../data/layoutsConfig";
 
 import { PathParams } from "../../types/types";
 import { usePageStore } from "../../stores/pageStore";
-import { genErrorMessage } from "../../utils/actions";
 import { FiSave } from "react-icons/fi";
 import { useGlobalStore } from "../../stores/globalStore"; // Import globalStore
 import useNavigation from "../../hooks/useNavigation";
@@ -56,8 +55,7 @@ const SelectedSlotSaver: React.FC = () => {
           },
           onError: (error: any) => {
             console.log(error);
-            
-            setMainMessage(genErrorMessage(error, selectedSlot), "error"); // Set error message
+            setMainMessage(error, "error");
           },
         }
       );
@@ -70,16 +68,18 @@ const SelectedSlotSaver: React.FC = () => {
 
   return (
     <div className="p-md border-t border-base-300">
-      {!rightbar? (
+      {!rightbar ? (
         <>
           <span className="font-semibold">Selected Slot: </span>
           <span>{selectedSlot ? selectedSlot : "No slot selected"}</span>
         </>
-      ) : <div className="text-center">SLOT</div>}
+      ) : (
+        <div className="text-center">SLOT</div>
+      )}
       {errorMessage && <div className="bg-error"></div>}
       {selectedSlot && (
         <button
-         aria-label="Save"
+          aria-label="Save"
           onClick={handleSaveContent}
           className="btn btn-md btn-outline w-full no-animation font-light mt-sm"
         >

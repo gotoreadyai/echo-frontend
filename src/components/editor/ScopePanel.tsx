@@ -42,7 +42,7 @@ const ScopePanel: React.FC = () => {
     jsonValue = initialScope;
   } else if (activeTab === "actualScope") {
     jsonValue = pageData;
-    isReadOnly = true; // Make actualScope read-only
+    isReadOnly = false; // Make actualScope read-only
   } else if (activeTab === "slotsPreview") {
     jsonValue = slots;
   } else if (activeTab === "globalScope") {
@@ -53,6 +53,7 @@ const ScopePanel: React.FC = () => {
   // Update editedValue when jsonValue changes
   useEffect(() => {
     setEditedValue(jsonValue || {});
+    //
   }, [jsonValue]);
 
   const handleChange = (value: object) => {
@@ -100,14 +101,15 @@ const ScopePanel: React.FC = () => {
       setMainMessage("Slots updated successfully!", "success");
       setErrorMessage(null); // Clear any previous errors
     } catch (error: any) {
-      const errorMsg = error?.message || "An error occurred while updating slots.";
+      const errorMsg =
+        error?.message || "An error occurred while updating slots.";
       setErrorMessage(errorMsg);
       setMainMessage(`Failed to update slots: ${errorMsg}`, "error");
     }
   };
 
   return (
-    <div className="w-full sticky top-16">
+    <div className="w-full">
       {/* Tabs to switch between scopes */}
       <div className="tabs tabs-lifted border-b border-base-200 mt-sm">
         <button
@@ -138,7 +140,6 @@ const ScopePanel: React.FC = () => {
         >
           Slots Preview
         </button>
-        
       </div>
 
       {/* Display data in JSONBlock depending on the selected tab */}

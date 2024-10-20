@@ -1,12 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Logo from "../blocks/Logo";
 import { initBackgrounds } from "../data/schemaParts";
 
-import { LayoutProps } from "../types/types";
-import SlotWrapper from "../components/SlotWrapper";
-
-const MainDashboard: React.FC<LayoutProps> = ({ workspace, page }) => {
+const _MainDashboard: React.FC<{ [key: string]: React.ReactNode }> = (props) => {
   return (
     <div className="flex flex-col min-h-screen">
       <div
@@ -16,35 +12,27 @@ const MainDashboard: React.FC<LayoutProps> = ({ workspace, page }) => {
           <div>
             <Logo />
           </div>
-          <div className="flex relative">
-            <SlotWrapper slots={workspace} slotName={"header"} />
-          </div>
+          <div className="flex relative">{props.header}</div>
         </header>
       </div>
       <div className="bg-base-200 flex-1 flex flex-col gap-md">
-        <section className="relative">
-          <SlotWrapper slots={page} slotName={"primaryContent"} />
-        </section>
+        <section className="relative">{props.primaryContent}</section>
         <div className="card flex flex-col bg-base-100 container mx-auto">
           <section className="relative flex justify-end">
-            <SlotWrapper slots={page} slotName={"secondaryContent"} />
+            {props.secondaryContent}
           </section>
-          <section className="relative">
-            <SlotWrapper slots={page} slotName={"tertiaryContent"} />
-          </section>
+          <section className="relative">{props.tertiaryContent}</section>
         </div>
       </div>
 
       <footer className="sticky bottom-0">
-        <div className="relative">
-          <SlotWrapper slots={workspace} slotName={"footer"} />
-        </div>
+        <div className="relative">{props.footer}</div>
       </footer>
     </div>
   );
 };
 
-export default MainDashboard;
+export default _MainDashboard;
 /* flex flex-1 */
 /* px-lg py-lg pr-lg pl-lg pt-lg pl-lg */
 /* px-md py-md pr-md pl-md pt-md pl-md */
@@ -55,3 +43,5 @@ export default MainDashboard;
 /* mx-sm my-sm mr-sm ml-sm mt-sm ml-sm */
 
 /* border m-md rounded */
+
+

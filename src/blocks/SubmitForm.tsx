@@ -1,6 +1,6 @@
-// SubmitForm.tsx
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
+import useNav from "../hooks/useNav"; // Import useNav
 import ActionBlock from "./ActionBlock";
 
 interface Action {
@@ -21,14 +21,15 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [triggerActions, setTriggerActions] = useState<boolean>(false);
-  const [resultMessage, setResultMessage] = useState<string | null>(null); // State for the message
+  const [resultMessage, setResultMessage] = useState<string | null>(null);
 
-  const navigate = useNavigate(); // Initialize useNavigate
+  const { buildLink } = useNav(); // Wywołaj useNav i wyciągnij buildLink
+  const navigate = useNavigate(); 
 
   const handleSubmit = async () => {
     setLoading(true);
     setTriggerActions(true);
-    setResultMessage(null); // Reset the message
+    setResultMessage(null);
   };
 
   const handleActionsComplete = (success: boolean) => {
@@ -37,7 +38,8 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     if (success) {
       setResultMessage("Akcje zakończone pomyślnie!");
       if (successRedirect) {
-        navigate(successRedirect);
+        const newPath = buildLink(successRedirect); // Użycie buildLink
+        navigate(newPath, { replace: true });
       }
     } else {
       setResultMessage("Wystąpił błąd podczas wykonywania akcji.");
@@ -48,7 +50,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
     <div className={className || "container mx-auto"}>
       <button
         onClick={handleSubmit}
-        type="submit" 
+        type="submit"
         className="btn btn-primary w-full no-animation"
         disabled={loading}
         aria-label="Submit Form"
@@ -60,7 +62,7 @@ const SubmitForm: React.FC<SubmitFormProps> = ({
         <ActionBlock
           actions={actions}
           reloadOnParamsChange={false}
-          onComplete={handleActionsComplete} // Pass the callback
+          sendComplete={handleActionsComplete} // Pass the callback
         />
       )}
 

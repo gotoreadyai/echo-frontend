@@ -39,7 +39,7 @@ export const ListTableBlockSchema = {
             icon: {
               type: "string",
               label: "Icon name",
-              enum: ["", "trash", "edit", "file"],
+              enum: ["", "trash", "edit", "file", "eye"],
             },
             url: { type: "string", label: "Action url" },
             label: { type: "string", label: "Action label" },
